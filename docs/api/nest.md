@@ -22,6 +22,8 @@ const reducer = createReducer(
 
 ```
 
+test
+
 {% codesandbox %}
 https://codesandbox.io/embed/zlmzlpwz6l?hidenavigation=1&view=preview
 {% endcodesandbox %}
