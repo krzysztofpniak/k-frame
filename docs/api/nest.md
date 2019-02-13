@@ -22,5 +22,9 @@ const reducer = createReducer(
 
 ```
 
+{% codesandbox %}
+https://codesandbox.io/embed/zlmzlpwz6l?hidenavigation=1&view=preview
+{% endcodesandbox %}
+
 #### See also
 * [createReducer](createReducer.md)
