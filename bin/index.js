@@ -10,8 +10,7 @@ const server = new http.Server(app);
 app.disable('etag');
 app.set('etag', false);
 
-app.use(Express.static(path.join(__dirname, '..', 'static')));
-app.use('/assets', Express.static(path.join(__dirname, 'assets')));
+app.use(Express.static(path.join(__dirname, '..', '_book')));
 
 //var favicon = require('serve-favicon');
 //app.use(favicon(path.join(__dirname, 'assets/favicon.ico')));
