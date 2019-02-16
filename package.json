@@ -1,0 +1,27 @@
+{
+  "name": "k-frame",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "dependencies": {
+    "gitbook-plugin-codesandbox": "^0.1.1"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "gitbook build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/krzysztofpniak/k-frame.git"
+  },
+  "author": "Krzysztof Pniak",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/krzysztofpniak/k-frame/issues"
+  },
+  "homepage": "https://github.com/krzysztofpniak/k-frame#readme"
+}
