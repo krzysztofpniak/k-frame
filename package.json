@@ -1,7 +1,7 @@
 {
   "name": "k-frame",
   "version": "1.0.0",
-  "description": "",
+  "description": "Docs for k-frame",
   "main": "index.js",
   "directories": {
     "doc": "docs"
