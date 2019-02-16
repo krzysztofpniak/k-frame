@@ -1,9 +1,8 @@
-import 'babel-polyfill';
-import Express from 'express';
-import http from 'http';
-import path from 'path';
-import fs from 'fs';
-import {resolve} from 'path';
+const Express = require('express');
+const http = require('http');
+const path = require('path');
+const fs = require('fs');
+const resolve = path.resolve;
 
 const app = new Express();
 const server = new http.Server(app);
