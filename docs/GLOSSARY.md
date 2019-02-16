@@ -2,7 +2,7 @@
 
 This is a glossary of the core terms in @k-frame/reducers.
 
-### Reducer
+## Reducer
 
 A plain function that has a following signature:
 

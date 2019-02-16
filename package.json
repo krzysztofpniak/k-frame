@@ -9,7 +9,8 @@
   "dependencies": {
     "express": "^4.16.4",
     "gitbook-cli": "^2.3.2",
-    "gitbook-plugin-codesandbox": "^0.1.1"
+    "gitbook-plugin-codesandbox": "^0.1.1",
+    "gitbook-plugin-theme-official": "2.1.1"
   },
   "devDependencies": {},
   "scripts": {
