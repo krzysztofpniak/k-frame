@@ -8,9 +8,15 @@
 <url> <loc>https://krzysztofpniak.github.io/k-frame/blog/2017/09/25/testing-rss</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>
 <url> <loc>https://krzysztofpniak.github.io/k-frame/blog/2017/04/10/blog-post-two</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>
 <url> <loc>https://krzysztofpniak.github.io/k-frame/blog/2016/03/11/blog-post</loc> <changefreq>weekly</changefreq> <priority>0.3</priority> </url>
+<url> <loc>https://krzysztofpniak.github.io/k-frame/docs/api-action</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://krzysztofpniak.github.io/k-frame/docs/api-action" /> </url>
+<url> <loc>https://krzysztofpniak.github.io/k-frame/docs/api-actionType</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://krzysztofpniak.github.io/k-frame/docs/api-actionType" /> </url>
+<url> <loc>https://krzysztofpniak.github.io/k-frame/docs/api-createReducer</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://krzysztofpniak.github.io/k-frame/docs/api-createReducer" /> </url>
 <url> <loc>https://krzysztofpniak.github.io/k-frame/docs/doc1</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://krzysztofpniak.github.io/k-frame/docs/doc1" /> </url>
 <url> <loc>https://krzysztofpniak.github.io/k-frame/docs/doc2</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://krzysztofpniak.github.io/k-frame/docs/doc2" /> </url>
 <url> <loc>https://krzysztofpniak.github.io/k-frame/docs/doc3</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://krzysztofpniak.github.io/k-frame/docs/doc3" /> </url>
 <url> <loc>https://krzysztofpniak.github.io/k-frame/docs/doc4</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://krzysztofpniak.github.io/k-frame/docs/doc4" /> </url>
 <url> <loc>https://krzysztofpniak.github.io/k-frame/docs/doc5</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://krzysztofpniak.github.io/k-frame/docs/doc5" /> </url>
+<url> <loc>https://krzysztofpniak.github.io/k-frame/docs/forms-simple</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://krzysztofpniak.github.io/k-frame/docs/forms-simple" /> </url>
+<url> <loc>https://krzysztofpniak.github.io/k-frame/docs/forms-material-ui</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://krzysztofpniak.github.io/k-frame/docs/forms-material-ui" /> </url>
+<url> <loc>https://krzysztofpniak.github.io/k-frame/docs/api-nest</loc> <changefreq>hourly</changefreq> <priority>1.0</priority> <xhtml:link rel="alternate" hreflang="en" href="https://krzysztofpniak.github.io/k-frame/docs/api-nest" /> </url>
 </urlset>
