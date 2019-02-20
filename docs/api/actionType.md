@@ -1,3 +1,8 @@
+---
+id: api-actionType
+title: actionType
+---
+
 ### `actionType(type, transform)`
 
 Creates a `reducer` that transforms `state` only when action types matches `type`.

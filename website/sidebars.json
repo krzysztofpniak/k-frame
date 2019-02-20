@@ -1,0 +1,25 @@
+{
+  "docs": {
+    "Installation": [
+      "installation/getting-started",
+      "installation/add-k-frame",
+      "installation/create-new"
+    ],
+    "Main concepts": [
+      "main-concepts/counter"
+    ]
+  },
+  "docs-other": {
+    "Reducers": [
+      "api/api-action",
+      "api/api-actionType",
+      "api/api-createReducer",
+      "api/api-nest",
+      "api/api-payloadReducer"
+    ],
+    "Forms": [
+      "forms-simple",
+      "forms-material-ui"
+    ]
+  }
+}

@@ -1,3 +1,8 @@
+---
+id: api-nest
+title: nest
+---
+
 ### `nest(type, subReducer)`
 
 Creates an isolated `reducer` defined by `subReducer` in `type` scope in state.

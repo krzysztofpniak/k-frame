@@ -1,4 +1,9 @@
-### `actionType(type, transform)`
+---
+id: api-payloadReducer
+title: payloadReducer
+---
+
+### `payloadReducer(type, transform)`
 
 Creates a `reducer` that transforms `state` only when action types matches `type`.
 
@@ -8,13 +13,13 @@ Creates a `reducer` that transforms `state` only when action types matches `type
 
 #### Example
 
-In the following example, we use two `actionType`'s to define a reducer.
+In the following example, we use two `payloadReducer`'s to define a reducer.
 First one is taking care about action of type `SET_TITLE` and uses its `payload`
 to set `title` property of the state.
 Second one watches for `INC` action and increments `counter` prop by the value of `payload`.
 
 ```javascript
-import {createReducer, actionType,} from `k-reducer`;
+import {createReducer, payloadReducer,} from `@k-frame/reducers`;
 import {assoc, over, lensProp, compose, add,} from 'ramda';
 
 const initialState = {
@@ -25,8 +30,8 @@ const initialState = {
 const reducer = createReducer(
     initialState,
     [
-        actionType('SET_TITLE', assoc('title')),
-        actionType('INC', compose(over(lensProp('counter')), add)),
+        payloadReducer('SET_TITLE', assoc('title')),
+        payloadReducer('INC_BY', compose(over(lensProp('counter')), add)),
     ]
 );
 

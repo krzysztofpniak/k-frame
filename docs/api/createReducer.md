@@ -1,3 +1,8 @@
+---
+id: api-createReducer
+title: createReducer
+---
+
 ### `createReducer(initialState, spec)`
 
 Creates a `reducer` defined by `spec` with `initialState`.

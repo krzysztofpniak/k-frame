@@ -1,8 +1,9 @@
-# Simple Form
+---
+id: forms-simple
+title: Simple Form
+---
 
-{% codesandbox %}
-https://codesandbox.io/embed/zlmzlpwz6l?hidenavigation=1&view=preview
-{% endcodesandbox %}
+<iframe src="https://codesandbox.io/embed/zlmzlpwz6l" style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;" sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"></iframe>
 
 ```javascript
 import React from "react";
@@ -62,3 +63,10 @@ const SimpleForm = () => {
 };
 
 ```
+
+# Material UI Form {#material-ui}
+
+{% codesandbox %}
+https://codesandbox.io/embed/614822vpqz?hidenavigation=1&view=preview
+{% endcodesandbox %}
+
