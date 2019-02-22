@@ -52,7 +52,7 @@
             });
         </script></nav></div><div class="container mainContainer"><div class="wrapper"><div class="post"><header class="postHeader"><h1 class="postHeaderTitle">Counter</h1></header><article><div><span><p>Hello World doesn't make any sense in k-frame, because it is just a static text.
 The simplest k-frame example is a Counter.</p>
-</span></div><div class="tabs"><div class="nav-tabs"><div class="nav-link active" id="2-tab" data-group="group_1" data-tab="tabpanel_2">Plain JS</div><div class="nav-link" id="3-tab" data-group="group_1" data-tab="tabpanel_3">With ramda</div></div><div class="tab-content"><div class="tab-pane active" data-group="group_1" tabindex="-1" id="tabpanel_2"><div><span><pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+</span></div><div class="tabs"><div class="nav-tabs"><div class="nav-link active" id="2-tab" data-group="group_1" data-tab="tabpanel_2">Plain JS</div><div class="nav-link" id="3-tab" data-group="group_1" data-tab="tabpanel_3">With ramda</div><div class="nav-link" id="4-tab" data-group="group_1" data-tab="tabpanel_4">switch reducer</div></div><div class="tab-content"><div class="tab-pane active" data-group="group_1" tabindex="-1" id="tabpanel_2"><div><span><pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
 <span class="hljs-keyword">import</span> {
   useKReducer,
   withScope,
@@ -100,6 +100,43 @@ The simplest k-frame example is a Counter.</p>
     over(lensProp(<span class="hljs-string">'counter'</span>), add(<span class="hljs-number">1</span>))
   ),
 ]);
+
+<span class="hljs-keyword">const</span> Counter = withScope(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
+  <span class="hljs-keyword">const</span> {counter, inc} = useKReducer(counterReducer, counterActions);
+
+  <span class="hljs-keyword">return</span> (
+    <span class="xml"><span class="hljs-tag">&lt;<span class="hljs-name">button</span> <span class="hljs-attr">type</span>=<span class="hljs-string">"button"</span> <span class="hljs-attr">onClick</span>=<span class="hljs-string">{inc}</span>&gt;</span>
+      Clicked {counter} times
+    <span class="hljs-tag">&lt;/<span class="hljs-name">button</span>&gt;</span></span>
+  );
+});
+
+</code></pre>
+</span></div></div><div class="tab-pane" data-group="group_1" tabindex="-1" id="tabpanel_4"><div><span><pre><code class="hljs css language-js"><span class="hljs-keyword">import</span> React <span class="hljs-keyword">from</span> <span class="hljs-string">'react'</span>;
+<span class="hljs-keyword">import</span> {
+  useKReducer,
+  withScope,
+  createReducer,
+  createStateReducer,
+} <span class="hljs-keyword">from</span> <span class="hljs-string">'@k-frame/core'</span>;
+
+<span class="hljs-keyword">const</span> counterActions = {
+  <span class="hljs-attr">inc</span>: <span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> ({<span class="hljs-attr">type</span>: <span class="hljs-string">'increment'</span>}),
+};
+
+<span class="hljs-keyword">const</span> initialState = {<span class="hljs-attr">counter</span>: <span class="hljs-number">0</span>};
+
+<span class="hljs-keyword">const</span> counterReducer = <span class="hljs-function">(<span class="hljs-params">state = initialState, action</span>) =&gt;</span> {
+  <span class="hljs-keyword">switch</span> (action.type) {
+    <span class="hljs-keyword">case</span> <span class="hljs-string">'increment'</span>:
+      <span class="hljs-keyword">return</span> {
+        ...state,
+        <span class="hljs-attr">counter</span>: state.counter + <span class="hljs-number">1</span>,
+      };
+    <span class="hljs-keyword">default</span>:
+      <span class="hljs-keyword">return</span> state;
+  }
+};
 
 <span class="hljs-keyword">const</span> Counter = withScope(<span class="hljs-function"><span class="hljs-params">()</span> =&gt;</span> {
   <span class="hljs-keyword">const</span> {counter, inc} = useKReducer(counterReducer, counterActions);
