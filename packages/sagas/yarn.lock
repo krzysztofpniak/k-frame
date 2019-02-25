@@ -667,15 +667,10 @@
     lodash "^4.17.10"
     to-fast-properties "^2.0.0"
 
-"@k-frame/core@^0.6.27":
-  version "0.6.27"
-  resolved "https://registry.yarnpkg.com/@k-frame/core/-/core-0.6.27.tgz#a8322fa31d3970c03b0b90c75bb8e16e1a277be2"
-  integrity sha512-a3l4RGZLK1Ja4YDCoER9cNZOFs5DTmw88IvtykC3PI7h7A8Sz3Aq8B6yY4/Jw0qHHTz7lzQvcW0hlvmusZYs2w==
-
-"@k-frame/reducers@^0.2.12":
-  version "0.2.12"
-  resolved "https://registry.yarnpkg.com/@k-frame/reducers/-/reducers-0.2.12.tgz#c00f2f7a3008ef356b3e567e4f1e191969589172"
-  integrity sha512-IJDADngw4P/PeY8EwdUCPsdWdY8eAf2Z/h/6VXCdHHbCCusIkEGBE5ER3/hm3Lp0S2D3MnIwAGXYM4+V1s5KFw==
+"@k-frame/core@^0.8.16":
+  version "0.8.16"
+  resolved "https://registry.yarnpkg.com/@k-frame/core/-/core-0.8.16.tgz#e308e7aa5df28bec38a4abc5089e41ea7eab399e"
+  integrity sha512-A32/JJFkRlbyQmgQqPLZ5p4tnwvgh8FKYhDF2tjQd8aIr/Lr/gDD5Ws5xeXecbebc1jqhKMsCnbJ6vHHRClXRw==
 
 "@types/estree@0.0.39":
   version "0.0.39"

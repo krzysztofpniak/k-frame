@@ -1,4 +1,4 @@
-import {actionType2} from '../';
+import {createStateReducer} from '../';
 import {
   counterState0,
   counterState1,
@@ -11,16 +11,16 @@ const transform = state => ({
   counter: state.counter + 1,
 });
 
-describe('actionType2', () => {
+describe('createStateReducer', () => {
   it('handles action', () => {
     expect(
-      actionType2('Inc', transform)(counterState0, counterActionInc())
+      createStateReducer('Inc', transform)(counterState0, counterActionInc())
     ).toEqual(counterState1);
   });
 
   it('handles action creator', () => {
     expect(
-      actionType2(counterActionInc, transform)(
+      createStateReducer(counterActionInc, transform)(
         counterState0,
         counterActionInc()
       )
@@ -29,7 +29,7 @@ describe('actionType2', () => {
 
   it('skips action', () => {
     expect(
-      actionType2('IncBy', transform)(counterState0, someRandomAction())
+      createStateReducer('IncBy', transform)(counterState0, someRandomAction())
     ).toEqual(counterState0);
   });
 });

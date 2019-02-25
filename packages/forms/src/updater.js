@@ -14,7 +14,11 @@ import {
   prop,
   set,
 } from 'ramda';
-import {actionType, actionType2, createReducer} from '@k-frame/reducers';
+import {
+  createPayloadReducer,
+  createStateReducer,
+  createReducer,
+} from '@k-frame/core';
 import {RESET, SET_FIELD, SET_SUBMIT_DIRTY, SUBMIT} from './actionTypes';
 
 const mergeSpec = curry((spec, obj) => merge(obj, applySpec(spec)(obj)));
@@ -79,7 +83,7 @@ const createUpdater = (fieldTypes, schema) => {
   const initialModel = getInitialModel(fields);
 
   return createReducer(initialModel, [
-    actionType(SET_FIELD, ({name, value}) =>
+    createPayloadReducer(SET_FIELD, ({name, value}) =>
       evolve({
         dirty: always(true),
         fields: {
@@ -87,7 +91,7 @@ const createUpdater = (fieldTypes, schema) => {
         },
       })
     ),
-    actionType(SUBMIT, ({resetOnSubmit}) =>
+    createPayloadReducer(SUBMIT, ({resetOnSubmit}) =>
       mergeSpec({
         dirty: always(false),
         submitDirty: always(false),
@@ -95,7 +99,7 @@ const createUpdater = (fieldTypes, schema) => {
         subStates: prop(resetOnSubmit ? 'initialSubStates' : 'subStates'),
       })
     ),
-    actionType(RESET, ({resetOnCancel}) =>
+    createPayloadReducer(RESET, ({resetOnCancel}) =>
       mergeSpec({
         dirty: always(false),
         submitDirty: always(false),
@@ -103,7 +107,7 @@ const createUpdater = (fieldTypes, schema) => {
         subStates: prop(resetOnCancel ? 'initialSubStates' : 'subStates'),
       })
     ),
-    actionType2(SET_SUBMIT_DIRTY, assoc('submitDirty', true)),
+    createStateReducer(SET_SUBMIT_DIRTY, assoc('submitDirty', true)),
   ]);
 };
 

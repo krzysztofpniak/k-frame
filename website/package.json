@@ -7,5 +7,9 @@
     "write-translations": "docusaurus-write-translations",
     "version": "docusaurus-version",
     "rename-version": "docusaurus-rename-version"
+  },
+  "dependencies": {
+    "optipng-bin": "^5.1.0",
+    "docusaurus": "^1.7.2"
   }
 }

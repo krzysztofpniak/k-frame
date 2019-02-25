@@ -10,6 +10,7 @@ import {
   useKReducer,
   useSaga,
   withScope,
+  createPayloadReducer,
 } from '../../../src/main';
 
 const mapWithKey = addIndex(map);
@@ -25,8 +26,8 @@ const studentReducer = createReducer(
     surname: '',
   },
   [
-    actionType('SET_NAME', assoc('name')),
-    actionType('SET_SURNAME', assoc('surname')),
+    createPayloadReducer('SET_NAME', assoc('name')),
+    createPayloadReducer('SET_SURNAME', assoc('surname')),
   ]
 );
 

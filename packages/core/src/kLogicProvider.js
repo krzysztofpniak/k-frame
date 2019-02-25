@@ -6,7 +6,8 @@ import React, {
   useState,
 } from 'react';
 import {assocPath, dissocPath, path} from 'ramda';
-import {fromTree, composeReducers} from '@k-frame/reducers';
+import fromTree from './fromTree';
+import composeReducers from './composeReducers';
 
 const defaultContextValue = {
   scope: [],
@@ -74,11 +75,7 @@ function KProvider({store, runSaga, staticReducer, children}) {
     [runSaga, assocReducer, dissocReducer]
   );
 
-  return (
-    <KContext.Provider value={contextValue}>
-      {children}
-    </KContext.Provider>
-  );
+  return <KContext.Provider value={contextValue}>{children}</KContext.Provider>;
 }
 
 export {KContext, KProvider};

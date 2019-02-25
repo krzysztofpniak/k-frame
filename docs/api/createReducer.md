@@ -17,34 +17,39 @@ In the following example, we create a basic reducer. We can use `createReducer`
 to compose any reducers we have.
 
 ```javascript
-import {createReducer, actionType,} from `@k-frame/reducers`;
+import {createReducer, createPayloadReducer, createAction} from '@k-frame/core';
 
 const initialState = {
-    title: '',
-    counter: 0,
+  title: '',
+  counter: 0,
 };
 
-const rawReducer = (state, action) =>
-    action.type === 'INC' ? {
+const classicReducer = (state, action) => {
+  switch (action.type) {
+    case 'INC':
+      return {
         ...state,
-        counter: state.counter + action.payload
-    } : state;
+        counter: state.counter + action.payload,
+      };
+    default:
+      return state;
+  }
+};
 
-const reducer = createReducer(
-    initialState,
-    [
-        reduxFormReducer,
-        actionType('SET_TITLE', assoc('title')),
-        rawReducer,
-    ]
-);
+const toggleDialog = createAction('TOGGLE_DIALOG');
 
+const reducer = createReducer(initialState, [
+  reduxFormReducer,
+  classicReducer,
+  createPayloadReducer('SET_TITLE', assoc('title')),
+  createPayloadReducer(toggleDialog, assoc('dialogVisible')),
+]);
 ```
 
 #### Notes
 
 For convenience this library defines reducer factories, that can be used
 directly in `createReducer` spec:
-* [action](action.md)
-* [actionType](actionType.md)
-* [nest](nest.md)
+
+- [createPayloadReducer](createPayloadReducer.md)
+- [createStateReducer](createStateReducer.md)

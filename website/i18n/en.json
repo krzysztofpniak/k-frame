@@ -5,32 +5,29 @@
     "previous": "Previous",
     "tagline": "A complete react and redux based framework",
     "docs": {
-      "api/api-action": {
-        "title": "action"
+      "api/api-createAction": {
+        "title": "createAction"
       },
-      "api/api-actionType": {
-        "title": "actionType"
+      "api/api-createPayloadReducer": {
+        "title": "createPayloadReducer"
       },
       "api/api-createReducer": {
         "title": "createReducer"
       },
+      "api/api-createStateReducer": {
+        "title": "createStateReducer"
+      },
+      "api/api-emptyReducer": {
+        "title": "emptyReducer"
+      },
       "api/api-nest": {
         "title": "nest"
       },
-      "api/api-payloadReducer": {
-        "title": "payloadReducer"
+      "api/api-scope": {
+        "title": "Scope"
       },
-      "doc2": {
-        "title": "document number 2"
-      },
-      "doc3": {
-        "title": "This is document number 3"
-      },
-      "doc4": {
-        "title": "Other Document"
-      },
-      "doc5": {
-        "title": "Fifth Document"
+      "api/api-useKReducer": {
+        "title": "useKReducer"
       },
       "forms-simple": {
         "title": "Simple Form"
@@ -60,8 +57,7 @@
     "categories": {
       "Installation": "Installation",
       "Main concepts": "Main concepts",
-      "Reducers": "Reducers",
-      "Forms": "Forms"
+      "Reducers": "Reducers"
     }
   },
   "pages-strings": {

@@ -6,7 +6,17 @@ import withDebug from './withDebug';
 import shallowEqual from './shallowEqual';
 import useKReducer from './useKReducer';
 import handleAsyncs from './handleAsyncs';
+import fromTree from './fromTree'; //?
+import createReducer from './createReducer';
+import nest from './nest'; //? subReducer
+import createPayloadReducer from './createPayloadReducer'; //actionType
+import createStateReducer from './createStateReducer'; //actionType2
+import wrapAction from './wrapAction';
+import forwardTo from './forwardTo';
+import composeReducers from './composeReducers';
+import emptyReducer from './emptyReducer';
 import {KContext, KProvider} from './kLogicProvider';
+import createAction from './createAction';
 import {curry, unless, is, objOf} from 'ramda';
 
 const asyncActionTypeName = curry(
@@ -54,4 +64,14 @@ export {
   withDebug,
   shallowEqual,
   bindActionCreators,
+  createReducer,
+  createPayloadReducer,
+  createStateReducer,
+  nest,
+  wrapAction,
+  forwardTo,
+  fromTree,
+  composeReducers,
+  emptyReducer,
+  createAction,
 };

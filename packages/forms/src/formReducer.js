@@ -10,7 +10,7 @@ import {
   compose,
   evolve,
 } from 'ramda';
-import {fromTree} from '@k-frame/reducers';
+import {fromTree} from '@k-frame/core';
 
 const kFormsActionPrefix = '@@k-forms/';
 

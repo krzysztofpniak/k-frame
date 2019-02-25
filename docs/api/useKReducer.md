@@ -1,10 +1,23 @@
 ---
-id: counter
-title: Counter
+id: api-useKReducer
+title: useKReducer
 ---
 
-Hello World doesn't make any sense in k-frame, because it is just a static text.
-The simplest k-frame example is a Counter.
+### `useKReducer(reducer, actions)`
+
+Attaches reducer to reducers tree using current [Scope](scope.md)
+
+- `reducer: Reducer`
+
+- `actions: object` - object with actionCreators as values
+
+### returns
+
+It returns object of state mixed with actions bound to dispatch.
+
+#### Example
+
+In the following example, we create two action creators
 
 <!--DOCUSAURUS_CODE_TABS-->
 <!--Plain JS-->
@@ -111,3 +124,7 @@ const Counter = withScope(() => {
 ```
 
 <!--END_DOCUSAURUS_CODE_TABS-->
+
+#### See also
+
+- [createReducer](createReducer.md)

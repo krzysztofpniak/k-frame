@@ -1,4 +1,4 @@
-import {actionType} from '../';
+import {createPayloadReducer} from '../';
 import {
   counterState0,
   counterState1,
@@ -11,16 +11,19 @@ const transform = (payload, state) => ({
   counter: state.counter + payload,
 });
 
-describe('actionType', () => {
+describe('createPayloadReducer', () => {
   it('handles action', () => {
     expect(
-      actionType('IncBy', transform)(counterState0, counterActionIncBy(1))
+      createPayloadReducer('IncBy', transform)(
+        counterState0,
+        counterActionIncBy(1)
+      )
     ).toEqual(counterState1);
   });
 
   it('handles action creator', () => {
     expect(
-      actionType(counterActionIncBy, transform)(
+      createPayloadReducer(counterActionIncBy, transform)(
         counterState0,
         counterActionIncBy(1)
       )
@@ -29,7 +32,10 @@ describe('actionType', () => {
 
   it('skips action', () => {
     expect(
-      actionType('IncBy', transform)(counterState0, someRandomAction())
+      createPayloadReducer('IncBy', transform)(
+        counterState0,
+        someRandomAction()
+      )
     ).toEqual(counterState0);
   });
 });

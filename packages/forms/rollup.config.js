@@ -11,7 +11,6 @@ export default [
     input: 'src/main.js',
     external: [
       'ramda',
-      '@k-frame/reducers',
       '@k-frame/core',
       'reselect',
       'redux-actions',

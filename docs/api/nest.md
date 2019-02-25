@@ -16,22 +16,11 @@ Creates an isolated `reducer` defined by `subReducer` in `type` scope in state.
 In the following example, we nest a form reducer.
 
 ```javascript
-import { createReducer, nest, } from `@k-frame/reducers`;
+import {createReducer, nest} from '@k-frame/core';
 
-const reducer = createReducer(
-    {},
-    [
-        nest('form', formReducer),
-    ]
-);
-
+const reducer = createReducer({}, [nest('form', formReducer)]);
 ```
 
-test2
-
-{% codesandbox %}
-https://codesandbox.io/embed/zlmzlpwz6l?hidenavigation=1&view=preview
-{% endcodesandbox %}
-
 #### See also
-* [createReducer](createReducer.md)
+
+- [createReducer](createReducer.md)

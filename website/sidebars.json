@@ -11,15 +11,14 @@
   },
   "docs-other": {
     "Reducers": [
-      "api/api-action",
-      "api/api-actionType",
+      "api/api-createStateReducer",
       "api/api-createReducer",
       "api/api-nest",
-      "api/api-payloadReducer"
-    ],
-    "Forms": [
-      "forms-simple",
-      "forms-material-ui"
+      "api/api-createPayloadReducer",
+      "api/api-createAction",
+      "api/api-useKReducer",
+      "api/api-scope",
+      "api/api-withScope"
     ]
   }
 }

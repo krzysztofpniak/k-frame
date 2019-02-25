@@ -1,5 +1,5 @@
 import React, {useContext, useMemo} from 'react';
-import {forwardTo} from '@k-frame/reducers';
+import forwardTo from './forwardTo';
 import {KContext} from './kLogicProvider';
 
 const Scope = ({scope, children}) => {
@@ -22,11 +22,7 @@ const Scope = ({scope, children}) => {
     [newScope, dispatch]
   );
 
-  return (
-    <KContext.Provider value={newContext}>
-      {children}
-    </KContext.Provider>
-  );
+  return <KContext.Provider value={newContext}>{children}</KContext.Provider>;
 };
 
 export default Scope;
