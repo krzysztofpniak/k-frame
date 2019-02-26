@@ -2,21 +2,21 @@
 <rss version="2.0">
     <channel>
         <title>k-frame Blog</title>
-        <link>https://krzysztofpniak.github.io/k-frame/blog</link>
+        <link>https://krzysztofpniak.github.io/blog</link>
         <description>The best place to stay up-to-date with the latest k-frame news and events.</description>
         <lastBuildDate>Tue, 24 Oct 2017 06:00:00 GMT</lastBuildDate>
         <docs>http://blogs.law.harvard.edu/tech/rss</docs>
         <generator>Feed for Node.js</generator>
         <image>
             <title>k-frame Blog</title>
-            <url>https://krzysztofpniak.github.io/k-frame/img/logo.svg</url>
-            <link>https://krzysztofpniak.github.io/k-frame/blog</link>
+            <url>https://krzysztofpniak.github.io/img/logo.svg</url>
+            <link>https://krzysztofpniak.github.io/blog</link>
         </image>
         <copyright>Copyright © 2019 KLABS Krzysztof Pniak</copyright>
         <item>
             <title><![CDATA[New Version 1.0.0]]></title>
-            <link>https://krzysztofpniak.github.io/k-frame/blog/2017/10/24/new-version-1.0.0.html</link>
-            <guid>https://krzysztofpniak.github.io/k-frame/blog/2017/10/24/new-version-1.0.0.html</guid>
+            <link>https://krzysztofpniak.github.io/blog/2017/10/24/new-version-1.0.0.html</link>
+            <guid>https://krzysztofpniak.github.io/blog/2017/10/24/new-version-1.0.0.html</guid>
             <pubDate>Tue, 24 Oct 2017 06:00:00 GMT</pubDate>
             <description><![CDATA[<p>This blog post will test file name parsing issues when periods are present.</p> ]]></description>
         </item>
