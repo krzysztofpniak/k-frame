@@ -31,10 +31,18 @@ const cdIntoNewApp = () => {
   });
 };
 
+const packagesToInstall = [
+  '@k-frame/core',
+  '@k-frame/forms',
+  'ramda',
+  'redux',
+  'react-router-dom',
+];
+
 const installPackages = () => {
   return new Promise(resolve => {
-    console.log('\nInstalling @k-frame/core ramda redux\n'.cyan);
-    shell.exec(`yarn add @k-frame/core ramda redux `, () => {
+    console.log(`\nInstalling ${packagesToInstall.join(', ')}\n`.cyan);
+    shell.exec(`yarn add ${packagesToInstall.join(' ')}`, () => {
       console.log('\nFinished installing packages\n'.green);
       resolve();
     });
@@ -63,7 +71,11 @@ const copyTemplate = templateFile => {
 const copyTemplates = () => {
   return Promise.all([
     copyTemplate('./App.js'),
+    copyTemplate('./App.css'),
     copyTemplate('./Counter.js'),
+    copyTemplate('./Home.js'),
+    copyTemplate('./Users.js'),
+    copyTemplate('./UserEdit.js'),
     copyTemplate('./index.js'),
   ]);
 };
