@@ -12,7 +12,6 @@ export default [
     external: [
       'ramda',
       'react',
-      'redux-actions',
       'react-redux',
       'prop-types',
     ],
