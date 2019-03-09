@@ -1,24 +1,23 @@
-import React, {Children} from 'react';
+import React, {Children, useEffect, useCallback} from 'react';
 import {add, addIndex, assoc, lensProp, map, over, take, always} from 'ramda';
-import {actionType, actionType2, createReducer} from '@k-frame/reducers';
-import {delay} from 'redux-saga';
-import {put, select, takeEvery} from 'redux-saga/effects';
 import {
   handleAsyncs,
   Scope,
   useAsync,
   useKReducer,
-  useSaga,
   withScope,
   createPayloadReducer,
+  createStateReducer,
+  createReducer,
+  createAction,
 } from '../../../src/main';
 
 const mapWithKey = addIndex(map);
 
-const getGists = () =>
+const getGists = itemsCount =>
   fetch('https://api.github.com/gists/public')
     .then(r => r.json(), r => r)
-    .then(take(5));
+    .then(take(itemsCount || 5));
 
 const studentReducer = createReducer(
   {
@@ -50,15 +49,15 @@ const Student = withScope(() => {
   );
 });
 
-const counterReducer = createReducer({counter: 0}, [
-  actionType2('INC', over(lensProp('counter'), add(1))),
-  actionType2('DEC', over(lensProp('counter'), add(-1))),
-]);
-
 const counterActions = {
-  inc: () => ({type: 'INC'}),
-  dec: () => ({type: 'DEC'}),
+  inc: createAction('INC'),
+  dec: createAction('DEC'),
 };
+
+const counterReducer = createReducer({counter: 0}, [
+  createStateReducer(counterActions.inc, over(lensProp('counter'), add(1))),
+  createStateReducer(counterActions.dec, over(lensProp('counter'), add(-1))),
+]);
 
 const Counter = withScope(() => {
   const {inc, dec, counter} = useKReducer(counterReducer, counterActions);
@@ -82,47 +81,46 @@ const ScopeList = ({scope, children}) => {
   );
 };
 
-const gistsReducer = createReducer({name: 'John'}, [
+const gistsActions = {
+  setItemCount: createAction('setItemCount'),
+};
+
+const gistsReducer = createReducer({itemCount: '5', name: 'John'}, [
+  createPayloadReducer(gistsActions.setItemCount, assoc('itemCount')),
   handleAsyncs({
-    gists: {},
+    gists: {
+      defaultValue: [], //?
+      pendingLens: '', //?
+      resultLens: '', //?
+      errorLens: '', //?
+      resultTransform: '', //ok
+      errorTransform: '', //ok
+    },
   }),
 ]);
 
-const gistsSaga = function*() {
-  const name = yield select(m => m.name);
-  console.log('name', name);
-
-  yield takeEvery('ping', function*() {
-    for (let i = 0; i < 5; i++) {
-      yield delay(1000);
-      yield put({type: 'pong', payload: i});
-    }
-  });
-};
-
-const gistsActions = {
-  ping: () => ({type: 'ping'}),
-};
-
 const Gists = withScope(() => {
-  const {data, ping} = useKReducer(gistsReducer, gistsActions);
+  const {data} = useKReducer(gistsReducer, gistsActions);
   const loadGists = useAsync(getGists, 'gists');
-  useSaga(gistsSaga);
-  /*useEffect(() => {
-    loadGists();
-  }, []);*/
+  useEffect(() => {
+    loadGists(10);
+  }, []);
+
+  const load = useWithArgs(loadGists);
+
+  //const handleInputChange = useInputTargetValue(setTitle);
 
   return (
     <div>
-      <button onClick={loadGists}>Load</button>
-      <button onClick={ping}>Ping</button>
+      <input onChange={handleInputChange} />
+      <button onClick={load}>Load</button>
       {mapWithKey(
         (g, idx) => (
           <div key={idx}>
             <a href={g.url}>{g.url}</a>
           </div>
         ),
-        data.gists.result || []
+        data.gists.result
       )}
     </div>
   );
