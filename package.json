@@ -7,18 +7,13 @@
     "doc": "docs"
   },
   "dependencies": {
-    "express": "^4.16.4",
-    "gitbook-cli": "^2.3.2",
-    "gitbook-plugin-codesandbox": "^0.1.1",
     "json": "^9.0.6"
   },
   "devDependencies": {
     "prettier": "^1.16.4"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "install": "gitbook build",
-    "start": "node ./bin/index.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
