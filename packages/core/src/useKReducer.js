@@ -6,7 +6,7 @@ import shallowEqual from './shallowEqual';
 
 const emptyObject = {};
 
-const useKReducer = (reducer, actions) => {
+const useKReducer = (reducer, actions = emptyObject) => {
   const context = useContext(KContext);
 
   const [state, setState] = useState(
