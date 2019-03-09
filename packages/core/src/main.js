@@ -53,6 +53,11 @@ const useAsync = (fn, key) => {
   }, []);
 };
 
+const useInputTargetValue = fn => useCallback(e => fn(e.target.value), [fn]);
+
+const useWithArgs = (fn, ...args) =>
+  useCallback(() => fn(...args), [fn, ...args]);
+
 export {
   handleAsyncs,
   KProvider,
@@ -74,4 +79,6 @@ export {
   composeReducers,
   emptyReducer,
   createAction,
+  useInputTargetValue,
+  useWithArgs,
 };
