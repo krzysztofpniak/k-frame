@@ -18,8 +18,11 @@ const getStageLens = (modelDef, resource, stage, dataProp) => {
     lensProp(dataProp),
     lensPath([resource, stage])
   );
-  return modelDef[resource] && modelDef[resource][stage]
-    ? modelDef[resource][stage]
+
+  const stageLensProp = `${stage}Lens`;
+
+  return modelDef[resource] && modelDef[resource][stageLensProp]
+    ? modelDef[resource][stageLensProp]
     : defaultLens;
 };
 
