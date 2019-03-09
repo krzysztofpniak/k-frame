@@ -28,9 +28,9 @@ const createAsyncAction = stage => (baseType, payload) => ({
   payload,
 });
 
-const requestAction = createAsyncAction('Request');
-const succeededAction = createAsyncAction('Succeeded');
-const failedAction = createAsyncAction('Failed');
+const requestAction = createAsyncAction('request');
+const succeededAction = createAsyncAction('succeeded');
+const failedAction = createAsyncAction('failed');
 
 const ensureObject = unless(is(Object), objOf('value'));
 

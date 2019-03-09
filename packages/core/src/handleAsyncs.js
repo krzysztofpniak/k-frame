@@ -11,7 +11,7 @@ import {
   uncurryN,
 } from 'ramda';
 
-const asyncActionRegexp = new RegExp(`^Async/(.+)/(.+)$`);
+const asyncActionRegexp = new RegExp(`^async/(.+)/(.+)$`);
 
 const getStageLens = (modelDef, resource, stage, dataProp) => {
   const defaultLens = compose(
@@ -76,16 +76,16 @@ const handleAsyncs = (modelDef, options = {}) => {
       const resultTransform = modelDef[resource].resultTransform || identity;
       const errorTransform = modelDef[resource].errorTransform || identity;
 
-      if (stage === 'Request') {
+      if (stage === 'request') {
         return set(modelLenses[resource].pending, true, model);
-      } else if (stage === 'Succeeded') {
+      } else if (stage === 'succeeded') {
         const m1 = set(modelLenses[resource].pending, false, model);
         return set(
           modelLenses[resource].result,
           uncurryN(2, resultTransform)(payload, model),
           m1
         );
-      } else if (stage === 'Failed') {
+      } else if (stage === 'failed') {
         const m1 = set(modelLenses[resource].pending, false, model);
         return set(
           modelLenses[resource].error,
