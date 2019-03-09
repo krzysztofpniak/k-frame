@@ -34,10 +34,10 @@ const failedAction = createAsyncAction('failed');
 
 const ensureObject = unless(is(Object), objOf('value'));
 
-const asyncAction2 = async (fn, key, dispatch) => {
+const asyncActionExecutor = async (fn, args, key, dispatch) => {
   try {
     dispatch(requestAction(key));
-    const result = await fn();
+    const result = await fn(...args);
     dispatch(succeededAction(key, result));
     return result;
   } catch (e) {
@@ -48,8 +48,8 @@ const asyncAction2 = async (fn, key, dispatch) => {
 const useAsync = (fn, key) => {
   const context = useContext(KContext);
 
-  return useCallback(() => {
-    asyncAction2(fn, key, context.dispatch).then();
+  return useCallback((...args) => {
+    return asyncActionExecutor(fn, args, key, context.dispatch);
   }, []);
 };
 
