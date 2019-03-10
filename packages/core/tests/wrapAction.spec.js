@@ -1,4 +1,4 @@
-import {wrapAction} from '../';
+import {wrapAction} from '../src/main';
 
 describe('wrapAction', () => {
   it('should wrap action', () => {
