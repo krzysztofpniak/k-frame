@@ -1,4 +1,4 @@
-import {forwardTo} from '../';
+import {forwardTo} from '../src/main';
 
 describe('forwardTo', () => {
   it('should wrap all the dispatched actions', () => {
