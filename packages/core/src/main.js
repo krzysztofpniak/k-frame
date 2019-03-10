@@ -17,6 +17,7 @@ import composeReducers from './composeReducers';
 import emptyReducer from './emptyReducer';
 import {KContext, KProvider} from './kLogicProvider';
 import createAction from './createAction';
+import usePrevious from './usePrevious';
 import {curry, unless, is, objOf} from 'ramda';
 
 const asyncActionTypeName = curry(
@@ -81,4 +82,5 @@ export {
   createAction,
   useInputTargetValue,
   useWithArgs,
+  usePrevious,
 };
