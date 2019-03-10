@@ -1,4 +1,4 @@
-import {composeReducers} from '../';
+import {composeReducers} from '../src/main';
 import {
   counterState0,
   counterState1,
