@@ -71,7 +71,7 @@ const handleAsyncs = (modelDef, options = {}) => {
 
       if (!modelDef[resource]) {
         console.error(
-          `you dispatched async action without registering async handler. Please register a handler using handleAsyncs function.`
+          `Async action has been dispatched without registering async handler. Please register a handler using handleAsyncs function.`
         );
         return;
       }
