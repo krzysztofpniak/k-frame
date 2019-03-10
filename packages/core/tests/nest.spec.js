@@ -1,4 +1,4 @@
-import {nest} from '../';
+import {nest} from '../src/main';
 
 const subSpaceState1 = {
   counter: 0,
