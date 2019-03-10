@@ -1,4 +1,4 @@
-import {createStateReducer} from '../';
+import {createStateReducer} from '../src/main';
 import {
   counterState0,
   counterState1,
