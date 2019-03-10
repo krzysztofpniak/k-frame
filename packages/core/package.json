@@ -71,6 +71,10 @@
     "moduleDirectories": [
       "node_modules",
       "src"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}",
+      "!<rootDir>/node_modules/"
     ]
   },
   "sideEffects": false
