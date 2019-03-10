@@ -1,4 +1,4 @@
-import {fromTree} from '../';
+import {fromTree} from '../src/main';
 
 const subSpaceState1 = {
   counter: 0,
