@@ -1,4 +1,4 @@
-import {createReducer} from '../';
+import {createReducer} from '../src/main';
 
 const state1 = {
   counter: 0,
