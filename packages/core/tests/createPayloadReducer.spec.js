@@ -1,4 +1,4 @@
-import {createPayloadReducer} from '../';
+import {createPayloadReducer} from '../src/main';
 import {
   counterState0,
   counterState1,
