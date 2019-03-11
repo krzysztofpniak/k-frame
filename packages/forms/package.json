@@ -1,6 +1,6 @@
 {
   "name": "@k-frame/forms",
-  "version": "0.8.16",
+  "version": "0.8.19",
   "description": "Schema based forms for redux",
   "license": "MIT",
   "homepage": "https://klabs.gitbook.io/k-forms/",
@@ -10,11 +10,10 @@
   "dependencies": {
     "react-redux": "^6.0.0",
     "recompose": "^0.30.0",
-    "redux": "^4.0.1",
-    "redux-actions": "^2.6.4"
+    "redux": "^4.0.1"
   },
   "peerDependencies": {
-    "@k-frame/core": "^0.8.16",
+    "@k-frame/core": "^0.8.19",
     "ramda": "^0.26.1",
     "react": "^16.8.1",
     "react-dom": "^16.8.1"
@@ -30,7 +29,7 @@
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "@babel/register": "^7.0.0",
-    "@k-frame/core": "^0.8.16",
+    "@k-frame/core": "^0.8.19",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^9.0.0",
     "babel-jest": "^23.6.0",
@@ -54,7 +53,7 @@
     "typings-tester": "^0.3.2",
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.2",
-    "webpack-dev-server": "^3.1.9"
+    "webpack-dev-server": "^3.2.1"
   },
   "scripts": {
     "pretest": "npm run build",
