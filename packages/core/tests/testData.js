@@ -8,7 +8,7 @@ const counterState1 = {
 
 const counterActionIncBy = by => ({type: 'IncBy', payload: by});
 
-const counterActionInc = by => ({type: 'Inc'});
+const counterActionInc = () => ({type: 'Inc'});
 
 const counterReducer = (state = counterState0, action) => {
   switch (action.type) {
