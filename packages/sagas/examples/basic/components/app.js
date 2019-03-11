@@ -1,16 +1,21 @@
 import React, {Children} from 'react';
 import {add, addIndex, assoc, lensProp, map, over, take, always} from 'ramda';
-import {actionType, actionType2, createReducer} from '@k-frame/reducers';
+import {
+  createPayloadReducer,
+  createStateReducer,
+  createReducer,
+} from '@k-frame/core';
 import {delay} from 'redux-saga';
 import {put, select, takeEvery} from 'redux-saga/effects';
 import {
+  createReducer,
   handleAsyncs,
   Scope,
   useAsync,
   useKReducer,
-  useSaga,
   withScope,
-} from '../../../src/main';
+} from '@k-frame/core';
+import {useSaga} from '../../../src/main';
 
 const mapWithKey = addIndex(map);
 
@@ -25,8 +30,8 @@ const studentReducer = createReducer(
     surname: '',
   },
   [
-    actionType('SET_NAME', assoc('name')),
-    actionType('SET_SURNAME', assoc('surname')),
+    createPayloadReducer('SET_NAME', assoc('name')),
+    createPayloadReducer('SET_SURNAME', assoc('surname')),
   ]
 );
 
@@ -50,8 +55,8 @@ const Student = withScope(() => {
 });
 
 const counterReducer = createReducer({counter: 0}, [
-  actionType2('INC', over(lensProp('counter'), add(1))),
-  actionType2('DEC', over(lensProp('counter'), add(-1))),
+  createStateReducer('INC', over(lensProp('counter'), add(1))),
+  createStateReducer('DEC', over(lensProp('counter'), add(-1))),
 ]);
 
 const counterActions = {

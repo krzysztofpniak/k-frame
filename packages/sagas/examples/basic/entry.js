@@ -2,8 +2,8 @@ import React from 'react';
 import {render} from 'react-dom';
 import {createStore, compose, applyMiddleware} from 'redux';
 import App from './components/app';
-import appReducer from './components/appReducer';
-import {KProvider, sagaMiddleware} from '../../src/main';
+import {KProvider, emptyReducer} from '@k-frame/core';
+import {sagaMiddleware} from '../../src/main';
 
 const composeEnhancers =
   typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
@@ -13,7 +13,7 @@ const composeEnhancers =
     : compose;
 
 const store = createStore(
-  appReducer,
+  emptyReducer,
   composeEnhancers(applyMiddleware(sagaMiddleware))
 );
 
