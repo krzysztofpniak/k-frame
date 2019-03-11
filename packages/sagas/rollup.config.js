@@ -13,7 +13,6 @@ export default [
             'ramda',
             'react',
             '@k-frame/reducers',
-            'redux-actions',
             'react-redux',
             'prop-types',
             'redux-saga',
