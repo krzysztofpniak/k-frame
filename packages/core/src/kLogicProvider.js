@@ -9,14 +9,19 @@ import {assocPath, dissocPath, path} from 'ramda';
 import fromTree from './fromTree';
 import composeReducers from './composeReducers';
 
+const errorMessage =
+  'Please Use <KProvider> component at the top of your application.';
+
+const printMissingKProviderError = () => console.error(errorMessage);
+
 const defaultContextValue = {
   scope: [],
-  assocReducer: () => {},
-  dissocReducer: () => {},
-  dispatch: () => {},
-  runSaga: () => {},
-  getState: () => {},
-  subscribe: () => {},
+  assocReducer: printMissingKProviderError,
+  dissocReducer: printMissingKProviderError,
+  dispatch: printMissingKProviderError,
+  runSaga: printMissingKProviderError,
+  getState: printMissingKProviderError,
+  subscribe: printMissingKProviderError,
   supplied: false,
 };
 
