@@ -43,6 +43,7 @@ const asyncActionExecutor = async (fn, args, key, dispatch) => {
     return result;
   } catch (e) {
     dispatch(failedAction(key, e));
+    throw e;
   }
 };
 
