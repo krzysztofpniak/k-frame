@@ -1,10 +1,10 @@
-import {createAction} from 'redux-actions';
 import {
     SET_FIELD,
     SUBMIT,
     RESET,
     SET_SUBMIT_DIRTY,
 } from './actionTypes';
+import {createAction} from '@k-frame/core';
 
 const setField = createAction(SET_FIELD, (name, value, debounce) => ({name, value, debounce}));
 const submit = createAction(SUBMIT);
