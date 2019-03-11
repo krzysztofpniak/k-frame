@@ -10,6 +10,11 @@ const counterActionIncBy = by => ({type: 'IncBy', payload: by});
 
 const counterActionInc = () => ({type: 'Inc'});
 
+const counterActions = {
+  inc: counterActionInc,
+  incBy: counterActionIncBy,
+};
+
 const counterReducer = (state = counterState0, action) => {
   switch (action.type) {
     case 'IncBy':
@@ -57,6 +62,7 @@ export {
   counterState1,
   counterActionIncBy,
   counterActionInc,
+  counterActions,
   counterReducer,
   textStateEmpty,
   textStateHello,
