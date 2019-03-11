@@ -22,7 +22,7 @@ function is(x, y) {
  * when any key has values which are not strictly equal between the arguments.
  * Returns true when the values of all keys are strictly equal.
  */
-function shallowEqual(objA, objB, debug) {
+function shallowEqual(objA, objB) {
   if (is(objA, objB)) {
     return true;
   }
@@ -49,9 +49,6 @@ function shallowEqual(objA, objB, debug) {
       !hasOwnProperty.call(objB, keysA[i]) ||
       !is(objA[keysA[i]], objB[keysA[i]])
     ) {
-      if (debug) {
-        console.log('shallowEqual', keysA[i], objA[keysA[i]], objB[keysA[i]]);
-      }
       return false;
     }
   }
