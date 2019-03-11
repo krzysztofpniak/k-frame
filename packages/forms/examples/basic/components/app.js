@@ -1,8 +1,13 @@
 import React, {memo, useCallback} from 'react';
 import {Form} from '../../../src/main';
 import {required} from '../../../src/validators';
-import {createReducer, actionType2} from '@k-frame/reducers';
-import {Scope, withScope, useKReducer} from '@k-frame/core';
+import {
+  Scope,
+  withScope,
+  useKReducer,
+  createReducer,
+  createStateReducer,
+} from '@k-frame/core';
 import {over, lensProp, add, compose, times} from 'ramda';
 import SimpleForm from '../../common/simpleForm';
 import fieldTypes from '../../common/fieldTypes';
@@ -106,7 +111,7 @@ const appActions = {
 };
 
 const appReducer = createReducer({colorIndex: 0}, [
-  actionType2(appActions.nextColor, s => ({
+  createStateReducer(appActions.nextColor, s => ({
     ...s,
     colorIndex: (s.colorIndex + 1) % colors.length,
   })),
