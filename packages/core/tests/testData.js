@@ -50,6 +50,7 @@ const textReducer = (state = textStateEmpty, action) => {
 };
 
 const someRandomAction = () => ({type: 'SomeRAnd0mAction'});
+const initAction = () => ({type: '@@INIT'});
 
 export {
   counterState0,
@@ -62,4 +63,5 @@ export {
   textActionSet,
   textReducer,
   someRandomAction,
+  initAction,
 };
