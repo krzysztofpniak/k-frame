@@ -21,7 +21,7 @@ import usePrevious from './usePrevious';
 import {curry, unless, is, objOf} from 'ramda';
 
 const asyncActionTypeName = curry(
-  (stage, baseType) => `Async/${baseType}/${stage}`
+  (stage, baseType) => `async/${baseType}/${stage}`
 );
 
 const createAsyncAction = stage => (baseType, payload) => ({
