@@ -60,3 +60,5 @@ function shallowEqual(objA, objB, debug) {
 }
 
 export default shallowEqual;
+
+export {is};
