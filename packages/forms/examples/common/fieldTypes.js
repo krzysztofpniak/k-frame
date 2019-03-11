@@ -1,11 +1,15 @@
-import {actionType2, createReducer} from '@k-frame/reducers';
 import {add, compose, lensProp, over} from 'ramda';
 import {memo} from 'react';
-import {useKReducer, withScope} from '@k-frame/core';
+import {
+  useKReducer,
+  withScope,
+  createReducer,
+  createStateReducer,
+} from '@k-frame/core';
 import React from 'react';
 
 const counterReducer = createReducer({counter: 0}, [
-  actionType2('INC', over(lensProp('counter'), add(1))),
+  createStateReducer('INC', over(lensProp('counter'), add(1))),
 ]);
 
 const counterActions = {
@@ -25,7 +29,7 @@ const Counter = compose(
         onClick={inc}
         type="button"
       >
-        {`Hopla ${counter}`}
+        {`Clicked ${counter} times`}
       </button>
     </div>
   );
