@@ -1,5 +1,5 @@
-import React, {Component, createFactory} from 'react';
 import shallowEqual from './shallowEqual';
+import React, {Component, createElement} from 'react';
 
 const withDebug = BaseComponent => {
   const factory = createFactory(BaseComponent);
@@ -10,7 +10,7 @@ const withDebug = BaseComponent => {
     }
 
     render() {
-      return factory(this.props);
+      return createElement(BaseComponent, this.props);
     }
   }
 
