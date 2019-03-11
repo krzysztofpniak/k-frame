@@ -13,7 +13,6 @@ export default [
       'ramda',
       '@k-frame/core',
       'reselect',
-      'redux-actions',
       'recompose',
       'react',
     ],
