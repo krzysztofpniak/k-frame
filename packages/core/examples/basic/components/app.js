@@ -6,6 +6,8 @@ import {
   useAsync,
   useKReducer,
   withScope,
+  useWithArgs,
+  useInputTargetValue,
   createPayloadReducer,
   createStateReducer,
   createReducer,
@@ -108,11 +110,8 @@ const Gists = withScope(() => {
 
   const load = useWithArgs(loadGists);
 
-  //const handleInputChange = useInputTargetValue(setTitle);
-
   return (
     <div>
-      <input onChange={handleInputChange} />
       <button onClick={load}>Load</button>
       {mapWithKey(
         (g, idx) => (
