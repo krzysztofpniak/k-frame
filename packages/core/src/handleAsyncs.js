@@ -73,7 +73,7 @@ const handleAsyncs = (modelDef, options = {}) => {
         console.error(
           `Async action has been dispatched without registering async handler. Please register a handler using handleAsyncs function.`
         );
-        return;
+        return model;
       }
 
       const resultTransform = modelDef[resource].resultTransform || identity;
