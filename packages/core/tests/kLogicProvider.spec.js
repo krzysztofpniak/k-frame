@@ -1,7 +1,7 @@
 import React, {useContext, useLayoutEffect} from 'react';
 import {KContext, KProvider} from '../src/main';
-import withScope from '../src/withScope';
 import {render} from 'react-testing-library';
+import Scope from '../src/scope';
 
 const TestComponent = ({onRender}) => {
   const context = useContext(KContext);
@@ -78,6 +78,23 @@ describe('KProvider', () => {
     expect(console.error.mock.calls[2][0]).toBe(errorMessage);
     expect(console.error.mock.calls[3][0]).toBe(errorMessage);
     expect(console.error.mock.calls[4][0]).toBe(errorMessage);
+  });
+
+  it('it logs error when KProvider already defined', () => {
+    const store = createStoreMock();
+
+    render(
+      <KProvider store={store}>
+        <KProvider store={store}>
+          <div>some content</div>
+        </KProvider>
+      </KProvider>
+    );
+
+    expect(console.error.mock.calls.length).toBe(1);
+    expect(console.error.mock.calls[0][0]).toBe(
+      '<KProvider> already defined. Please remove redundant usage.'
+    );
   });
 
   it('uses static reducer', () => {

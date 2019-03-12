@@ -1,5 +1,6 @@
 import React, {
   createContext,
+  useContext,
   useCallback,
   useMemo,
   useRef,
@@ -27,8 +28,16 @@ const defaultContextValue = {
 const KContext = createContext(defaultContextValue);
 
 function KProvider({store, runSaga, staticReducer, children}) {
+  const ancestorContext = useContext(KContext);
   const [context, setContext] = useState(defaultContextValue);
   const reducersTree = useRef({});
+
+  if (ancestorContext.supplied) {
+    console.error(
+      '<KProvider> already defined. Please remove redundant usage.'
+    );
+    return null;
+  }
 
   const assocReducer = useCallback(
     (rPath, reducer) => {
