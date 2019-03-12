@@ -27,7 +27,7 @@ const defaultContextValue = {
 
 const KContext = createContext(defaultContextValue);
 
-function KProvider({store, runSaga, staticReducer, children}) {
+const KProvider = ({store, runSaga, staticReducer, children}) => {
   const ancestorContext = useContext(KContext);
   const [context, setContext] = useState(defaultContextValue);
   const reducersTree = useRef({});
@@ -66,6 +66,6 @@ function KProvider({store, runSaga, staticReducer, children}) {
   );
 
   return <KContext.Provider value={contextValue}>{children}</KContext.Provider>;
-}
+};
 
 export {KContext, KProvider};
