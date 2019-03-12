@@ -57,6 +57,13 @@ const textReducer = (state = textStateEmpty, action) => {
 const someRandomAction = () => ({type: 'SomeRAnd0mAction'});
 const initAction = () => ({type: '@@INIT'});
 
+const createStoreMock = () => ({
+  dispatch: jest.fn(),
+  getState: jest.fn(),
+  subscribe: jest.fn(),
+  replaceReducer: jest.fn(),
+});
+
 export {
   counterState0,
   counterState1,
@@ -70,4 +77,5 @@ export {
   textReducer,
   someRandomAction,
   initAction,
+  createStoreMock,
 };
