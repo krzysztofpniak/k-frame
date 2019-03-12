@@ -69,17 +69,15 @@ describe('KProvider', () => {
     context.dispatch({type: 'someAction'});
     context.subscribe();
     context.assocReducer(['a'], (s = {}) => s);
-    context.dissocReducer();
     context.runSaga();
 
     expect(context.supplied).toBe(false);
-    expect(console.error.mock.calls.length).toBe(6);
+    expect(console.error.mock.calls.length).toBe(5);
     expect(console.error.mock.calls[0][0]).toBe(errorMessage);
     expect(console.error.mock.calls[1][0]).toBe(errorMessage);
     expect(console.error.mock.calls[2][0]).toBe(errorMessage);
     expect(console.error.mock.calls[3][0]).toBe(errorMessage);
     expect(console.error.mock.calls[4][0]).toBe(errorMessage);
-    expect(console.error.mock.calls[5][0]).toBe(errorMessage);
   });
 
   it('uses static reducer', () => {

@@ -28,7 +28,6 @@ const useKReducer = (reducer, actions = emptyObject) => {
     };
     const unsubscribe = context.subscribe(tryUpdateState);
     return () => {
-      context.dissocReducer(reducerPath);
       unsubscribe();
     };
   }, []);
