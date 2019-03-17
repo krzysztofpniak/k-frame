@@ -30,9 +30,12 @@
     "babel-loader": "^8.0.4",
     "cross-env": "^5.2.0",
     "enzyme": "^3.8.0",
+    "eslint": "^4.12.1",
     "glob": "^7.1.3",
     "html-webpack-plugin": "^3.2.0",
     "jest": "^24.3.1",
+    "jest-haste-map": "^24.0.0",
+    "jest-resolve": "^24.3.1",
     "prettier": "^1.14.3",
     "prop-types": "^15.6.2",
     "ramda": "^0.26.1",
@@ -57,7 +60,7 @@
     "webpack-dev-server": "^3.1.9"
   },
   "scripts": {
-    "pretest": "npm run build",
+    "pretest0": "npm run build",
     "test": "jest",
     "test:watch": "npm test -- --watch",
     "test:cov": "npm test -- --coverage",
@@ -68,17 +71,5 @@
   "files": [
     "dist"
   ],
-  "jest": {
-    "testRegex": "(/tests/.*\\.spec.js)$",
-    "verbose": true,
-    "moduleDirectories": [
-      "node_modules",
-      "src"
-    ],
-    "collectCoverageFrom": [
-      "src/**/*.{js,jsx}",
-      "!<rootDir>/node_modules/"
-    ]
-  },
   "sideEffects": false
 }

@@ -7,13 +7,37 @@
     "doc": "docs"
   },
   "dependencies": {
+    "@babel/core": "^7.3.4",
+    "babel-jest": "^24.3.1",
+    "babel-plugin-istanbul": "^5.1.1",
+    "jest-haste-map": "^24.3.1",
+    "jest-resolve": "^24.3.1",
     "json": "^9.0.6"
   },
   "devDependencies": {
-    "prettier": "^1.16.4"
+    "@babel/cli": "^7.0.0",
+    "@babel/node": "^7.0.0",
+    "@babel/plugin-external-helpers": "^7.0.0",
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+    "@babel/plugin-transform-async-to-generator": "^7.2.0",
+    "@babel/preset-env": "^7.3.4",
+    "@babel/preset-flow": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/register": "^7.0.0",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-eslint": "^10.0.1",
+    "babel-jest": "^24.3.1",
+    "babel-loader": "^8.0.4",
+    "jest": "^24.5.0",
+    "prettier": "^1.16.4",
+    "react": "^16.8.4",
+    "react-dom": "^16.8.4",
+    "react-testing-library": "^6.0.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest",
+    "test:cov": "npm test -- --coverage"
   },
   "repository": {
     "type": "git",
@@ -24,5 +48,15 @@
   "bugs": {
     "url": "https://github.com/krzysztofpniak/k-frame/issues"
   },
-  "homepage": "https://github.com/krzysztofpniak/k-frame#readme"
+  "homepage": "https://github.com/krzysztofpniak/k-frame#readme",
+  "jest": {
+    "testRegex": "(/tests/.*\\.spec.js)$",
+    "verbose": true,
+    "collectCoverageFrom": [
+      "packages/core/src/**/*.{js,jsx}",
+      "packages/sagas/src/**/*.{js,jsx}",
+      "packages/forms/src/**/*.{js,jsx}",
+      "!<rootDir>/node_modules/"
+    ]
+  }
 }

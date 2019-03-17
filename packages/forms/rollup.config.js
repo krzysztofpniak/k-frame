@@ -9,13 +9,7 @@ export default [
   // the `targets` option which can specify `dest` and `format`)
   {
     input: 'src/main.js',
-    external: [
-      'ramda',
-      '@k-frame/core',
-      'reselect',
-      'recompose',
-      'react',
-    ],
+    external: ['ramda', '@k-frame/core', 'react'],
     output: [{file: pkg.main, format: 'cjs'}, {file: pkg.module, format: 'es'}],
     plugins: [
       babel({
