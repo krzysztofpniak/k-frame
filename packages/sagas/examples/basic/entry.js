@@ -3,7 +3,7 @@ import {render} from 'react-dom';
 import {createStore, compose, applyMiddleware} from 'redux';
 import App from './components/app';
 import {KProvider, emptyReducer} from '@k-frame/core';
-import {sagaMiddleware} from '../../src/main';
+import {scopedSagaMiddleware} from '../../src/main';
 
 const composeEnhancers =
   typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
@@ -14,7 +14,7 @@ const composeEnhancers =
 
 const store = createStore(
   emptyReducer,
-  composeEnhancers(applyMiddleware(sagaMiddleware))
+  composeEnhancers(applyMiddleware(scopedSagaMiddleware))
 );
 
 const rootReducer = (state = {xxx: 'test'}, action) =>
@@ -24,7 +24,7 @@ const run = (containerDomId, View) => {
   render(
     <KProvider
       store={store}
-      runSaga={sagaMiddleware.run}
+      runSaga={scopedSagaMiddleware.run}
       staticReducer={rootReducer}
     >
       <View />
