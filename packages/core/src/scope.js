@@ -18,14 +18,17 @@ const Scope = ({scope, children}) => {
   }
 
   const scopeArray = useMemo(() => scope.split('.'), [scope]);
+
   const newScope = useMemo(() => [...context.scope, ...scopeArray], [
     context.scope,
     scopeArray,
   ]);
+
   const dispatch = useMemo(() => forwardTo(context.dispatch, ...scopeArray), [
     scopeArray,
     context.dispatch,
   ]);
+
   const newContext = useMemo(
     () => ({
       ...context,
