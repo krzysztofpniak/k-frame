@@ -1,12 +1,7 @@
-import {KProvider} from '../';
-import {mount} from 'enzyme';
-import jest from 'jest';
+import {useSaga} from '../src/main';
 
 describe('init', () => {
   it('should return test', () => {
-    jest.mockComponent();
-    const hopla = mount(<KProvider store={{}}>a</KProvider>);
-
-    expect(withScope()).toBe('test');
+    expect('test').toBe('test');
   });
 });
