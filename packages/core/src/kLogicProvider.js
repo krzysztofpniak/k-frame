@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import {assocPath} from 'ramda';
+import {assocPath, path} from 'ramda';
 import fromTree from './fromTree';
 import composeReducers from './composeReducers';
 
@@ -22,6 +22,8 @@ const defaultContextValue = {
   runSaga: printMissingKProviderError,
   getState: printMissingKProviderError,
   subscribe: printMissingKProviderError,
+  setScopeProp: printMissingKProviderError,
+  getScopeProp: printMissingKProviderError,
   supplied: false,
 };
 
@@ -31,6 +33,7 @@ const KProvider = ({store, runSaga, staticReducer, children}) => {
   const ancestorContext = useContext(KContext);
   const [context, setContext] = useState(defaultContextValue);
   const reducersTree = useRef({});
+  const propsTree = useRef({});
 
   if (ancestorContext.supplied) {
     console.error(
@@ -52,6 +55,18 @@ const KProvider = ({store, runSaga, staticReducer, children}) => {
     [store]
   );
 
+  const setScopeProp = useCallback((scope, name, value) => {
+    propsTree.current = assocPath(
+      [...scope, '.', name],
+      value,
+      propsTree.current
+    );
+  }, []);
+
+  const getScopeProp = useCallback((scope, name) => {
+    return path([...scope, '.', name], propsTree.current);
+  }, []);
+
   const contextValue = useMemo(
     () => ({
       ...context,
@@ -60,6 +75,8 @@ const KProvider = ({store, runSaga, staticReducer, children}) => {
       getState: store.getState,
       subscribe: store.subscribe,
       runSaga,
+      setScopeProp,
+      getScopeProp,
       supplied: true,
     }),
     [runSaga, assocReducer]
