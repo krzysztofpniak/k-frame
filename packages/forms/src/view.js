@@ -35,24 +35,17 @@ import {
 import {setField, submit, reset, setSubmitDirty} from './actions';
 import {createUpdater} from './updater';
 import {
-  fetchOnEvery,
-  handleAsyncs,
   KContext,
   withScope,
-  useKReducer,
   bindActionCreators,
   shallowEqual,
 } from '@k-frame/core';
-import {getContextValue} from '../src/formConnect';
+import {getContextValue} from './formConnect';
+import mergeProps from './mergeProps';
+import Field from './field';
 const mapWithKey = addIndex(map);
 
 const ensureArray = unless(Array.isArray, of);
-
-const mergeProps = propName => props => ({
-  ...props,
-  ...props[propName],
-  [propName]: null,
-});
 
 const validateField = (fieldSchema, model, args) =>
   fieldSchema.validate
@@ -127,105 +120,6 @@ const formActions = {
   submit,
 };
 
-const Field = memo(
-  ({
-    id,
-    type,
-    formGroupTemplate,
-    formName,
-    title,
-    onChange,
-    component,
-    fieldSchema,
-    inputRef,
-    error,
-    props,
-  }) => {
-    const context = useContext(KContext);
-
-    const [state, setState] = useState(
-      pathOr(
-        fieldSchema.defaultValue || '',
-        [...context.scope, 'fields', id],
-        context.getState()
-      )
-    );
-
-    const stateRef = useRef(state);
-
-    useLayoutEffect(() => {
-      return context.subscribe(() => {
-        const newState = path(
-          [...context.scope, 'fields', id],
-          context.getState()
-        );
-        if (newState !== stateRef.current) {
-          setState(newState);
-          stateRef.current = newState;
-        }
-      });
-    }, []);
-
-    const propsKeys = useMemo(() => keys(props), []);
-    const propsValues = map(k => props[k], propsKeys);
-
-    const formattedValue = useMemo(
-      () => (fieldSchema.format ? fieldSchema.format(state) : state),
-      [state]
-    );
-
-    const handleOnChange = useCallback(
-      e => {
-        const value = !e.target ? e : e.target.value;
-        const parsedValue = fieldSchema.parse
-          ? fieldSchema.parse(value)
-          : value;
-
-        onChange(parsedValue, id);
-      },
-      [id, onChange]
-    );
-
-    const handleRefSet = useCallback(
-      ref => {
-        inputRef(ref, id);
-      },
-      [id, inputRef]
-    );
-
-    const field = useMemo(
-      () => {
-        return createElement(formGroupTemplate, {
-          title,
-          input: createElement(component, {
-            id: (formName || '') + (formName ? '-' : '') + id,
-            title,
-            inputRef: handleRefSet,
-            /*value:
-            fields[
-              f.debounce && has(`${f.id}_raw`, fields) ? `${f.id}_raw` : f.id
-            ],
-            */
-            value: formattedValue,
-            onChange: handleOnChange,
-            type,
-            error,
-            //runValidation: model.submitDirty && model.dirty,
-            scope: `sub.${id}`,
-            ...(props || {}),
-          }),
-          error,
-        });
-      },
-      [state, error, ...propsValues]
-    );
-
-    return field;
-  },
-  (props, nextProps) =>
-    shallowEqual(mergeProps('props')(props), mergeProps('props')(nextProps))
-);
-
 const emptyObject = {};
 
 const FormInt = compose(
@@ -238,7 +132,7 @@ const FormInt = compose(
     name,
     legend,
     formTemplate,
-    formGroupTemplate,
+    fieldTemplate,
     buttonsTemplate,
     onSubmit,
     onReset,
@@ -281,21 +175,18 @@ const FormInt = compose(
 
     const indexedSchema = useMemo(() => indexBy(prop('id'), schema), []);
 
-    const getSyncErrors = useCallback(
-      () => {
-        const model = pathOr(
-          {fields: {}, debouncing: {}},
-          context.scope,
-          context.getState()
-        );
+    const getSyncErrors = useCallback(() => {
+      const model = pathOr(
+        {fields: {}, debouncing: {}},
+        context.scope,
+        context.getState()
+      );
 
-        return map(
-          fieldSchema => validateField(fieldSchema, model, argsRef.current),
-          indexedSchema
-        );
-      },
-      [indexedSchema]
-    );
+      return map(
+        fieldSchema => validateField(fieldSchema, model, argsRef.current),
+        indexedSchema
+      );
+    }, [indexedSchema]);
 
     const validateFields = useCallback(() => {
       const syncErrorsCandidate = getSyncErrors();
@@ -440,16 +331,18 @@ const FormInt = compose(
             inputRef={handleRefSet}
             error={syncErrorsRef.current[f.id]}
             title={f.title}
-            formGroupTemplate={formGroupTemplate}
+            fieldTemplate={fieldTemplate}
             formName={name}
             onChange={handleOnChange}
-            fieldSchema={f}
+            defaultValue={f.defaultValue}
+            parse={f.parse}
+            format={f.format}
             type={f.type || 'text'}
             component={fieldTypes[f.type || 'text']}
             props={f.props ? f.props(args) : emptyObject}
           />
         ),
-      [formGroupTemplate, fieldTypes, name, ...argsValues]
+      [fieldTemplate, fieldTypes, name, ...argsValues]
     );
 
     const renderedFields = useMemo(
@@ -475,6 +368,11 @@ const FormInt = compose(
 );
 
 const Form = props => {
+  if (!props.schema) {
+    console.error('Schema prop is required');
+    return null;
+  }
+
   const context = useContext(KContext);
   const contextValue = useMemo(() => getContextValue(), []);
 
@@ -495,7 +393,7 @@ const FormTemplate = ({fields, buttons, onSubmit}) => (
   </form>
 );
 
-const FormGroupTemplate = ({title, input, error}) => (
+const FieldTemplate = ({title, input, error}) => (
   <div>
     <div>
       {title} {input}
@@ -516,12 +414,14 @@ const ButtonsTemplate = ({onSubmit, onReset}) => (
 );
 
 const fieldTypes = {
-  text: ({value, onChange}) => <input value={value} onChange={onChange} />,
+  text: ({id, value, onChange, inputRef}) => (
+    <input id={id} value={value} onChange={onChange} ref={inputRef} />
+  ),
 };
 
 Form.defaultProps = {
   formTemplate: FormTemplate,
-  formGroupTemplate: FormGroupTemplate,
+  fieldTemplate: FieldTemplate,
   buttonsTemplate: ButtonsTemplate,
   fieldTypes: fieldTypes,
   cancelText: 'Cancel',
@@ -529,4 +429,3 @@ Form.defaultProps = {
 };
 
 export {validateForm, validateField, Form};
-

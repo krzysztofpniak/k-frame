@@ -1,0 +1,33 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Field renders simplest field 1`] = `
+<DocumentFragment>
+  <div>
+    <div>
+      Name
+    </div>
+    <div>
+      <input
+        id="name"
+        value=""
+      />
+    </div>
+  </div>
+</DocumentFragment>
+`;
+
+exports[`Field should use defaultValue 1`] = `
+<DocumentFragment>
+  <div>
+    <div>
+      Name
+    </div>
+    <div>
+      <input
+        id="name"
+        value="John"
+      />
+    </div>
+  </div>
+</DocumentFragment>
+`;

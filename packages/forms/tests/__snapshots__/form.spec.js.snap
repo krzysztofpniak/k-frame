@@ -1,0 +1,65 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Form renders simplest Form 1`] = `
+<DocumentFragment>
+  <form>
+    <div>
+      <div>
+        Name 
+        <input
+          id="name"
+          value=""
+        />
+      </div>
+      <div
+        style="color: red;"
+      />
+    </div>
+     
+    <div>
+      <button
+        type="submit"
+      >
+        Save
+      </button>
+      <button
+        type="button"
+      >
+        Cancel
+      </button>
+    </div>
+  </form>
+</DocumentFragment>
+`;
+
+exports[`Form uses defaultValue 1`] = `
+<DocumentFragment>
+  <form>
+    <div>
+      <div>
+        Name 
+        <input
+          id="name"
+          value="John"
+        />
+      </div>
+      <div
+        style="color: red;"
+      />
+    </div>
+     
+    <div>
+      <button
+        type="submit"
+      >
+        Save
+      </button>
+      <button
+        type="button"
+      >
+        Cancel
+      </button>
+    </div>
+  </form>
+</DocumentFragment>
+`;
