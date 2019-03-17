@@ -45,17 +45,6 @@ const fetchOnEvery = ({actions, resourceKey, fn, argsSelector}) =>
 
 const ensureObject = unless(is(Object), objOf('value'));
 
-const asyncAction2 = async (fn, key, dispatch) => {
-  try {
-    dispatch(requestAction(key));
-    const result = await fn();
-    dispatch(succeededAction(key, result));
-    return result;
-  } catch (e) {
-    dispatch(failedAction(key, e));
-  }
-};
-
 const useSaga = (saga, args = [], dependencies = []) => {
   const context = useContext(KContext);
 
