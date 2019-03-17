@@ -1,6 +1,6 @@
 import React, {useCallback, useContext, useEffect} from 'react';
 import {KContext} from '@k-frame/core';
-import sagaMiddleware from './sagaMiddleware';
+import scopedSagaMiddleware from './scopedSagaMiddleware';
 import useSagaRunner from './useSagaRunner';
 import {curry, unless, is, objOf} from 'ramda';
 import {call, put, takeEvery} from 'redux-saga/effects';
@@ -49,14 +49,14 @@ const useSaga = (saga, args = [], dependencies = []) => {
   const context = useContext(KContext);
 
   return useEffect(() => {
-    context.runSaga(context.scope.join('.'), saga, ...args);
+    context.runSaga({scope: context.scope}, saga, ...args);
   }, dependencies);
 };
 
 export {
   asyncAction,
   fetchOnEvery,
-  sagaMiddleware,
+  scopedSagaMiddleware,
   useSaga,
   useSagaRunner,
 };
