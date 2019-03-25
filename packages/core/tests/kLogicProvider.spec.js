@@ -97,6 +97,36 @@ describe('KProvider', () => {
     );
   });
 
+  describe('scope props', () => {
+    it('should store scope props', () => {
+      const staticReducer = jest.fn();
+      let context;
+      const onRender = c => (context = c);
+
+      const store = createStoreMock();
+
+      render(
+        <KProvider store={store} staticReducer={staticReducer}>
+          <TestComponent onRender={onRender} />
+        </KProvider>
+      );
+
+      const user = {
+        name: 'Anne',
+        surname: 'Newton',
+      };
+
+      context.setScopeProp(['a'], 'name', 'John');
+      context.setScopeProp(['a', 'b'], 'currentUser', user);
+
+      const name = context.getScopeProp(['a'], 'name');
+      const currentUser = context.getScopeProp(['a', 'b'], 'currentUser');
+
+      expect(name).toBe('John');
+      expect(currentUser).toBe(user);
+    });
+  });
+
   it('uses static reducer', () => {
     const staticReducer = jest.fn();
     let context;
