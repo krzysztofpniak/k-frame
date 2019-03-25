@@ -1,12 +1,13 @@
 {
   "name": "@k-frame/core",
-  "version": "0.8.19",
+  "version": "0.8.28",
   "description": "Complete React'n'Redux based framework",
   "license": "MIT",
   "homepage": "https://klabs.gitbook.io/k-logic/",
   "repository": "github:krzysztofpniak/k-logic",
   "main": "dist/k-frame-core.cjs.js",
   "module": "dist/k-frame-core.esm.js",
+  "unpkg": "dist/k-frame-core.umd.js",
   "peerDependencies": {
     "ramda": "^0.26.1",
     "react": "^16.8.1",

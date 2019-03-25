@@ -24,6 +24,7 @@ module.exports = {
         loose: true,
       },
     ],
+    ['@babel/preset-flow'],
   ],
   plugins: [
     // don't use `loose` mode here - need to copy symbols when spreading
