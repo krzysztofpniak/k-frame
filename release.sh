@@ -1,5 +1,7 @@
 #!/bin/bash
 
+yarn test
+
 VERSION=""
 
 echo "-----REDUCERS-----"
