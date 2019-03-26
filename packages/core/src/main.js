@@ -86,4 +86,7 @@ export {
   useWithArgs,
   usePrevious,
   useScopeProps,
+  requestAction,
+  succeededAction,
+  failedAction,
 };
