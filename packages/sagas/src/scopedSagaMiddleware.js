@@ -1,105 +1,11 @@
-import {runSaga, stdChannel} from 'redux-saga';
+import {runSaga} from 'redux-saga';
 import {forwardTo} from '@k-frame/core';
-import {omit, is, identity, compose, path, find, propEq} from 'ramda';
-
-const matchOperatorsRe = /[|\\{}()[\]^$+*?.]/g;
-
-const escapeStringRegexp = str => {
-  if (typeof str !== 'string') {
-    throw new TypeError('Expected a string');
-  }
-
-  return str.replace(matchOperatorsRe, '\\$&');
-};
-
-const createSetContextWarning = function createSetContextWarning(ctx, props) {
-  return (
-    (ctx ? ctx + '.' : '') +
-    'setContext(props): argument ' +
-    props +
-    ' is not a plain object'
-  );
-};
-
-function remove(array, item) {
-  var index = array.indexOf(item);
-  if (index >= 0) {
-    array.splice(index, 1);
-  }
-}
-
-const matcher = pattern => {
-  const regexp = new RegExp(`^${escapeStringRegexp(pattern)}\\.(.+)`);
-
-  return action => {
-    if (action.type === pattern || pattern === '') {
-      return {
-        id: pattern,
-        wrap: type => type,
-        unwrappedType: action.type,
-        args: {},
-      };
-    } else {
-      const match = action.type.match(regexp);
-
-      if (match) {
-        const unwrappedType = match[1];
-
-        return {
-          id: `${pattern}.`,
-          wrap: type => `${pattern}.${type}`,
-          unwrappedType,
-          args: {},
-        };
-      } else {
-        return false;
-      }
-    }
-  };
-};
-
-const createMultiChannel = () => {
-  const subscribers = [];
-
-  const getScopeChannel = scope => {
-    const prefix = scope.join('.');
-
-    let entry = find(propEq('prefix', prefix), subscribers);
-    if (!entry) {
-      entry = {
-        prefix,
-        channel: stdChannel(),
-        matcher: matcher(prefix),
-      };
-      subscribers.push(entry);
-    }
-
-    return entry.channel;
-  };
-
-  const emit = item => {
-    const arr = [...subscribers];
-    for (let i = 0, len = arr.length; i < len; i++) {
-      const entry = arr[i];
-      const match = entry.matcher(item);
-      if (match) {
-        arr[i].channel.put({
-          ...item,
-          type: match.unwrappedType,
-        });
-      }
-    }
-  };
-
-  return {
-    getScopeChannel,
-    emit,
-  };
-};
+import {identity, compose, path, find, propEq} from 'ramda';
+import createMultiScopeChannel from './createMultiScopeChannel';
 
 function sagaMiddlewareFactory({context = {}, sagaMonitor, ...options} = {}) {
   let defaultOptions = null;
-  let multiChannel = createMultiChannel();
+  let multiChannel = createMultiScopeChannel();
 
   function sagaMiddleware({getState, dispatch}) {
     defaultOptions = {
