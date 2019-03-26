@@ -89,9 +89,6 @@ const useFrozenReducer = (reducer, actions) => {
   useLayoutEffect(() => {
     const reducerPath = [...context.scope, '.'];
     context.assocReducer(reducerPath, reducer);
-    return () => {
-      context.dissocReducer(reducerPath);
-    };
   }, []);
 
   const getFields = useCallback(

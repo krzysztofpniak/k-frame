@@ -5,7 +5,6 @@ import {assocFormReducer, store} from './formReducer';
 const getContextValue = () => ({
   scope: [],
   assocReducer: assocFormReducer,
-  dissocReducer: function dissocReducer() {},
   dispatch: store.current.dispatch,
   runSaga: function runSaga$$1() {},
   getState: store.current.getState,
