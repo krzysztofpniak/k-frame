@@ -1,7 +1,7 @@
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
 const fs = require('fs');
-const babelrcObject = require('./.babelrc');
+const babelrcObject = require('./babel.config');
 
 module.exports = {
   mode: 'development',
