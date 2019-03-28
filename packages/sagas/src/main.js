@@ -1,25 +1,13 @@
 import React, {useCallback, useContext, useEffect} from 'react';
-import {KContext} from '@k-frame/core';
+import {
+  KContext,
+  requestAction,
+  succeededAction,
+  failedAction,
+} from '@k-frame/core';
 import scopedSagaMiddleware from './scopedSagaMiddleware';
 import useSagaRunner from './useSagaRunner';
-import {curry, unless, is, objOf} from 'ramda';
-import {call, put, takeEvery} from 'redux-saga/effects';
-
-const asyncActionTypeName = curry(
-  (stage, baseType) => `Async/${baseType}/${stage}`
-);
-const succeedAsyncActionName = asyncActionTypeName('Succeeded');
-const failedAsyncActionName = asyncActionTypeName('Failed');
-const requestedAsyncActionName = asyncActionTypeName('Request');
-
-const createAsyncAction = stage => (baseType, payload) => ({
-  type: asyncActionTypeName(stage, baseType),
-  payload,
-});
-
-const requestAction = createAsyncAction('Request');
-const succeededAction = createAsyncAction('Succeeded');
-const failedAction = createAsyncAction('Failed');
+import {call, put} from 'redux-saga/effects';
 
 function* asyncAction({baseType, fn, args}) {
   try {
@@ -32,19 +20,6 @@ function* asyncAction({baseType, fn, args}) {
   }
 }
 
-const fetchOnEvery = ({actions, resourceKey, fn, argsSelector}) =>
-  function*() {
-    yield takeEvery(actions, function*() {
-      yield* asyncAction({
-        baseType: resourceKey,
-        fn,
-        args: [],
-      });
-    });
-  };
-
-const ensureObject = unless(is(Object), objOf('value'));
-
 const useSaga = (saga, args = [], dependencies = []) => {
   const context = useContext(KContext);
 
@@ -53,10 +28,4 @@ const useSaga = (saga, args = [], dependencies = []) => {
   }, dependencies);
 };
 
-export {
-  asyncAction,
-  fetchOnEvery,
-  scopedSagaMiddleware,
-  useSaga,
-  useSagaRunner,
-};
+export {asyncAction, scopedSagaMiddleware, useSaga, useSagaRunner};
