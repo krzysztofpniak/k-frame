@@ -19,6 +19,7 @@ import {KContext, KProvider} from './kLogicProvider';
 import createAction from './createAction';
 import usePrevious from './usePrevious';
 import useScopeProps from './useScopeProps';
+import withMemoContext from './withMemoContext';
 import {curry, unless, is, objOf} from 'ramda';
 
 const asyncActionTypeName = curry(
@@ -89,4 +90,5 @@ export {
   requestAction,
   succeededAction,
   failedAction,
+  withMemoContext,
 };
