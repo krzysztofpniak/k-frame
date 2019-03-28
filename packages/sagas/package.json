@@ -7,6 +7,7 @@
   "repository": "github:krzysztofpniak/k-frame",
   "main": "dist/k-frame-sagas.cjs.js",
   "module": "dist/k-frame-sagas.esm.js",
+  "unpkg": "dist/k-frame-sagas.umd.js",
   "peerDependencies": {
     "@k-frame/core": "^0.8.19",
     "ramda": "^0.26.1",
