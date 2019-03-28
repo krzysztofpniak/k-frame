@@ -12,6 +12,8 @@ import {
   useWithArgs,
 } from '@k-frame/core';
 import {useSaga, useSagaRunner} from '../../../src/main';
+import Counter from './counter';
+import Countdown from './countDown';
 
 const mapWithKey = addIndex(map);
 
@@ -19,12 +21,6 @@ const getGists = () =>
   fetch('https://api.github.com/gists/public')
     .then(r => r.json(), r => r)
     .then(take(5));
-
-const gistsReducer = createReducer({name: 'John'}, [
-  handleAsyncs({
-    gists: {},
-  }),
-]);
 
 const gistsSaga = function*() {
   const name = yield select(m => m.name);
@@ -45,8 +41,18 @@ const gistsSaga = function*() {
 };
 
 const gistsActions = {
-  ping: () => ({type: 'ping'}),
+  ping: createAction('ping'),
+  pong: createAction('pong'),
 };
+
+const gistsReducer = createReducer(
+  {name: 'John', counter: 0, countdown: null},
+  [
+    handleAsyncs({
+      gists: {},
+    }),
+  ]
+);
 
 const hello = () => console.log('hi from view');
 
@@ -61,12 +67,16 @@ const LeftMenu = withScope(() => {
 });
 
 const Gists = withScope(() => {
-  const {data, ping} = useKReducer(gistsReducer, gistsActions);
+  const {data, ping, counter, countdown} = useKReducer(
+    gistsReducer,
+    gistsActions
+  );
   //useSaga(gistsSaga);
-  const runSaga = useSagaRunner({hello});
+  const {fork, tasks} = useSagaRunner({hello});
 
   useEffect(() => {
-    runSaga(gistsSaga);
+    //fork('dupa', gistsSaga, 1, 2, 3);
+    //fork(gistsSaga);
   }, []);
 
   return (
@@ -122,6 +132,7 @@ const Projects4 = withScope(() => {
       <div style={{display: 'flex', flex: 1, flexDirection: 'column'}}>
         <div>{view}</div>
         <div>{view === 'gists' ? <Gists scope="gists" /> : 'Other view'}</div>
+        <Countdown scope="cd1" />
       </div>
     </div>
   );
