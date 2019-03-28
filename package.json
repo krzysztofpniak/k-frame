@@ -33,6 +33,7 @@
     "prettier": "^1.16.4",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
+    "react-hooks-testing-library": "^0.3.8",
     "react-testing-library": "^6.0.0"
   },
   "scripts": {

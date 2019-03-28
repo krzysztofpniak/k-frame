@@ -1,6 +1,6 @@
 {
   "name": "@k-frame/sagas",
-  "version": "0.8.19",
+  "version": "0.8.32",
   "description": "Complete React'n'Redux based framework",
   "license": "MIT",
   "homepage": "https://klabs.gitbook.io/k-logic/",
@@ -9,7 +9,7 @@
   "module": "dist/k-frame-sagas.esm.js",
   "unpkg": "dist/k-frame-sagas.umd.js",
   "peerDependencies": {
-    "@k-frame/core": "^0.8.19",
+    "@k-frame/core": "^0.8.32",
     "ramda": "^0.26.1",
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
@@ -27,7 +27,7 @@
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "@babel/register": "^7.0.0",
-    "@k-frame/core": "^0.8.19",
+    "@k-frame/core": "^0.8.32",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^24.5.0",
@@ -42,6 +42,7 @@
     "ramda": "^0.26.1",
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
+    "react-hooks-testing-library": "^0.3.8",
     "redux": "^4.0.1",
     "redux-saga": "^1.0.2",
     "rimraf": "^2.6.2",
@@ -70,5 +71,9 @@
   "files": [
     "dist"
   ],
+  "jest": {
+    "testRegex": "(/tests/.*\\.spec.js)$",
+    "verbose": true
+  },
   "sideEffects": false
 }
