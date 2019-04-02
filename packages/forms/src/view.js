@@ -34,7 +34,6 @@ import {
 import {getContextValue} from './formConnect';
 import mergeProps from './mergeProps';
 import Field from './field';
-const mapWithKey = addIndex(map);
 
 const ensureArray = unless(Array.isArray, of);
 
