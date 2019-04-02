@@ -35,8 +35,14 @@ const Counter = compose(
   );
 });
 
-const Input = ({value, onChange, inputRef, type}) => (
-  <input value={value} onChange={onChange} ref={inputRef} type={type} />
+const Input = ({value, onChange, onBlur, inputRef, type}) => (
+  <input
+    value={value}
+    onChange={onChange}
+    onBlur={onBlur}
+    ref={inputRef}
+    type={type}
+  />
 );
 
 const fieldTypes = {
