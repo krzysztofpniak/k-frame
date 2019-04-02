@@ -26,29 +26,41 @@ const Field = memo(
     parse,
     inputRef,
     error,
+    visible,
     props,
   }) => {
     const context = useContext(KContext);
 
-    const [state, setState] = useState(
-      pathOr(
-        defaultValue || '',
-        [...context.scope, 'fields', id],
-        context.getState()
-      )
+    const rawState = context.getState();
+
+    const fieldsValues = useRef(
+      pathOr({}, [...context.scope, 'fields'], rawState)
     );
+
+    const [state, setState] = useState(
+      pathOr(defaultValue || '', [...context.scope, 'fields', id], rawState)
+    );
+
+    const [isVisible, setVisibility] = useState(true);
 
     const stateRef = useRef(state);
 
     useLayoutEffect(() => {
       return context.subscribe(() => {
-        const newState = path(
-          [...context.scope, 'fields', id],
-          context.getState()
-        );
-        if (newState !== stateRef.current) {
-          setState(newState);
-          stateRef.current = newState;
+        const fields = path([...context.scope, 'fields'], context.getState());
+        if (fieldsValues.current !== fields) {
+          fieldsValues.current = fields;
+          const newState = path([id], fields);
+          if (newState !== stateRef.current) {
+            setState(newState);
+            stateRef.current = newState;
+          }
+
+          const newVisibility =
+            !visible || visible({fields: fieldsValues.current});
+          if (newVisibility !== isVisible) {
+            setVisibility(newVisibility);
+          }
         }
       });
     }, []);
@@ -78,28 +90,30 @@ const Field = memo(
     );
 
     const field = useMemo(() => {
-      return createElement(fieldTemplate, {
-        title,
-        input: createElement(component, {
-          id: (formName || '') + (formName ? '-' : '') + id,
-          title,
-          inputRef: handleRefSet,
-          /*value:
+      return isVisible
+        ? createElement(fieldTemplate, {
+            title,
+            input: createElement(component, {
+              id: (formName || '') + (formName ? '-' : '') + id,
+              title,
+              inputRef: handleRefSet,
+              /*value:
             fields[
               f.debounce && has(`${f.id}_raw`, fields) ? `${f.id}_raw` : f.id
             ],
             */
-          value: formattedValue,
-          onChange: handleOnChange,
-          type,
-          error,
-          //runValidation: model.submitDirty && model.dirty,
-          scope: `sub.${id}`,
-          ...(props || {}),
-        }),
-        error,
-      });
-    }, [state, error, ...propsValues]);
+              value: formattedValue,
+              onChange: handleOnChange,
+              type,
+              error,
+              //runValidation: model.submitDirty && model.dirty,
+              scope: `sub.${id}`,
+              ...(props || {}),
+            }),
+            error,
+          })
+        : null;
+    }, [state, error, isVisible, ...propsValues]);
 
     return field;
   },

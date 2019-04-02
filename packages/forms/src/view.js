@@ -39,6 +39,7 @@ import {
   withScope,
   bindActionCreators,
   shallowEqual,
+  withMemoContext,
 } from '@k-frame/core';
 import {getContextValue} from './formConnect';
 import mergeProps from './mergeProps';
@@ -170,7 +171,36 @@ const FormInt = compose(
 
     const inputRefs = useRef({});
 
-    const indexedSchema = useMemo(() => indexBy(prop('id'), schema), []);
+    const richSchema = useMemo(
+      () =>
+        map(
+          fieldSchema => ({
+            ...fieldSchema,
+            validate: fieldSchema.validate
+              ? map(
+                  validator =>
+                    withMemoContext(validator, (useMemo, value, context) => [
+                      value,
+                      {...context, useMemo},
+                    ]),
+                  ensureArray(fieldSchema.validate)
+                )
+              : null,
+            visible: fieldSchema.visible
+              ? withMemoContext(fieldSchema.visible, (useMemo, context) => [
+                  {
+                    ...context,
+                    useMemo,
+                  },
+                ])
+              : null,
+          }),
+          schema
+        ),
+      []
+    );
+
+    const indexedSchema = useMemo(() => indexBy(prop('id'), richSchema), []);
 
     const getSyncErrors = useCallback(() => {
       const model = pathOr(
@@ -336,6 +366,8 @@ const FormInt = compose(
             format={f.format}
             type={f.type || 'text'}
             component={fieldTypes[f.type || 'text']}
+            visible={f.visible}
+            args={args}
             props={f.props ? f.props(args) : emptyObject}
           />
         ),
