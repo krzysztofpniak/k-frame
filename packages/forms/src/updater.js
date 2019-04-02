@@ -31,8 +31,6 @@ const getInitialModel = fields => ({
   defaultValues: fields || {},
 });
 
-const initialModel = getInitialModel();
-
 const setFields = (model, fields) =>
   set(lensProp('fields'), {...model.fields, ...fields}, model);
 
@@ -50,18 +48,6 @@ const setFieldsAndDefaults = (model, fields) =>
 
 const setSubStates = (model, subStates) =>
   model.set('subStates', {...model.subStates, ...subStates});
-
-const evolveSpec = compose(
-  evolve,
-  applySpec
-);
-
-/*
-
-evolveSpec({
-    subStates: converge(set, [compose(lensProp, prop('param')), prop('payload')])
-}))
- */
 
 const getFieldType = compose(
   defaultTo('text'),
