@@ -48,6 +48,7 @@ const schema2 = [
         return v !== color ? message : '';
       },
     ],
+    visible: ({fields: {age}}) => age < 25,
   },
   {
     id: 'password',
