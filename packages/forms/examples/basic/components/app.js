@@ -159,7 +159,11 @@ const App = () => {
         color={colors[colorIndex]}
       />
       <div>First Form</div>
-      <SimpleForm scope="form1" color={colors[colorIndex]} />
+      <SimpleForm
+        scope="form1"
+        color={colors[colorIndex]}
+        onSubmit={handleSubmit}
+      />
       <div>Second Form</div>
       <Form
         scope="form2"
