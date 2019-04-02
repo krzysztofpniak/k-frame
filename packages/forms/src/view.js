@@ -99,6 +99,9 @@ const FormInt = withScope(
 
     const {
       setField,
+      setTouched,
+      isFieldTouched,
+      getTouched,
       submit,
       setSubmitDirty,
       getFields,
@@ -276,6 +279,12 @@ const FormInt = withScope(
       inputRefs.current[fieldId] = ref;
     }, []);
 
+    const handleOnBlur = useCallback(fieldId => {
+      if (!isFieldTouched(fieldId)) {
+        setTouched(fieldId);
+      }
+    }, []);
+
     const buttons = useMemo(
       () =>
         createElement(buttonsTemplate, {
@@ -302,6 +311,7 @@ const FormInt = withScope(
             fieldTemplate={fieldTemplate}
             formName={name}
             onChange={handleOnChange}
+            onBlur={handleOnBlur}
             defaultValue={f.defaultValue}
             parse={f.parse}
             format={f.format}
@@ -386,8 +396,14 @@ const ButtonsTemplate = ({onSubmit, onReset}) => (
 );
 
 const fieldTypes = {
-  text: ({id, value, onChange, inputRef}) => (
-    <input id={id} value={value} onChange={onChange} ref={inputRef} />
+  text: ({id, value, onChange, onBlur, inputRef}) => (
+    <input
+      id={id}
+      value={value}
+      onChange={onChange}
+      onBlur={onBlur}
+      ref={inputRef}
+    />
   ),
 };
 

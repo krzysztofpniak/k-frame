@@ -20,6 +20,7 @@ const Field = memo(
     formName,
     title,
     onChange,
+    onBlur,
     component,
     defaultValue,
     format,
@@ -82,6 +83,10 @@ const Field = memo(
       [id, onChange]
     );
 
+    const handleOnBlur = useCallback(() => {
+      onBlur(id);
+    }, [id, onBlur]);
+
     const handleRefSet = useCallback(
       ref => {
         inputRef(ref, id);
@@ -104,6 +109,7 @@ const Field = memo(
             */
               value: formattedValue,
               onChange: handleOnChange,
+              onBlur: handleOnBlur,
               type,
               error,
               //runValidation: model.submitDirty && model.dirty,
