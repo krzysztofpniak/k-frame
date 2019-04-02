@@ -170,7 +170,6 @@ const App = () => {
         buttonsTemplate={Button}
         args={{color: colors[colorIndex]}}
         onSubmit={handleSubmit}
-        errorsDisplayStrategy={x}
       />
     </Scope>
   );
