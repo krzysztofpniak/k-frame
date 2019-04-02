@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import {Form} from '../../src/view';
 import fieldTypes from './fieldTypes';
 import {required} from '../../src/validators';
@@ -29,7 +29,7 @@ const schema = [
   },
 ];
 
-const SimpleForm = ({scope, color, onSubmit}) => (
+const SimpleForm = memo(({scope, color, onSubmit}) => (
   <Form
     scope={scope}
     autoFocus
@@ -38,6 +38,6 @@ const SimpleForm = ({scope, color, onSubmit}) => (
     args={{color}}
     onSubmit={onSubmit}
   />
-);
+));
 
 export default SimpleForm;
