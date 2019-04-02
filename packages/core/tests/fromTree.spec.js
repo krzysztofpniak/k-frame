@@ -179,7 +179,15 @@ describe('fromTree', () => {
     expect(fromTree(tree2)(state2, action1)).toEqual(state3);
   });
   it("doesn't brake existing state", () => {
-    expect(fromTree(tree2)(state5, {type: 'dupa'})).toEqual(state5);
+    const reducer = fromTree(tree2);
+
+    const nextState = reducer(state5, {
+      type: 'root.a.INC_BY',
+      payload: 2,
+    });
+
+    expect(nextState.root.a).toEqual({counter: 2});
+    expect(nextState.root.b).toBe(state5.root.b);
   });
   it('deeply nested', () => {
     expect(
