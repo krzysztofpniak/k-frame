@@ -60,7 +60,7 @@ const validateField = (fieldSchema, model, args) =>
             debouncing: !!model.debouncing[fieldSchema.id],
           }),
         '',
-        ensureArray(fieldSchema.validate)
+        fieldSchema.validate
       )
     : '';
 
@@ -252,7 +252,7 @@ const FormInt = withScope(
       const asyncErrors = {};
       const model = getFormState();
       const formErrors = validateForm(
-        schema,
+        richSchema,
         model,
         asyncErrors || {},
         argsRef.current
@@ -373,8 +373,8 @@ const FormInt = withScope(
     );
 
     const renderedFields = useMemo(
-      () => reduceBy(groupFields, [], propOr('default', 'group'), schema),
-      [schema, syncErrors, ...argsValues]
+      () => reduceBy(groupFields, [], propOr('default', 'group'), richSchema),
+      [richSchema, syncErrors, ...argsValues]
     );
 
     const renderedForm = useMemo(
