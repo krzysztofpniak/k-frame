@@ -38,8 +38,15 @@ const schema2 = [
     defaultValue: '',
     validate: [
       required,
-      (v, {args: {color}}) =>
-        v !== color ? `Color is different than ${color}` : '',
+      (v, {args: {color}, useMemo}) => {
+        const message = useMemo(
+          () =>
+            console.log('color message recalculated') ||
+            `Color is different than ${color}`,
+          [color]
+        );
+        return v !== color ? message : '';
+      },
     ],
   },
   {
@@ -127,6 +134,13 @@ const SimpleButton = memo(({text, onClick, color}) => (
   </button>
 ));
 
+//fieldTouchedStrategy (default) -> touched || submitClicked
+//fieldDirtyStrategy -> touched || dirty
+//onSubmitOnlyStrategy -> submitClicked
+//alwaysStrategy -> true
+
+//({submitRequested, touched, dirty, hasError}) ->
+
 const App = () => {
   const {colorIndex, nextColor} = useKReducer(appReducer, appActions);
   const handleSubmit = useCallback((defaultSubmitHandler, fields) => {
@@ -155,6 +169,7 @@ const App = () => {
         buttonsTemplate={Button}
         args={{color: colors[colorIndex]}}
         onSubmit={handleSubmit}
+        errorsDisplayStrategy={x}
       />
     </Scope>
   );
