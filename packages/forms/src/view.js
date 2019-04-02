@@ -34,6 +34,7 @@ import {
 import {getContextValue} from './formConnect';
 import mergeProps from './mergeProps';
 import Field from './field';
+import {fieldTouchedStrategy} from './errorsDisplayStrategies';
 
 const ensureArray = unless(Array.isArray, of);
 
@@ -92,6 +93,7 @@ const FormInt = withScope(
     additionalButtons,
     args,
     autoFocus,
+    errorsDisplayStrategy,
   }) => {
     const context = useContext(KContext);
     const argsKeys = useMemo(() => keys(args), []);
@@ -116,6 +118,8 @@ const FormInt = withScope(
     }, argsValues);
 
     const fieldsValuesRef = useRef({});
+    const touchedValuesRef = useRef({});
+    const submitRequestedRef = useRef({});
     const syncErrorsRef = useRef({});
 
     const inputRefs = useRef({});
@@ -153,11 +157,16 @@ const FormInt = withScope(
 
     const getSyncErrors = useCallback(() => {
       const model = getFormState();
-
-      return map(
-        fieldSchema => validateField(fieldSchema, model, argsRef.current),
-        indexedSchema
-      );
+      return map(fieldSchema => {
+        const error = validateField(fieldSchema, model, argsRef.current);
+        return (
+          errorsDisplayStrategy({
+            submitRequested: model.submitDirty,
+            touched: model.touched[fieldSchema.id],
+            dirty: model.dirty[fieldSchema.id],
+          }) && error
+        );
+      }, indexedSchema);
     }, [indexedSchema]);
 
     const validateFields = useCallback(() => {
@@ -187,8 +196,16 @@ const FormInt = withScope(
 
       return context.subscribe(() => {
         const fieldsValues = getFields();
-        if (!shallowEqual(fieldsValues, fieldsValuesRef.current)) {
+        const touchedValues = getTouched();
+        const {submitRequested} = getFormState();
+        if (
+          !shallowEqual(fieldsValues, fieldsValuesRef.current) ||
+          !shallowEqual(touchedValues, touchedValuesRef.current) ||
+          submitRequestedRef.current !== submitRequested
+        ) {
           fieldsValuesRef.current = fieldsValues;
+          touchedValuesRef.current = touchedValues;
+          submitRequestedRef.current !== submitRequested;
           validateFields();
         }
       });
@@ -414,6 +431,7 @@ Form.defaultProps = {
   fieldTypes: fieldTypes,
   cancelText: 'Cancel',
   submitText: 'Submit',
+  errorsDisplayStrategy: fieldTouchedStrategy,
 };
 
 export {validateForm, validateField, Form};
