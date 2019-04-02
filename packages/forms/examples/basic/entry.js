@@ -1,18 +1,16 @@
 import '@babel/polyfill';
 import React from 'react';
 import {render} from 'react-dom';
-import {createStore, compose, applyMiddleware} from 'redux';
+import {createStore} from 'redux';
 import {KProvider, emptyReducer} from '@k-frame/core';
 import App from './components/app';
 
-const composeEnhancers =
-  typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
-        // Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
-      })
-    : compose;
+const storeFactory = (typeof window === 'object' &&
+  window.__REDUX_DEVTOOLS_EXTENSION__
+  ? window.__REDUX_DEVTOOLS_EXTENSION__()
+  : a => a)(createStore);
 
-const store = createStore(emptyReducer);
+const store = storeFactory(emptyReducer);
 
 const run = (containerDomId, View) => {
   render(
