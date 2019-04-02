@@ -1,4 +1,5 @@
 import {createReducer} from '../src/main';
+import {counterState0, counterState1} from './testData';
 
 const state1 = {
   counter: 0,
@@ -80,5 +81,22 @@ describe('createReducer', () => {
         createReducer(state1, [reducer1, reducer2])(undefined, action1)
       ).toEqual(state3);
     });
+  });
+
+  it('should keep references', () => {
+    const state0 = {c1: counterState0, c2: counterState0};
+    const state1 = {c1: counterState0, c2: counterState1};
+
+    const state2 = createReducer(state0, [
+      (s, {type}) =>
+        type === 'c1.inc'
+          ? {...s, c1: {...s.c1, counter: s.c1.counter + 1}}
+          : s,
+    ])(state1, {
+      type: 'c1.inc',
+    });
+
+    expect(state2.c1).toEqual(counterState1);
+    expect(state2.c2).toBe(state1.c2);
   });
 });
