@@ -105,12 +105,17 @@ const useFrozenReducer = (reducer, actions) => {
     []
   );
 
+  const getFormState = useCallback(
+    () => pathOr(initialState, context.scope, context.getState()),
+    []
+  );
 
   const result = useMemo(
     () => ({
       ...bindActionCreators(actions, context.dispatch),
       ...initialState,
       getFields,
+      getFormState,
     }),
     []
   );
@@ -149,10 +154,13 @@ const FormInt = withScope(
     const argsValues = map(k => args[k], argsKeys);
 
     const reducer = useMemo(() => createUpdater(fieldTypes, schema), []);
-    const {setField, submit, setSubmitDirty, getFields} = useFrozenReducer(
-      reducer,
-      formActions
-    );
+    const {
+      setField,
+      submit,
+      setSubmitDirty,
+      getFields,
+      getFormState,
+    } = useFrozenReducer(reducer, formActions);
 
     const [syncErrors, setSyncErrors] = useState({});
 
@@ -198,11 +206,7 @@ const FormInt = withScope(
     const indexedSchema = useMemo(() => indexBy(prop('id'), richSchema), []);
 
     const getSyncErrors = useCallback(() => {
-      const model = pathOr(
-        {fields: {}, debouncing: {}},
-        context.scope,
-        context.getState()
-      );
+      const model = getFormState();
 
       return map(
         fieldSchema => validateField(fieldSchema, model, argsRef.current),
@@ -246,7 +250,7 @@ const FormInt = withScope(
 
     const defaultSubmitHandler = useCallback(e => {
       const asyncErrors = {};
-      const model = pathOr({}, context.scope, context.getState());
+      const model = getFormState();
       const formErrors = validateForm(
         schema,
         model,
