@@ -1,19 +1,21 @@
 import {reduce, mergeDeepRight} from 'ramda';
+import shallowEqual from './shallowEqual';
 
 const createReducer = (initialState, spec) => {
-  let desiredInitialState = null;
   return (state, action = {}) => {
-    if (!desiredInitialState) {
-      desiredInitialState = reduce(
+    if (!state) {
+      let desiredInitialState = reduce(
         (s, f) => mergeDeepRight(s, f(undefined, {type: '@@INIT'}) || {}),
         initialState,
         spec
       );
+      if (shallowEqual(desiredInitialState, initialState)) {
+        desiredInitialState = initialState;
+      }
+      state = mergeDeepRight(desiredInitialState, state || {});
     }
 
-    const calculatedState = mergeDeepRight(desiredInitialState, state || {});
-
-    return reduce((s, f) => f(s, action), calculatedState, spec);
+    return reduce((s, f) => f(s, action), state, spec);
   };
 };
 
