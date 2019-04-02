@@ -24,10 +24,10 @@ import {RESET, SET_FIELD, SET_SUBMIT_DIRTY, SUBMIT} from './actionTypes';
 const mergeSpec = curry((spec, obj) => merge(obj, applySpec(spec)(obj)));
 
 const getInitialModel = fields => ({
-  dirty: false,
   debouncing: {},
   submitDirty: false,
   fields: fields || {},
+  dirty: map(always(false), fields),
   defaultValues: fields || {},
 });
 
@@ -71,7 +71,9 @@ const createUpdater = (fieldTypes, schema) => {
   return createReducer(initialModel, [
     createPayloadReducer(SET_FIELD, ({name, value}) =>
       evolve({
-        dirty: always(true),
+        dirty: {
+          [name]: always(true),
+        },
         fields: {
           [name]: always(value),
         },
@@ -79,7 +81,10 @@ const createUpdater = (fieldTypes, schema) => {
     ),
     createPayloadReducer(SUBMIT, ({resetOnSubmit}) =>
       mergeSpec({
-        dirty: always(false),
+        dirty: compose(
+          map(always(false)),
+          prop('fields')
+        ),
         submitDirty: always(false),
         fields: prop(resetOnSubmit ? 'defaultValues' : 'fields'),
         subStates: prop(resetOnSubmit ? 'initialSubStates' : 'subStates'),
