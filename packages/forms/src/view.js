@@ -3,7 +3,6 @@ import React, {
   useCallback,
   useMemo,
   useEffect,
-  useLayoutEffect,
   useRef,
   useState,
   useContext,
@@ -12,18 +11,11 @@ import React, {
 import {
   filter,
   map,
-  identity,
   find,
   addIndex,
   compose,
-  mapObjIndexed,
-  fromPairs,
-  mergeRight,
-  has,
-  path,
   reduceBy,
   propOr,
-  pathOr,
   keys,
   flip,
   indexBy,
@@ -32,12 +24,10 @@ import {
   of,
   reduceWhile,
 } from 'ramda';
-import {setField, submit, reset, setSubmitDirty} from './actions';
-import {createUpdater} from './updater';
+import useFormReducer from './useFormReducer';
 import {
   KContext,
   withScope,
-  bindActionCreators,
   shallowEqual,
   withMemoContext,
 } from '@k-frame/core';
@@ -84,51 +74,6 @@ const GenericError = ({content}) => (
   </div>
 );
 
-const useFrozenReducer = (reducer, actions) => {
-  const context = useContext(KContext);
-
-  useLayoutEffect(() => {
-    const reducerPath = [...context.scope, '.'];
-    context.assocReducer(reducerPath, reducer);
-  }, []);
-
-  //TODO: performance
-  const initialState = reducer(undefined, {type: '@@INIT'});
-
-  const getFields = useCallback(
-    () =>
-      pathOr(
-        initialState.fields,
-        [...context.scope, 'fields'],
-        context.getState()
-      ),
-    []
-  );
-
-  const getFormState = useCallback(
-    () => pathOr(initialState, context.scope, context.getState()),
-    []
-  );
-
-  const result = useMemo(
-    () => ({
-      ...bindActionCreators(actions, context.dispatch),
-      ...initialState,
-      getFields,
-      getFormState,
-    }),
-    []
-  );
-
-  return result;
-};
-
-const formActions = {
-  setField,
-  setSubmitDirty,
-  submit,
-};
-
 const emptyObject = {};
 
 const FormInt = withScope(
@@ -153,14 +98,13 @@ const FormInt = withScope(
     const argsKeys = useMemo(() => keys(args), []);
     const argsValues = map(k => args[k], argsKeys);
 
-    const reducer = useMemo(() => createUpdater(fieldTypes, schema), []);
     const {
       setField,
       submit,
       setSubmitDirty,
       getFields,
       getFormState,
-    } = useFrozenReducer(reducer, formActions);
+    } = useFormReducer(fieldTypes, schema);
 
     const [syncErrors, setSyncErrors] = useState({});
 
