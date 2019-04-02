@@ -19,7 +19,13 @@ import {
   createStateReducer,
   createReducer,
 } from '@k-frame/core';
-import {RESET, SET_FIELD, SET_SUBMIT_DIRTY, SUBMIT} from './actionTypes';
+import {
+  RESET,
+  SET_FIELD,
+  SET_TOUCHED,
+  SET_SUBMIT_DIRTY,
+  SUBMIT,
+} from './actionTypes';
 
 const mergeSpec = curry((spec, obj) => merge(obj, applySpec(spec)(obj)));
 
@@ -28,6 +34,7 @@ const getInitialModel = fields => ({
   submitDirty: false,
   fields: fields || {},
   dirty: map(always(false), fields),
+  touched: map(always(false), fields),
   defaultValues: fields || {},
 });
 
@@ -79,6 +86,13 @@ const createUpdater = (fieldTypes, schema) => {
         },
       })
     ),
+    createPayloadReducer(SET_TOUCHED, fieldId =>
+      evolve({
+        touched: {
+          [fieldId]: always(true),
+        },
+      })
+    ),
     createPayloadReducer(SUBMIT, ({resetOnSubmit}) =>
       mergeSpec({
         dirty: compose(
@@ -86,6 +100,10 @@ const createUpdater = (fieldTypes, schema) => {
           prop('fields')
         ),
         submitDirty: always(false),
+        touched: compose(
+          map(always(false)),
+          prop('fields')
+        ),
         fields: prop(resetOnSubmit ? 'defaultValues' : 'fields'),
         subStates: prop(resetOnSubmit ? 'initialSubStates' : 'subStates'),
       })
