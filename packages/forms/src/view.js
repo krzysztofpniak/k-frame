@@ -61,7 +61,7 @@ const validateForm = (schema, model, asyncErrors, args) =>
       error: validateField(f, model, args),
       asyncError: asyncErrors[f.id] || '',
     })),
-    filter(f => !f.visible || f.visible(model.fields))
+    filter(f => !f.visible || f.visible({fields: model.fields, args}))
   )(schema);
 
 const boolWithDefault = (defaultValue, value) =>
