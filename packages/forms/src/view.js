@@ -92,13 +92,19 @@ const useFrozenReducer = (reducer, actions) => {
     context.assocReducer(reducerPath, reducer);
   }, []);
 
+  //TODO: performance
+  const initialState = reducer(undefined, {type: '@@INIT'});
+
   const getFields = useCallback(
-    () => pathOr({}, [...context.scope, 'fields'], context.getState()),
+    () =>
+      pathOr(
+        initialState.fields,
+        [...context.scope, 'fields'],
+        context.getState()
+      ),
     []
   );
 
-  //TODO: performance
-  const initialState = reducer(undefined, {type: '@@INIT'});
 
   const result = useMemo(
     () => ({
@@ -149,12 +155,6 @@ const FormInt = withScope(
     );
 
     const [syncErrors, setSyncErrors] = useState({});
-
-    const getFieldsValues = useCallback(() => {
-      const appState = context.getState();
-      const fieldsValues = pathOr({}, [...context.scope, 'fields'], appState);
-      return fieldsValues;
-    }, []);
 
     const argsRef = useRef(args);
     useEffect(() => {
@@ -236,7 +236,7 @@ const FormInt = withScope(
       }
 
       return context.subscribe(() => {
-        const fieldsValues = getFieldsValues();
+        const fieldsValues = getFields();
         if (!shallowEqual(fieldsValues, fieldsValuesRef.current)) {
           fieldsValuesRef.current = fieldsValues;
           validateFields();
@@ -309,8 +309,7 @@ const FormInt = withScope(
       const fieldSchema = indexedSchema[fieldId];
 
       if (fieldSchema.onChange) {
-        const appState = context.getState();
-        const fieldsValues = pathOr({}, [...context.scope, 'fields'], appState);
+        const fieldsValues = getFields();
         const currentValue = prop(fieldId, fieldsValues);
         const overriddenValue =
           fieldSchema.onChange({
