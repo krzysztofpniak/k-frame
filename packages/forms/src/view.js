@@ -120,12 +120,7 @@ const formActions = {
 
 const emptyObject = {};
 
-const FormInt = compose(
-  flip(memo)((props, nextProps) =>
-    shallowEqual(mergeProps('args')(props), mergeProps('args')(nextProps))
-  ),
-  withScope
-)(
+const FormInt = withScope(
   ({
     name,
     legend,
@@ -396,7 +391,9 @@ const FormInt = compose(
   }
 );
 
-const Form = props => {
+const Form = flip(memo)((props, nextProps) =>
+  shallowEqual(mergeProps('args')(props), mergeProps('args')(nextProps))
+)(props => {
   if (!props.schema) {
     console.error('Schema prop is required');
     return null;
@@ -414,7 +411,7 @@ const Form = props => {
   }
 
   return createElement(FormInt, props);
-};
+});
 
 const FormTemplate = ({fields, buttons, onSubmit}) => (
   <form>
