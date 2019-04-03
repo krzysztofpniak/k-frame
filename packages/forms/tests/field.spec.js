@@ -4,7 +4,13 @@ import {KProvider} from '@k-frame/core';
 import {render, queryByAttribute, cleanup} from 'react-testing-library';
 //import renderer from 'react-test-renderer';
 import 'jest-dom/extend-expect';
-import {createStoreMock} from './testData';
+import {createStoreMock, wrapWithFormContext} from './testData';
+
+let store = null;
+
+const initStore = () => {
+  store = createStoreMock();
+};
 
 afterEach(cleanup);
 
@@ -18,6 +24,10 @@ afterAll(() => {
 
 afterEach(() => {
   console.error.mockClear();
+});
+
+beforeEach(() => {
+  initStore();
 });
 
 const getById = queryByAttribute.bind(null, 'id');
@@ -37,33 +47,32 @@ const FieldTemplate = ({input, title}) => (
 
 describe('Field', () => {
   it('renders simplest field', () => {
+    const getFieldState = jest.fn(() => ({
+      id: 'name',
+      value: '',
+      visible: true,
+    }));
+    const subscribeField = jest.fn();
     const {asFragment} = render(
       <Field
         id="name"
         component={Text}
         title="Name"
         fieldTemplate={FieldTemplate}
-      />
-    );
-
-    expect(asFragment()).toMatchSnapshot();
-  });
-
-  it('should use defaultValue', () => {
-    const {asFragment} = render(
-      <Field
-        id="name"
-        component={Text}
-        title="Name"
-        defaultValue="John"
-        fieldTemplate={FieldTemplate}
-      />
+      />,
+      wrapWithFormContext({getFieldState, subscribeField})
     );
 
     expect(asFragment()).toMatchSnapshot();
   });
 
   it('should use formName for id', () => {
+    const getFieldState = jest.fn(() => ({
+      id: 'name',
+      value: 'John',
+      visible: true,
+    }));
+    const subscribeField = jest.fn();
     const {container} = render(
       <Field
         id="name"
@@ -72,13 +81,20 @@ describe('Field', () => {
         title="Name"
         defaultValue="John"
         fieldTemplate={FieldTemplate}
-      />
+      />,
+      wrapWithFormContext({getFieldState, subscribeField})
     );
 
     expect(getById(container, 'user-name').value).toBe('John');
   });
 
   it('should use format', () => {
+    const getFieldState = jest.fn(() => ({
+      id: 'name',
+      value: 10,
+      visible: true,
+    }));
+    const subscribeField = jest.fn();
     const formatCurrency = v => `$${v}`;
 
     const {container} = render(
@@ -89,7 +105,8 @@ describe('Field', () => {
         format={formatCurrency}
         defaultValue="10"
         fieldTemplate={FieldTemplate}
-      />
+      />,
+      wrapWithFormContext({getFieldState, subscribeField})
     );
 
     expect(getById(container, 'name').value).toBe('$10');
@@ -97,6 +114,12 @@ describe('Field', () => {
 
   describe('onChange', () => {
     it('triggers when input changes', () => {
+      const getFieldState = jest.fn(() => ({
+        id: 'name',
+        value: 10,
+        visible: true,
+      }));
+      const subscribeField = jest.fn();
       let triggerOnChange = null;
 
       const TextWithOnChangeExposed = ({id, value, onChange}) => {
@@ -113,7 +136,8 @@ describe('Field', () => {
           title="Name"
           fieldTemplate={FieldTemplate}
           onChange={handleOnChange}
-        />
+        />,
+        wrapWithFormContext({getFieldState, subscribeField})
       );
 
       triggerOnChange('john');
@@ -125,6 +149,12 @@ describe('Field', () => {
     });
 
     it('uses parse', () => {
+      const getFieldState = jest.fn(() => ({
+        id: 'name',
+        value: 10,
+        visible: true,
+      }));
+      const subscribeField = jest.fn();
       let triggerOnChange = null;
 
       const TextWithOnChangeExposed = ({id, value, onChange}) => {
@@ -147,7 +177,8 @@ describe('Field', () => {
           fieldTemplate={FieldTemplate}
           onChange={handleOnChange}
           parse={parseIntNull}
-        />
+        />,
+        wrapWithFormContext({getFieldState, subscribeField})
       );
 
       triggerOnChange('134');
@@ -157,96 +188,51 @@ describe('Field', () => {
     });
   });
 
-  describe('connects to KContext', () => {
-    it('should use value from KContext on initial render', () => {
-      const store = createStoreMock();
-      store.getState.mockReturnValue({fields: {name: 'John'}});
-
-      const {container} = render(
-        <KProvider store={store}>
-          <Field
-            id="name"
-            component={Text}
-            title="Name"
-            fieldTemplate={FieldTemplate}
-          />
-        </KProvider>
-      );
-
-      expect(store.getState).toHaveBeenCalledTimes(1);
-      expect(getById(container, 'name').value).toBe('John');
-    });
-
-    it('should ignore defaultValue when KContext has override', () => {
-      const store = createStoreMock();
-      store.getState.mockReturnValue({fields: {name: 'John'}});
-
-      const {container} = render(
-        <KProvider store={store}>
-          <Field
-            id="name"
-            component={Text}
-            title="Name"
-            defaultValue="Maria"
-            fieldTemplate={FieldTemplate}
-          />
-        </KProvider>
-      );
-
-      expect(store.getState).toHaveBeenCalledTimes(1);
-      expect(getById(container, 'name').value).toBe('John');
-    });
-
-    it('should use defaultValue when KContext value is not defined', () => {
-      const store = createStoreMock();
-      store.getState.mockReturnValue({fields: {age: 30}});
-
-      const {container} = render(
-        <KProvider store={store}>
-          <Field
-            id="name"
-            component={Text}
-            title="Name"
-            defaultValue="John"
-            fieldTemplate={FieldTemplate}
-          />
-        </KProvider>
-      );
-
-      expect(store.getState).toHaveBeenCalledTimes(1);
-      expect(getById(container, 'name').value).toBe('John');
-    });
-
-    it('should update when KContext value changes', () => {
+  describe('connects to FormContext', () => {
+    it('should update when FormContext value changes', () => {
+      const f1 = {
+        id: 'name',
+        value: 'Joh',
+        visible: true,
+      };
+      const f2 = {
+        ...f1,
+        value: 'John',
+      };
+      const getFieldState = jest.fn(() => f1);
+      const subscribeField = jest.fn();
       let subject = null;
-      const store = createStoreMock();
-      store.subscribe.mockImplementation(s => (subject = s));
-      store.getState.mockReturnValueOnce({fields: {name: 'Joh'}});
-      store.getState.mockReturnValue({fields: {name: 'John'}});
+      subscribeField.mockImplementation((f, s) => (subject = s));
 
       const {container} = render(
-        <KProvider store={store}>
-          <Field
-            id="name"
-            component={Text}
-            title="Name"
-            defaultValue="John"
-            fieldTemplate={FieldTemplate}
-          />
-        </KProvider>
+        <Field
+          id="name"
+          component={Text}
+          title="Name"
+          defaultValue="John"
+          fieldTemplate={FieldTemplate}
+        />,
+        wrapWithFormContext({getFieldState, subscribeField})
       );
 
-      expect(store.subscribe).toHaveBeenCalledTimes(1);
+      expect(subscribeField).toHaveBeenCalledTimes(1);
       expect(getById(container, 'name').value).toBe('Joh');
-      subject();
+      subject(f2);
       expect(getById(container, 'name').value).toBe('John');
-      subject();
+      subject(f2);
       expect(getById(container, 'name').value).toBe('John');
-      expect(store.getState).toHaveBeenCalledTimes(4);
+      expect(getFieldState).toHaveBeenCalledTimes(1);
     });
   });
   describe('props', () => {
     it('should pass props to the input', () => {
+      const getFieldState = jest.fn(() => ({
+        id: 'name',
+        value: 'John',
+        visible: true,
+        props: {propA: 'Foo', propB: 'Bar'},
+      }));
+      const subscribeField = jest.fn();
       const CustomComponent = ({id, value, onChange, propA, propB}) => (
         <div>
           <div data-testid="propA">{propA}</div>
@@ -261,14 +247,39 @@ describe('Field', () => {
           id="name"
           component={CustomComponent}
           title="Name"
-          defaultValue="10"
           fieldTemplate={FieldTemplate}
-          props={{propA: 'Foo', propB: 'Bar'}}
-        />
+        />,
+        wrapWithFormContext({getFieldState, subscribeField})
       );
 
       expect(getByTestId('propA').innerHTML).toBe('Foo');
       expect(getByTestId('propB').innerHTML).toBe('Bar');
+    });
+  });
+
+  describe('visible', () => {
+    it('should hide field', () => {
+      const getFieldState = jest.fn(() => ({
+        id: 'name',
+        value: 'John',
+        visible: false,
+      }));
+      const subscribeField = jest.fn();
+
+      const CustomComponent = jest.fn(() => <div>component</div>);
+
+      const {asFragment} = render(
+        <Field
+          id="name"
+          component={CustomComponent}
+          title="Name"
+          defaultValue="10"
+          fieldTemplate={FieldTemplate}
+        />,
+        wrapWithFormContext({getFieldState, subscribeField})
+      );
+
+      expect(asFragment()).toMatchSnapshot();
     });
   });
 });
