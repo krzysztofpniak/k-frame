@@ -135,12 +135,6 @@ const SimpleButton = memo(({text, onClick, color}) => (
   </button>
 ));
 
-//fieldTouchedStrategy (default) -> touched || submitClicked
-//fieldDirtyStrategy -> touched || dirty
-//onSubmitOnlyStrategy -> submitClicked
-//alwaysStrategy -> true
-
-//({submitRequested, touched, dirty, hasError}) ->
 
 const App = () => {
   const {colorIndex, nextColor} = useKReducer(appReducer, appActions);
