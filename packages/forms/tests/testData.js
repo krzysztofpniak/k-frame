@@ -1,3 +1,7 @@
+import React from 'react';
+import {KProvider, Scope} from '@k-frame/core';
+import FormContext from '../src/FormContext';
+
 const counterState0 = {
   counter: 0,
 };
@@ -64,6 +68,18 @@ const createStoreMock = () => ({
   replaceReducer: jest.fn(),
 });
 
+const wrapWithKContext = (scope, store) => ({
+  wrapper: props => (
+    <KProvider store={store}>
+      <Scope scope={scope} {...props} />
+    </KProvider>
+  ),
+});
+
+const wrapWithFormContext = formContext => ({
+  wrapper: props => <FormContext.Provider value={formContext} {...props} />,
+});
+
 export {
   counterState0,
   counterState1,
@@ -78,4 +94,6 @@ export {
   someRandomAction,
   initAction,
   createStoreMock,
+  wrapWithKContext,
+  wrapWithFormContext,
 };
