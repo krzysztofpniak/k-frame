@@ -61,7 +61,7 @@ const getFieldType = compose(
   prop('type')
 );
 
-const createUpdater = (fieldTypes, schema) => {
+const createUpdater = (fieldTypes, schema, resetOnSubmit) => {
   const missingTypes = filter(f => !fieldTypes[getFieldType(f)], schema);
   if (missingTypes.length > 0) {
     console.error(
@@ -93,7 +93,7 @@ const createUpdater = (fieldTypes, schema) => {
         },
       })
     ),
-    createPayloadReducer(SUBMIT, ({resetOnSubmit}) =>
+    createPayloadReducer(SUBMIT, () =>
       mergeSpec({
         dirty: compose(
           map(always(false)),
