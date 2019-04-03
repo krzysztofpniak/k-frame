@@ -16,18 +16,4 @@ exports[`Field renders simplest field 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Field should use defaultValue 1`] = `
-<DocumentFragment>
-  <div>
-    <div>
-      Name
-    </div>
-    <div>
-      <input
-        id="name"
-        value="John"
-      />
-    </div>
-  </div>
-</DocumentFragment>
-`;
+exports[`Field visible should hide field 1`] = `<DocumentFragment />`;
