@@ -25,13 +25,13 @@ const schema = [
     id: 'job',
     title: 'Job',
     type: 'counter',
-    props: ({color}) => ({color}),
+    props: ({args: {color}}) => ({color}),
   },
   {
     id: 'job2',
     title: 'Job 2',
     type: 'counter',
-    props: ({color}) => ({color}),
+    props: ({args: {color}}) => ({color}),
   },
 ];
 

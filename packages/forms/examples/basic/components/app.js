@@ -36,9 +36,10 @@ const schema2 = [
     id: 'color',
     title: 'Favorite Color',
     defaultValue: '',
+    props: ({fields: {age}, args: {color}}) => ({age, color}),
     validate: [
       required,
-      (v, {args: {color}, useMemo}) => {
+      (v, {color}, useMemo) => {
         const message = useMemo(
           () =>
             console.log('color message recalculated') ||
@@ -48,7 +49,7 @@ const schema2 = [
         return v !== color ? message : '';
       },
     ],
-    visible: ({fields: {age}}) => age < 25,
+    visible: props => console.log(props) || props.age < 25,
   },
   {
     id: 'password',
@@ -62,9 +63,9 @@ const schema2 = [
     title: 'Password Confirm',
     type: 'password',
     defaultValue: '',
+    props: ({fields: {password}}) => ({password}),
     validate: [
-      (v, {fields: {password}}) =>
-        v !== password ? `Passwords must match` : '',
+      (v, {password}) => (v !== password ? `Passwords must match` : ''),
     ],
   },
 ];
