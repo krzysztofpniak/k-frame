@@ -83,9 +83,9 @@ const schema3 = times(
 
 const Row = ({input, title, error}) => (
   <div style={{margin: '10px 0'}}>
-    <div>{title}</div>
+    <div style={{fontFamily: 'Arial, Helvetica'}}>{title}</div>
     <div>{input}</div>
-    <div style={{color: 'red'}}>{error}</div>
+    <div style={{color: 'red', fontFamily: 'Arial, Helvetica'}}>{error}</div>
   </div>
 );
 
