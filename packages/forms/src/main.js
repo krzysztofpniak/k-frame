@@ -7,7 +7,6 @@ import {
   setSubStates,
   setFieldsAndDefaults,
 } from './updater';
-import {addValueParam} from './helpers';
 
 export {
   Form,
@@ -17,5 +16,4 @@ export {
   setFields,
   setFieldsAndDefaults,
   setSubStates,
-  addValueParam,
 };
