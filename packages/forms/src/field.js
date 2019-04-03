@@ -8,9 +8,19 @@ import {
   useRef,
   useState,
 } from 'react';
-import {KContext, shallowEqual} from '@k-frame/core';
-import {keys, map, path, pathOr} from 'ramda';
-import mergeProps from './mergeProps';
+import FormContext from './FormContext';
+
+const useLazyState = initialValue => {
+  const [value, setValue] = useState(initialValue);
+  const valueRef = useRef(initialValue);
+  const trySet = useCallback(newValue => {
+    if (valueRef.current !== newValue) {
+      setValue(newValue);
+      valueRef.current = newValue;
+    }
+  });
+  return [value, trySet];
+};
 
 const Field = memo(
   ({
@@ -22,55 +32,33 @@ const Field = memo(
     onChange,
     onBlur,
     component,
-    defaultValue,
     format,
     parse,
     inputRef,
-    error,
-    visible,
-    props,
   }) => {
-    const context = useContext(KContext);
+    const formContext = useContext(FormContext);
+    const initialState = useMemo(() => formContext.getFieldState(id), []);
 
-    const rawState = context.getState();
-
-    const fieldsValues = useRef(
-      pathOr({}, [...context.scope, 'fields'], rawState)
+    const [value, setValue] = useLazyState(initialState.value);
+    const [error, setError] = useLazyState(
+      initialState.errorVisible && initialState.error
     );
-
-    const [state, setState] = useState(
-      pathOr(defaultValue || '', [...context.scope, 'fields', id], rawState)
-    );
-
-    const [isVisible, setVisibility] = useState(true);
-
-    const stateRef = useRef(state);
+    const [props, setProps] = useLazyState(initialState.props);
+    const [isVisible, setVisibility] = useLazyState(initialState.visible);
 
     useLayoutEffect(() => {
-      return context.subscribe(() => {
-        const fields = path([...context.scope, 'fields'], context.getState());
-        if (fieldsValues.current !== fields) {
-          fieldsValues.current = fields;
-          const newState = path([id], fields);
-          if (newState !== stateRef.current) {
-            setState(newState);
-            stateRef.current = newState;
-          }
+      const tryUpdateField = state => {
+        setValue(state.value);
+        setProps(state.props);
+        setError(state.errorVisible && state.error);
+        setVisibility(state.visible);
+      };
 
-          const newVisibility =
-            !visible || visible({fields: fieldsValues.current});
-          if (newVisibility !== isVisible) {
-            setVisibility(newVisibility);
-          }
-        }
-      });
+      formContext.subscribeField(id, tryUpdateField);
     }, []);
 
-    const propsKeys = useMemo(() => keys(props), []);
-    const propsValues = map(k => props[k], propsKeys);
-
-    const formattedValue = useMemo(() => (format ? format(state) : state), [
-      state,
+    const formattedValue = useMemo(() => (format ? format(value) : value), [
+      value,
     ]);
 
     const handleOnChange = useCallback(
@@ -108,17 +96,15 @@ const Field = memo(
               type,
               error,
               scope: `sub.${id}`,
-              ...(props || {}),
+              ...props,
             }),
             error,
           })
         : null;
-    }, [state, error, isVisible, ...propsValues]);
+    }, [value, error, isVisible, props]);
 
     return field;
-  },
-  (props, nextProps) =>
-    shallowEqual(mergeProps('props')(props), mergeProps('props')(nextProps))
+  }
 );
 
 export default Field;
