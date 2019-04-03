@@ -31,7 +31,7 @@ const mergeSpec = curry((spec, obj) => merge(obj, applySpec(spec)(obj)));
 
 const getInitialModel = fields => ({
   debouncing: {},
-  submitDirty: false,
+  submitRequested: false,
   fields: fields || {},
   dirty: map(always(false), fields),
   touched: map(always(false), fields),
@@ -43,7 +43,7 @@ const setFields = (model, fields) =>
 
 const reset = mergeSpec({
   dirty: always(false),
-  submitDirty: always(false),
+  submitRequested: always(false),
   fields: prop('defaultValues'),
   subStates: prop('initialSubStates'),
 });
@@ -99,7 +99,7 @@ const createUpdater = (fieldTypes, schema) => {
           map(always(false)),
           prop('fields')
         ),
-        submitDirty: always(false),
+        submitRequested: always(false),
         touched: compose(
           map(always(false)),
           prop('fields')
@@ -111,12 +111,12 @@ const createUpdater = (fieldTypes, schema) => {
     createPayloadReducer(RESET, ({resetOnCancel}) =>
       mergeSpec({
         dirty: always(false),
-        submitDirty: always(false),
+        submitRequested: always(false),
         fields: prop(resetOnCancel ? 'defaultValues' : 'fields'),
         subStates: prop(resetOnCancel ? 'initialSubStates' : 'subStates'),
       })
     ),
-    createStateReducer(SET_SUBMIT_DIRTY, assoc('submitDirty', true)),
+    createStateReducer(SET_SUBMIT_DIRTY, assoc('submitRequested', true)),
   ]);
 };
 
