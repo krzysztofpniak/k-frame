@@ -164,7 +164,7 @@ const App = () => {
         scope="form2"
         schema={schema2}
         fieldTypes={fieldTypes}
-        formGroupTemplate={Row}
+        fieldTemplate={Row}
         formTemplate={FormTemplate}
         buttonsTemplate={Button}
         args={{color: colors[colorIndex]}}
