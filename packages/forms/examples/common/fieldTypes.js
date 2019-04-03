@@ -49,6 +49,7 @@ const fieldTypes = {
   password: Input,
   email: Input,
   counter: Counter,
+  static: ({value}) => <div style={{fontWeight: 'bold'}}>{value}</div>,
 };
 
 export default fieldTypes;

@@ -16,6 +16,12 @@ const schema = [
     validate: required,
   },
   {
+    id: 'displayName',
+    title: 'Display Name',
+    type: 'static',
+    props: ({fields: {name, surname}}) => ({value: `${name} ${surname}`}),
+  },
+  {
     id: 'job',
     title: 'Job',
     type: 'counter',
