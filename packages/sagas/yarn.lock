@@ -971,10 +971,10 @@
     "@types/istanbul-lib-coverage" "^1.1.0"
     "@types/yargs" "^12.0.9"
 
-"@k-frame/core@^0.8.32":
-  version "0.8.32"
-  resolved "https://registry.yarnpkg.com/@k-frame/core/-/core-0.8.32.tgz#e1a7499b61b52ce5aff7b8aa91a9b79c1c0264e2"
-  integrity sha512-W9JANguUP/pC3+Z/HNX8w+fQjikVBshtJNQ9KzTRHn/QapP24SrDE/Aj0Kw3htiA/m+jA1ecOOrOcfooDC8gBg==
+"@k-frame/core@^0.8.39":
+  version "0.8.39"
+  resolved "https://registry.yarnpkg.com/@k-frame/core/-/core-0.8.39.tgz#817aa8b826b6243afbaddfc1dfa23a46f3cd53cf"
+  integrity sha512-t60L+eI00XpgNWuiOT2PIn263BxAxisBRxuXt69IRz725dIaTXsB/03UQXqkc5nJaj8LT699/qcgtrjEp/sGtA==
 
 "@redux-saga/core@^1.0.2":
   version "1.0.2"
@@ -2021,6 +2021,7 @@ cliui@^4.0.0:
 co@^4.6.0:
   version "4.6.0"
   resolved "https://registry.yarnpkg.com/co/-/co-4.6.0.tgz#6ea6bdf3d853ae54ccb8e47bfa0bf3f9031fb184"
+  integrity sha1-bqa989hTrlTMuOR7+gvz+QMfsYQ=
 
 code-point-at@^1.0.0:
   version "1.1.0"
