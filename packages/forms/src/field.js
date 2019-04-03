@@ -102,17 +102,11 @@ const Field = memo(
               id: (formName || '') + (formName ? '-' : '') + id,
               title,
               inputRef: handleRefSet,
-              /*value:
-            fields[
-              f.debounce && has(`${f.id}_raw`, fields) ? `${f.id}_raw` : f.id
-            ],
-            */
               value: formattedValue,
               onChange: handleOnChange,
               onBlur: handleOnBlur,
               type,
               error,
-              //runValidation: model.submitDirty && model.dirty,
               scope: `sub.${id}`,
               ...(props || {}),
             }),
