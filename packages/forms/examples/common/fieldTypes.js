@@ -23,7 +23,6 @@ const Counter = compose(
   const {counter, inc} = useKReducer(counterReducer, counterActions);
   return (
     <div>
-      <div>first</div>
       <button
         style={{backgroundColor: color || 'white', color: 'white'}}
         onClick={inc}
