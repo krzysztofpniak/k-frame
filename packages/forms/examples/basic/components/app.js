@@ -89,11 +89,11 @@ const Row = ({input, title, error}) => (
   </div>
 );
 
-const FormTemplate = ({buttons, fields, args, onSubmit}) => (
+const FormTemplate = ({buttons, fields, color, onSubmit}) => (
   <form onSubmit={onSubmit}>
     <div
       style={{
-        border: `2px solid ${args.color}`,
+        border: `2px solid ${color}`,
         borderRadius: '5px',
         padding: '10px',
       }}
@@ -136,6 +136,7 @@ const SimpleButton = memo(({text, onClick, color}) => (
   </button>
 ));
 
+const getColorArg = ({args: {color}}) => ({color});
 
 const App = () => {
   const {colorIndex, nextColor} = useKReducer(appReducer, appActions);
@@ -166,6 +167,7 @@ const App = () => {
         fieldTypes={fieldTypes}
         fieldTemplate={Row}
         formTemplate={FormTemplate}
+        formTemplateProps={getColorArg}
         buttonsTemplate={Button}
         args={{color: colors[colorIndex]}}
         onSubmit={handleSubmit}
