@@ -897,10 +897,10 @@
     "@types/istanbul-lib-coverage" "^2.0.0"
     "@types/yargs" "^12.0.9"
 
-"@k-frame/core@^0.8.39":
-  version "0.8.39"
-  resolved "https://registry.yarnpkg.com/@k-frame/core/-/core-0.8.39.tgz#817aa8b826b6243afbaddfc1dfa23a46f3cd53cf"
-  integrity sha512-t60L+eI00XpgNWuiOT2PIn263BxAxisBRxuXt69IRz725dIaTXsB/03UQXqkc5nJaj8LT699/qcgtrjEp/sGtA==
+"@k-frame/core@^0.8.40":
+  version "0.8.40"
+  resolved "https://registry.yarnpkg.com/@k-frame/core/-/core-0.8.40.tgz#6b02ef484da84de30b615cc81fea9926c7002efd"
+  integrity sha512-R78rG6hmu/tae0250X2mypKB3m2OO0j+458Z0HwhOnutSgLuXyP2BoJ114gJ0wPuBURQ+dZqgZWUnDEPsqFLZQ==
 
 "@sheerun/mutationobserver-shim@^0.3.2":
   version "0.3.2"
