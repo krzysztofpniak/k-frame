@@ -323,7 +323,7 @@ const useFormReducer = ({
     const syncErrors = filter(e => e.error, formErrors);
     const {submit, setSubmitDirty} = boundActionCreators;
 
-    syncErrors.length === 0 ? submit(model.fields) : setSubmitDirty();
+    syncErrors.length === 0 ? submit({fields: model.fields}) : setSubmitDirty();
 
     if (formErrors.length > 0) {
       const erroredInput = inputRefs.current[formErrors[0].id];
