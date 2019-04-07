@@ -68,6 +68,10 @@ const createStoreMock = () => ({
   replaceReducer: jest.fn(),
 });
 
+const createObservableMock = () => ({
+  subscribe: jest.fn(() => jest.fn()),
+});
+
 const wrapWithKContext = (scope, store) => ({
   wrapper: props => (
     <KProvider store={store}>
@@ -96,4 +100,5 @@ export {
   createStoreMock,
   wrapWithKContext,
   wrapWithFormContext,
+  createObservableMock,
 };

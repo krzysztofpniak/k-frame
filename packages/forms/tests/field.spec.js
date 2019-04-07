@@ -4,7 +4,11 @@ import {KProvider} from '@k-frame/core';
 import {render, queryByAttribute, cleanup} from 'react-testing-library';
 //import renderer from 'react-test-renderer';
 import 'jest-dom/extend-expect';
-import {createStoreMock, wrapWithFormContext} from './testData';
+import {
+  createStoreMock,
+  wrapWithFormContext,
+  createObservableMock,
+} from './testData';
 
 let store = null;
 
@@ -52,7 +56,7 @@ describe('Field', () => {
       value: '',
       visible: true,
     }));
-    const observable = {subscribe: jest.fn()};
+    const observable = createObservableMock();
 
     const {asFragment} = render(
       <Field
@@ -73,7 +77,7 @@ describe('Field', () => {
       value: 'John',
       visible: true,
     }));
-    const observable = {subscribe: jest.fn()};
+    const observable = createObservableMock();
     const {container} = render(
       <Field
         id="name"
@@ -95,7 +99,7 @@ describe('Field', () => {
       value: 10,
       visible: true,
     }));
-    const observable = {subscribe: jest.fn()};
+    const observable = createObservableMock();
     const formatCurrency = v => `$${v}`;
 
     const {container} = render(
@@ -120,7 +124,7 @@ describe('Field', () => {
         value: 10,
         visible: true,
       }));
-      const observable = {subscribe: jest.fn()};
+      const observable = createObservableMock();
       let triggerOnChange = null;
 
       const TextWithOnChangeExposed = ({id, value, onChange}) => {
@@ -155,7 +159,7 @@ describe('Field', () => {
         value: 10,
         visible: true,
       }));
-      const observable = {subscribe: jest.fn()};
+      const observable = createObservableMock();
       let triggerOnChange = null;
 
       const TextWithOnChangeExposed = ({id, value, onChange}) => {
@@ -203,7 +207,10 @@ describe('Field', () => {
       const getFieldState = jest.fn(() => f1);
       const subscribe = jest.fn();
       let subject = null;
-      subscribe.mockImplementation(observer => (subject = observer));
+      subscribe.mockImplementation(observer => {
+        subject = observer;
+        return jest.fn();
+      });
       const observable = {subscribe};
 
       const {container} = render(
@@ -234,7 +241,7 @@ describe('Field', () => {
         visible: true,
         props: {propA: 'Foo', propB: 'Bar'},
       }));
-      const observable = {subscribe: jest.fn()};
+      const observable = createObservableMock();
       const CustomComponent = ({id, value, onChange, propA, propB}) => (
         <div>
           <div data-testid="propA">{propA}</div>
@@ -266,7 +273,7 @@ describe('Field', () => {
         value: 'John',
         visible: false,
       }));
-      const observable = {subscribe: jest.fn()};
+      const observable = createObservableMock();
 
       const CustomComponent = jest.fn(() => <div>component</div>);
 
