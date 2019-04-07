@@ -39,7 +39,7 @@ const schema2 = [
     props: ({fields: {age}, args: {color}}) => ({age, color}),
     validate: [
       required,
-      (v, {color}, useMemo) => {
+      (v, {args: {color}}, useMemo) => {
         const message = useMemo(
           () =>
             console.log('color message recalculated') ||
@@ -49,7 +49,7 @@ const schema2 = [
         return v !== color ? message : '';
       },
     ],
-    visible: props => console.log(props) || props.age < 25,
+    visible: ({fields: {age}}) => age < 25,
   },
   {
     id: 'password',
