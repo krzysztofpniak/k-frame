@@ -89,7 +89,7 @@ const Row = ({input, title, error}) => (
   </div>
 );
 
-const FormTemplate = ({buttons, fields, color, onSubmit}) => (
+const FormTemplate = ({buttons, fields, indexedFields, color, onSubmit}) => (
   <form onSubmit={onSubmit}>
     <div
       style={{
@@ -98,6 +98,7 @@ const FormTemplate = ({buttons, fields, color, onSubmit}) => (
         padding: '10px',
       }}
     >
+      {indexedFields.name}
       {buttons}
       {fields.default}
       {buttons}
