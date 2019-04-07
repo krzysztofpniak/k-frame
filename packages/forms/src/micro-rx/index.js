@@ -77,7 +77,6 @@ const share = observable => {
     return () => {
       const idx = listeners.indexOf(observer.next);
       listeners.splice(idx, 1);
-      console.log('listeners', listeners);
       if (listeners.length === 0) {
         unsubscribe();
       }
