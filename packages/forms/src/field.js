@@ -55,11 +55,15 @@ const Field = memo(
         setVisibility(state.visible);
       };
 
-      distinctUntilChanged(
+      const unsubscribe = distinctUntilChanged(
         oMap(({fieldsStates}) => {
           return fieldsStates[id];
         }, formContext.observable)
       ).subscribe(updateField);
+
+      return () => {
+        unsubscribe();
+      };
     }, []);
 
     const formattedValue = useMemo(() => (format ? format(value) : value), [
