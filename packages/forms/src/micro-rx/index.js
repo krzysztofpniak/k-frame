@@ -1,9 +1,8 @@
 import {shallowEqual} from '@k-frame/core';
 
 const Observable = subscribe => {
-  const s = observer => {
+  const s = observer =>
     subscribe(typeof observer === 'function' ? {next: observer} : observer);
-  };
 
   return {
     subscribe: s,
@@ -12,48 +11,60 @@ const Observable = subscribe => {
 
 const interval = period => {
   let i = 0;
+  let timer;
   return Observable(observer => {
-    setInterval(() => observer.next(i++), period);
+    timer = setInterval(() => observer.next(i++), period);
+    return () => {
+      clearInterval(timer);
+    };
   });
 };
 
 const oFilter = (predicate, observable) =>
-  Observable(observer => {
+  Observable(observer =>
     observable.subscribe({
       next: data => predicate(data) && observer.next(data),
-    });
-  });
+    })
+  );
 
 const oMap = (predicate, observable) =>
-  Observable(observer => {
-    observable.subscribe({next: data => observer.next(predicate(data))});
-  });
+  Observable(observer =>
+    observable.subscribe({next: data => observer.next(predicate(data))})
+  );
 
 const oScan = (accumulator, seed) =>
-  Observable(observer => {
+  Observable(observer =>
     observable.subscribe({
       next: data => observer.next((seed = accumulator(seed, data))),
-    });
-  });
+    })
+  );
 
 const combineLatest = (...observables) => {
   const latest = observables.map(() => null);
   return Observable(observer => {
+    const unsubscribes = [];
     for (let i = 0; i < observables.length; i++) {
-      observables[i].subscribe({
-        next: data => {
-          latest[i] = data;
-          observer.next(latest);
-        },
-      });
+      unsubscribes.push(
+        observables[i].subscribe({
+          next: data => {
+            latest[i] = data;
+            observer.next(latest);
+          },
+        })
+      );
     }
+    return () => {
+      for (let i = 0; i < unsubscribes.length; i++) {
+        unsubscribes[i]();
+      }
+    };
   });
 };
 
 const share = observable => {
   const listeners = [];
 
-  observable.subscribe({
+  const unsubscribe = observable.subscribe({
     next: data => {
       for (let i = 0; i < listeners.length; i++) {
         listeners[i](data);
@@ -61,13 +72,23 @@ const share = observable => {
     },
   });
 
-  return Observable(observer => listeners.push(observer.next));
+  return Observable(observer => {
+    listeners.push(observer.next);
+    return () => {
+      const idx = listeners.indexOf(observer.next);
+      listeners.splice(idx, 1);
+      console.log('listeners', listeners);
+      if (listeners.length === 0) {
+        unsubscribe();
+      }
+    };
+  });
 };
 
 const distinctUntilChanged = observable =>
   Observable(observer => {
     let prev = null;
-    observable.subscribe({
+    return observable.subscribe({
       next: data => {
         if (!shallowEqual(data, prev)) {
           observer.next(data);
