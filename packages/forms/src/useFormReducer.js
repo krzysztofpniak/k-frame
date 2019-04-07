@@ -7,27 +7,9 @@ import {
   useRef,
 } from 'react';
 import * as formActions from './actions';
-import {
-  bindActionCreators,
-  KContext,
-  shallowEqual,
-  withMemoContext,
-} from '@k-frame/core';
+import {bindActionCreators, KContext, shallowEqual} from '@k-frame/core';
 import {createUpdater} from './updater';
-import {
-  compose,
-  filter,
-  indexBy,
-  keys,
-  map,
-  of,
-  pathOr,
-  prop,
-  reduceWhile,
-  unless,
-  always,
-  find,
-} from 'ramda';
+import {compose, filter, indexBy, keys, map, pathOr, prop, find} from 'ramda';
 import {
   Observable,
   combineLatest,
@@ -35,143 +17,9 @@ import {
   share,
   oFilter,
 } from './micro-rx/index';
-
-const ensureArray = unless(Array.isArray, of);
-const boolWithDefault = (defaultValue, value) =>
-  value != null ? value : defaultValue;
-const emptyObject = {};
-
-const propsDefault = always(emptyObject);
-const visibleDefault = always(true);
-
-const enrichSchema = schema =>
-  map(
-    fieldSchema => ({
-      ...fieldSchema,
-      props: fieldSchema.props ? fieldSchema.props : propsDefault,
-      validate: fieldSchema.validate
-        ? map(
-            validator =>
-              withMemoContext(validator, (useMemo, value, context) => [
-                value,
-                context,
-                useMemo,
-              ]),
-            ensureArray(fieldSchema.validate)
-          )
-        : null,
-      visible: fieldSchema.visible
-        ? withMemoContext(fieldSchema.visible, (useMemo, context) => [
-            context,
-            useMemo,
-          ])
-        : visibleDefault,
-    }),
-    schema
-  );
-
-const validateField = (fieldSchema, fieldValue, fieldContext) => {
-  return fieldSchema.validate
-    ? reduceWhile(
-        p => !p,
-        (p, c) => c(fieldValue, fieldContext),
-        '',
-        fieldSchema.validate
-      )
-    : '';
-};
-
-const createContextMapper = (
-  indexedSchema,
-  initialState,
-  errorsDisplayStrategy,
-  fieldStatesRef,
-  args
-) => {
-  const errors = map(always(''), indexedSchema);
-  const fields = initialState.fields;
-  const fieldContext = {fields: initialState.fields, args};
-
-  fieldStatesRef.current = map(
-    fieldSchema => ({
-      value: fields[fieldSchema.id],
-      error: validateField(fieldSchema, fields[fieldSchema.id], fieldContext),
-      visible: fieldSchema.visible(fieldContext),
-      props: fieldSchema.props ? fieldSchema.props(fieldContext) : emptyObject,
-    }),
-    indexedSchema
-  );
-
-  return ([args, formState]) => {
-    const fieldsStates = fieldStatesRef.current;
-    const fieldContext = {fields: formState.fields, args};
-    for (let fieldId in formState.fields) {
-      if (formState.fields.hasOwnProperty(fieldId)) {
-        const fieldSchema = indexedSchema[fieldId];
-        const fieldValue = formState.fields[fieldId];
-
-        const props = fieldSchema.props
-          ? fieldSchema.props(fieldContext)
-          : emptyObject;
-
-        const error = validateField(fieldSchema, fieldValue, fieldContext);
-
-        errors[fieldId] = error;
-        const touched = formState.touched[fieldId];
-        const dirty = formState.dirty[fieldId];
-
-        const errorVisible = errorsDisplayStrategy({
-          submitRequested: formState.submitRequested,
-          touched,
-          dirty,
-        });
-
-        const newState = {
-          value: fieldValue,
-          props: shallowEqual(props, fieldsStates[fieldId].props)
-            ? fieldsStates[fieldId].props
-            : props,
-          error,
-          errorVisible,
-          visible: fieldSchema.visible(fieldContext),
-        };
-
-        if (!shallowEqual(fieldsStates[fieldId], newState)) {
-          fieldsStates[fieldId] = newState;
-        }
-      }
-    }
-
-    return {args, formState, errors, fieldsStates};
-  };
-};
-
-const useFormStateObservable = (subscribe, getFormState) => {
-  const observer = useRef({});
-
-  useEffect(() => {
-    let prevState = getFormState();
-    observer.current.next(prevState);
-    return subscribe(() => {
-      const newState = getFormState();
-      if (newState !== prevState) {
-        observer.current.next(newState);
-        prevState = newState;
-      }
-    });
-  }, []);
-
-  const observable = useMemo(
-    () =>
-      Observable(o => {
-        observer.current = o;
-        return () => {};
-      }),
-    []
-  );
-
-  return observable;
-};
+import enrichSchema from './enrichSchema';
+import createContextMapper from './createContextMapper';
+import useFormStateObservable from './useFormStateObservable';
 
 const useFormReducer = ({
   fieldTypes,
