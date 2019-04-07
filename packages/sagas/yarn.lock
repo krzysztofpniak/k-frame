@@ -971,10 +971,10 @@
     "@types/istanbul-lib-coverage" "^1.1.0"
     "@types/yargs" "^12.0.9"
 
-"@k-frame/core@^0.8.43":
-  version "0.8.43"
-  resolved "https://registry.yarnpkg.com/@k-frame/core/-/core-0.8.43.tgz#1da834d4f551e41d08dea75017092f55649fb347"
-  integrity sha512-v/EnRiJW1rZUXk66g23v/h2Qfp7+YIzLLC0r3E+zxtXmN4Q/TNP1wCoXdtsgdzk6l7ai76Cc4D6cCFUMOH6r6A==
+"@k-frame/core@^0.8.44":
+  version "0.8.44"
+  resolved "https://registry.yarnpkg.com/@k-frame/core/-/core-0.8.44.tgz#525c550df9a943c70ccad210ede6443df0aecda5"
+  integrity sha512-GGVcLbrGJpzFDzhyH5WVp0ec5a7BE7/WFtmj1x1Ir39oNQjNeGE2hEdRDPH0MKrayBIcIdS16vqUZOCCYMo/5A==
 
 "@redux-saga/core@^1.0.2":
   version "1.0.2"
