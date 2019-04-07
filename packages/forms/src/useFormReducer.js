@@ -28,16 +28,21 @@ import {
   always,
   find,
 } from 'ramda';
+import {Observable, combineLatest, oMap, share, oFilter} from './micro-rx';
 
 const ensureArray = unless(Array.isArray, of);
 const boolWithDefault = (defaultValue, value) =>
   value != null ? value : defaultValue;
 const emptyObject = {};
 
+const propsDefault = always(emptyObject);
+const visibleDefault = always(true);
+
 const enrichSchema = schema =>
   map(
     fieldSchema => ({
       ...fieldSchema,
+      props: fieldSchema.props ? fieldSchema.props : propsDefault,
       validate: fieldSchema.validate
         ? map(
             validator =>
@@ -54,10 +59,112 @@ const enrichSchema = schema =>
             context,
             useMemo,
           ])
-        : null,
+        : visibleDefault,
     }),
     schema
   );
+
+const validateField = (fieldSchema, fieldValue, fieldContext) => {
+  return fieldSchema.validate
+    ? reduceWhile(
+        p => !p,
+        (p, c) => c(fieldValue, fieldContext),
+        '',
+        fieldSchema.validate
+      )
+    : '';
+};
+
+const createContextMapper = (
+  indexedSchema,
+  initialState,
+  errorsDisplayStrategy,
+  fieldStatesRef,
+  args
+) => {
+  const errors = map(always(''), indexedSchema);
+  const fields = initialState.fields;
+  const fieldContext = {fields: initialState.fields, args};
+
+  fieldStatesRef.current = map(
+    fieldSchema => ({
+      value: fields[fieldSchema.id],
+      error: validateField(fieldSchema, fields[fieldSchema.id], fieldContext),
+      visible: fieldSchema.visible(fieldContext),
+      props: fieldSchema.props ? fieldSchema.props(fieldContext) : emptyObject,
+    }),
+    indexedSchema
+  );
+
+  return ([args, formState]) => {
+    const fieldsStates = fieldStatesRef.current;
+    const fieldContext = {fields: formState.fields, args};
+    for (let fieldId in formState.fields) {
+      if (formState.fields.hasOwnProperty(fieldId)) {
+        const fieldSchema = indexedSchema[fieldId];
+        const fieldValue = formState.fields[fieldId];
+
+        const props = fieldSchema.props
+          ? fieldSchema.props(fieldContext)
+          : emptyObject;
+
+        const error = validateField(fieldSchema, fieldValue, fieldContext);
+
+        errors[fieldId] = error;
+        const touched = formState.touched[fieldId];
+        const dirty = formState.dirty[fieldId];
+
+        const errorVisible = errorsDisplayStrategy({
+          submitRequested: formState.submitRequested,
+          touched,
+          dirty,
+        });
+
+        const newState = {
+          value: fieldValue,
+          props: shallowEqual(props, fieldsStates[fieldId].props)
+            ? fieldsStates[fieldId].props
+            : props,
+          error,
+          errorVisible,
+          visible: fieldSchema.visible(fieldContext),
+        };
+
+        if (!shallowEqual(fieldsStates[fieldId], newState)) {
+          fieldsStates[fieldId] = newState;
+        }
+      }
+    }
+
+    return {args, formState, errors, fieldsStates};
+  };
+};
+
+const useFormStateObservable = (subscribe, getFormState) => {
+  const observer = useRef({});
+
+  useEffect(() => {
+    let prevState = getFormState();
+    observer.current.next(prevState);
+    return subscribe(() => {
+      const newState = getFormState();
+      if (newState !== prevState) {
+        observer.current.next(newState);
+        prevState = newState;
+      }
+    });
+  }, []);
+
+  const observable = useMemo(
+    () =>
+      Observable(o => {
+        observer.current = o;
+      }),
+    []
+  );
+
+  return observable;
+};
 
 const useFormReducer = ({
   fieldTypes,
@@ -93,94 +200,63 @@ const useFormReducer = ({
     []
   );
 
-  const validateField = useCallback((fieldId, props) => {
-    const model = getFormState();
-    return indexedSchema[fieldId].validate
-      ? reduceWhile(
-          p => !p,
-          (p, c) => c(model.fields[fieldId], props),
-          '',
-          indexedSchema[fieldId].validate
-        )
-      : '';
-  }, []);
-
-  const buildFieldState = useCallback(
-    (id, value, props, touched, submitRequested) => {
-      return {
-        id,
-        value,
-        props,
-        error: validateField(id, props),
-        errorVisible: errorsDisplayStrategy({
-          submitRequested: submitRequested,
-          touched,
-          //dirty: model.dirty[fieldId],
-        }),
-        touched,
-        visible: !indexedSchema[id].visible || indexedSchema[id].visible(props),
-      };
-    },
-    []
-  );
-
   const argsRef = useRef(args);
   const inputRefs = useRef({});
+  const fieldStatesRef = useRef({});
 
-  const resolveFieldProps = useCallback((id, fieldsValues) => {
-    return indexedSchema[id].props
-      ? indexedSchema[id].props({
-          args: argsRef.current,
-          fields: fieldsValues,
-        })
-      : emptyObject;
-  }, []);
-
-  const initialTouchedValues = useMemo(
-    () => map(always(false), indexedSchema),
-    []
-  );
-
-  const initialFieldsValues = useMemo(() => {
-    const model = getFormState();
-    return map(f => model.fields[f.id], indexedSchema);
-  }, []);
-
-  const initialFieldsProps = useMemo(() => {
-    const fieldsValues = getFields();
-    return map(f => resolveFieldProps(f.id, fieldsValues), indexedSchema);
-  }, []);
-
-  const fieldsValuesRef = useRef(initialFieldsValues);
-  const fieldsPropsRef = useRef(initialFieldsProps);
-  const touchedValuesRef = useRef(initialTouchedValues);
-  const submitRequestedRef = useRef({});
-
-  const initialFieldsStates = useMemo(
+  const contextMapper = useMemo(
     () =>
-      map(
-        f =>
-          buildFieldState(
-            f.id,
-            fieldsValuesRef.current[f.id],
-            fieldsPropsRef.current[f.id],
-            touchedValuesRef.current[f.id],
-            false
-          ),
-        indexedSchema
+      createContextMapper(
+        indexedSchema,
+        initialState,
+        errorsDisplayStrategy,
+        fieldStatesRef,
+        args
       ),
     []
   );
 
-  const fieldStatesRef = useRef(initialFieldsStates);
-
-  const fieldsCallbacksRef = useRef({});
-
   const argsKeys = useMemo(() => keys(args), []);
   const argsValues = map(k => args[k], argsKeys);
 
+  const argsEmitter = useRef(() => {});
+
+  const argsObservable = useMemo(() => {
+    return Observable(observer => {
+      let prevArgs = args;
+      observer.next(prevArgs);
+      argsEmitter.current = newArgs => {
+        if (!shallowEqual(newArgs, prevArgs)) {
+          observer.next(newArgs);
+          prevArgs = newArgs;
+        }
+      };
+    });
+  }, []);
+
+  const formStateObservable = useFormStateObservable(
+    context.subscribe,
+    getFormState
+  );
+
+  const formContextObservable = useMemo(
+    () =>
+      share(
+        oMap(
+          contextMapper,
+          oFilter(
+            ([args, formState]) =>
+              args !== null && formState !== null && formState.fields,
+            combineLatest(argsObservable, formStateObservable)
+          )
+        )
+      ),
+    []
+  );
+
   useEffect(() => {
     argsRef.current = args;
+    argsEmitter.current(args);
   }, argsValues);
 
   useLayoutEffect(() => {
@@ -210,64 +286,6 @@ const useFormReducer = ({
     return pathOr(false, ['touched', fieldId], state);
   }, []);
 
-  const subscribeField = useCallback((fieldId, callback) => {
-    if (fieldsCallbacksRef.current[fieldId]) {
-      console.error('duplicate field detected');
-    }
-    fieldsCallbacksRef.current[fieldId] = callback;
-  }, []);
-
-  const getFieldsProps = useCallback(fieldsValues => {
-    const fieldsProps = {};
-
-    for (let fieldId in fieldsValues) {
-      if (fieldsValues.hasOwnProperty(fieldId)) {
-        const resolvedProps = resolveFieldProps(fieldId, fieldsValues);
-        if (shallowEqual(fieldsPropsRef.current[fieldId], resolvedProps)) {
-          fieldsProps[fieldId] = fieldsPropsRef.current[fieldId];
-        } else {
-          fieldsProps[fieldId] = resolvedProps;
-        }
-      }
-    }
-
-    return fieldsProps;
-  }, []);
-
-  const tryUpdateFields = useCallback(() => {
-    const fieldsValues = getFields();
-    const touchedValues = getTouched();
-    const {submitRequested} = getFormState();
-
-    const fieldsProps = getFieldsProps(fieldsValues);
-
-    for (let fieldId in fieldsValues) {
-      if (
-        fieldsValues.hasOwnProperty(fieldId) &&
-        fieldsCallbacksRef.current[fieldId] &&
-        (fieldsValues[fieldId] !== fieldsValuesRef.current[fieldId] ||
-          fieldsProps[fieldId] !== fieldsPropsRef.current[fieldId] ||
-          touchedValues[fieldId] !== touchedValuesRef.current[fieldId] ||
-          submitRequestedRef.current !== submitRequested)
-      ) {
-        const newFieldState = buildFieldState(
-          fieldId,
-          fieldsValues[fieldId],
-          fieldsProps[fieldId],
-          touchedValues[fieldId],
-          submitRequested
-        );
-        fieldStatesRef.current[fieldId] = newFieldState;
-        fieldsCallbacksRef.current[fieldId](newFieldState);
-      }
-    }
-
-    submitRequestedRef.current = submitRequested;
-    fieldsPropsRef.current = fieldsProps;
-    fieldsValuesRef.current = fieldsValues;
-    touchedValuesRef.current = touchedValues;
-  }, []);
-
   const validateForm = useCallback(
     asyncErrors =>
       compose(
@@ -282,12 +300,6 @@ const useFormReducer = ({
       )(schema),
     []
   );
-
-  useEffect(() => {
-    tryUpdateFields();
-  }, argsValues);
-
-  useEffect(() => context.subscribe(tryUpdateFields), []);
 
   const handleRefSet = useCallback((ref, fieldId) => {
     inputRefs.current[fieldId] = ref;
@@ -372,8 +384,8 @@ const useFormReducer = ({
       defaultSubmitHandler,
       handleOnChange,
       formContext: {
-        subscribeField,
         getFieldState,
+        observable: formContextObservable,
       },
     }),
     []

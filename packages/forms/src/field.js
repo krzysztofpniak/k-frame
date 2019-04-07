@@ -8,6 +8,7 @@ import {
   useRef,
   useState,
 } from 'react';
+import {oMap, distinctUntilChanged} from './micro-rx/index';
 import FormContext from './FormContext';
 
 const useLazyState = initialValue => {
@@ -47,14 +48,18 @@ const Field = memo(
     const [isVisible, setVisibility] = useLazyState(initialState.visible);
 
     useLayoutEffect(() => {
-      const tryUpdateField = state => {
+      const updateField = state => {
         setValue(state.value);
         setProps(state.props);
         setError(state.errorVisible && state.error);
         setVisibility(state.visible);
       };
 
-      formContext.subscribeField(id, tryUpdateField);
+      distinctUntilChanged(
+        oMap(({fieldsStates}) => {
+          return fieldsStates[id];
+        }, formContext.observable)
+      ).subscribe(updateField);
     }, []);
 
     const formattedValue = useMemo(() => (format ? format(value) : value), [

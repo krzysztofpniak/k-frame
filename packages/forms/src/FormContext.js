@@ -6,7 +6,7 @@ const throwNotSupplied = () => {
 
 const FormContext = createContext({
   getFieldState: throwNotSupplied,
-  subscribeField: throwNotSupplied,
+  observable: {subscribe: throwNotSupplied},
 });
 
 export default FormContext;
