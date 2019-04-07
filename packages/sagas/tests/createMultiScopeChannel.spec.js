@@ -11,11 +11,9 @@ beforeEach(() => {
 
 describe('createMultiScopeChannel', () => {
   it('should return test', () => {
-    console.log('xx', stdChannel.mock.calls.length);
     const multiChannel = createMultiScopeChannel();
     multiChannel.getScopeChannel(['scopeA']);
     multiChannel.emit({type: 'scopeA.b'});
-    console.log('xx', stdChannel.mock.calls.length);
     expect('test').toBe('test');
   });
 });
