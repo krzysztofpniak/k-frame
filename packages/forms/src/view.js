@@ -7,7 +7,7 @@ import React, {
   useContext,
   memo,
 } from 'react';
-import {filter, map, find, reduceBy, propOr, keys, flip, prop} from 'ramda';
+import {map, fromPairs, reduceBy, pathOr, keys, flip} from 'ramda';
 import useFormReducer from './useFormReducer';
 import {KContext, withScope, shallowEqual} from '@k-frame/core';
 import FormContext from './FormContext';
@@ -104,31 +104,51 @@ const FormInt = withScope(
     );
     const genericError = <div>genericError</div>;
 
-    const groupFields = useCallback(
-      (acc, f) =>
-        acc.concat(
-          <Field
-            key={(name || '') + (name ? '-' : '') + f.id}
-            id={f.id}
-            inputRef={handleRefSet}
-            title={f.title}
-            fieldTemplate={fieldTemplate}
-            formName={name}
-            onChange={handleOnChange}
-            onBlur={handleOnBlur}
-            defaultValue={f.defaultValue}
-            parse={f.parse}
-            format={f.format}
-            type={f.type || 'text'}
-            component={fieldTypes[f.type || 'text']}
-          />
+    const fieldsElements = useMemo(
+      () =>
+        map(
+          f => [
+            f,
+            <Field
+              key={(name || '') + (name ? '-' : '') + f.id}
+              id={f.id}
+              inputRef={handleRefSet}
+              title={f.title}
+              fieldTemplate={fieldTemplate}
+              formName={name}
+              onChange={handleOnChange}
+              onBlur={handleOnBlur}
+              defaultValue={f.defaultValue}
+              parse={f.parse}
+              format={f.format}
+              type={f.type || 'text'}
+              component={fieldTypes[f.type || 'text']}
+            />,
+          ],
+          schema
         ),
-      [fieldTemplate, fieldTypes, name]
+      [schema]
     );
 
-    const renderedFields = useMemo(
-      () => reduceBy(groupFields, [], propOr('default', 'group'), schema),
-      [schema]
+    const groupFields = useCallback((acc, [f, e]) => acc.concat(e), [
+      fieldTemplate,
+      name,
+    ]);
+
+    const groupedFields = useMemo(
+      () =>
+        reduceBy(
+          groupFields,
+          [],
+          pathOr('default', [0, 'group']),
+          fieldsElements
+        ),
+      [fieldsElements]
+    );
+
+    const indexedFields = useMemo(
+      () => fromPairs(map(([f, e]) => [f.id, e], fieldsElements)),
+      [fieldsElements]
     );
 
     const renderedForm = useMemo(
@@ -138,6 +158,7 @@ const FormInt = withScope(
             formTemplate,
             formTemplateProps,
             fields: groupedFields,
+            indexedFields,
             buttons,
             genericError,
             legend,
@@ -145,7 +166,7 @@ const FormInt = withScope(
           })}
         </FormContext.Provider>
       ),
-      [buttons, renderedFields]
+      [buttons, groupedFields]
     );
 
     return renderedForm;
