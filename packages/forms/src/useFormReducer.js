@@ -165,6 +165,7 @@ const useFormStateObservable = (subscribe, getFormState) => {
     () =>
       Observable(o => {
         observer.current = o;
+        return () => {};
       }),
     []
   );
@@ -237,6 +238,7 @@ const useFormReducer = ({
           prevArgs = newArgs;
         }
       };
+      return () => {};
     });
   }, []);
 
