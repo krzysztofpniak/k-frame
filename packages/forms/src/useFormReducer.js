@@ -28,7 +28,13 @@ import {
   always,
   find,
 } from 'ramda';
-import {Observable, combineLatest, oMap, share, oFilter} from './micro-rx';
+import {
+  Observable,
+  combineLatest,
+  oMap,
+  share,
+  oFilter,
+} from './micro-rx/index';
 
 const ensureArray = unless(Array.isArray, of);
 const boolWithDefault = (defaultValue, value) =>
