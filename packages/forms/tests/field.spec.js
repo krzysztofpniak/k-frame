@@ -52,7 +52,8 @@ describe('Field', () => {
       value: '',
       visible: true,
     }));
-    const subscribeField = jest.fn();
+    const observable = {subscribe: jest.fn()};
+
     const {asFragment} = render(
       <Field
         id="name"
@@ -60,7 +61,7 @@ describe('Field', () => {
         title="Name"
         fieldTemplate={FieldTemplate}
       />,
-      wrapWithFormContext({getFieldState, subscribeField})
+      wrapWithFormContext({getFieldState, observable})
     );
 
     expect(asFragment()).toMatchSnapshot();
@@ -72,7 +73,7 @@ describe('Field', () => {
       value: 'John',
       visible: true,
     }));
-    const subscribeField = jest.fn();
+    const observable = {subscribe: jest.fn()};
     const {container} = render(
       <Field
         id="name"
@@ -82,7 +83,7 @@ describe('Field', () => {
         defaultValue="John"
         fieldTemplate={FieldTemplate}
       />,
-      wrapWithFormContext({getFieldState, subscribeField})
+      wrapWithFormContext({getFieldState, observable})
     );
 
     expect(getById(container, 'user-name').value).toBe('John');
@@ -94,7 +95,7 @@ describe('Field', () => {
       value: 10,
       visible: true,
     }));
-    const subscribeField = jest.fn();
+    const observable = {subscribe: jest.fn()};
     const formatCurrency = v => `$${v}`;
 
     const {container} = render(
@@ -106,7 +107,7 @@ describe('Field', () => {
         defaultValue="10"
         fieldTemplate={FieldTemplate}
       />,
-      wrapWithFormContext({getFieldState, subscribeField})
+      wrapWithFormContext({getFieldState, observable})
     );
 
     expect(getById(container, 'name').value).toBe('$10');
@@ -119,7 +120,7 @@ describe('Field', () => {
         value: 10,
         visible: true,
       }));
-      const subscribeField = jest.fn();
+      const observable = {subscribe: jest.fn()};
       let triggerOnChange = null;
 
       const TextWithOnChangeExposed = ({id, value, onChange}) => {
@@ -137,7 +138,7 @@ describe('Field', () => {
           fieldTemplate={FieldTemplate}
           onChange={handleOnChange}
         />,
-        wrapWithFormContext({getFieldState, subscribeField})
+        wrapWithFormContext({getFieldState, observable})
       );
 
       triggerOnChange('john');
@@ -154,7 +155,7 @@ describe('Field', () => {
         value: 10,
         visible: true,
       }));
-      const subscribeField = jest.fn();
+      const observable = {subscribe: jest.fn()};
       let triggerOnChange = null;
 
       const TextWithOnChangeExposed = ({id, value, onChange}) => {
@@ -178,7 +179,7 @@ describe('Field', () => {
           onChange={handleOnChange}
           parse={parseIntNull}
         />,
-        wrapWithFormContext({getFieldState, subscribeField})
+        wrapWithFormContext({getFieldState, observable})
       );
 
       triggerOnChange('134');
@@ -200,9 +201,10 @@ describe('Field', () => {
         value: 'John',
       };
       const getFieldState = jest.fn(() => f1);
-      const subscribeField = jest.fn();
+      const subscribe = jest.fn();
       let subject = null;
-      subscribeField.mockImplementation((f, s) => (subject = s));
+      subscribe.mockImplementation(observer => (subject = observer));
+      const observable = {subscribe};
 
       const {container} = render(
         <Field
@@ -212,14 +214,14 @@ describe('Field', () => {
           defaultValue="John"
           fieldTemplate={FieldTemplate}
         />,
-        wrapWithFormContext({getFieldState, subscribeField})
+        wrapWithFormContext({getFieldState, observable})
       );
 
-      expect(subscribeField).toHaveBeenCalledTimes(1);
+      expect(subscribe).toHaveBeenCalledTimes(1);
       expect(getById(container, 'name').value).toBe('Joh');
-      subject(f2);
+      subject.next({fieldsStates: {name: f2}});
       expect(getById(container, 'name').value).toBe('John');
-      subject(f2);
+      subject.next({fieldsStates: {name: f2}});
       expect(getById(container, 'name').value).toBe('John');
       expect(getFieldState).toHaveBeenCalledTimes(1);
     });
@@ -232,7 +234,7 @@ describe('Field', () => {
         visible: true,
         props: {propA: 'Foo', propB: 'Bar'},
       }));
-      const subscribeField = jest.fn();
+      const observable = {subscribe: jest.fn()};
       const CustomComponent = ({id, value, onChange, propA, propB}) => (
         <div>
           <div data-testid="propA">{propA}</div>
@@ -249,7 +251,7 @@ describe('Field', () => {
           title="Name"
           fieldTemplate={FieldTemplate}
         />,
-        wrapWithFormContext({getFieldState, subscribeField})
+        wrapWithFormContext({getFieldState, observable})
       );
 
       expect(getByTestId('propA').innerHTML).toBe('Foo');
@@ -264,7 +266,7 @@ describe('Field', () => {
         value: 'John',
         visible: false,
       }));
-      const subscribeField = jest.fn();
+      const observable = {subscribe: jest.fn()};
 
       const CustomComponent = jest.fn(() => <div>component</div>);
 
@@ -276,7 +278,7 @@ describe('Field', () => {
           defaultValue="10"
           fieldTemplate={FieldTemplate}
         />,
-        wrapWithFormContext({getFieldState, subscribeField})
+        wrapWithFormContext({getFieldState, observable})
       );
 
       expect(asFragment()).toMatchSnapshot();
