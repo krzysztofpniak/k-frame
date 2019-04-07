@@ -44,11 +44,22 @@ const Input = ({value, onChange, onBlur, inputRef, type}) => (
   />
 );
 
+const SelectField = ({id, value, onChange, options}) => (
+  <select id={id} value={value} onChange={onChange}>
+    {options.map((o, idx) => (
+      <option key={idx} value={o}>
+        {o}
+      </option>
+    ))}
+  </select>
+);
+
 const fieldTypes = {
   text: Input,
   password: Input,
   email: Input,
   counter: Counter,
+  select: SelectField,
   static: ({value}) => <div style={{fontWeight: 'bold'}}>{value}</div>,
 };
 
