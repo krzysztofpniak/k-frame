@@ -14,6 +14,7 @@ import FormContext from './FormContext';
 import {getContextValue} from './formConnect';
 import mergeProps from './mergeProps';
 import Field from './field';
+import FormTemplateProxy from './formTemplateProxy';
 import {fieldTouchedStrategy} from './errorsDisplayStrategies';
 
 const GenericError = ({content}) => (
@@ -133,8 +134,10 @@ const FormInt = withScope(
     const renderedForm = useMemo(
       () => (
         <FormContext.Provider value={formContext}>
-          {createElement(formTemplate, {
-            fields: renderedFields,
+          {createElement(FormTemplateProxy, {
+            formTemplate,
+            formTemplateProps,
+            fields: groupedFields,
             buttons,
             genericError,
             legend,
