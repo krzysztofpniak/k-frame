@@ -64,7 +64,7 @@ const initAction = () => ({type: '@@INIT'});
 const createStoreMock = () => ({
   dispatch: jest.fn(),
   getState: jest.fn(),
-  subscribe: jest.fn(),
+  subscribe: jest.fn(() => jest.fn()),
   replaceReducer: jest.fn(),
 });
 
