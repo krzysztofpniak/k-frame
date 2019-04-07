@@ -67,8 +67,9 @@
     "test:cov": "npm test -- --coverage",
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "start": "webpack-dev-server --history-api-fallback --hot --inline --open",
-    "start2": "webpack-dev-server --entry ./examples/basic/entryRedux.js --history-api-fallback --hot --inline --open"
+    "start": "cross-env COMPONENT_PATH=./components/app.js webpack-dev-server --history-api-fallback --hot --inline --open",
+    "start2": "cross-env COMPONENT_PATH=./components/app.js webpack-dev-server --entry ./examples/basic/entryRedux.js --history-api-fallback --hot --inline --open",
+    "start3": "cross-env COMPONENT_PATH=./formTemplate.js webpack-dev-server --history-api-fallback --hot --inline --open"
   },
   "files": [
     "dist"

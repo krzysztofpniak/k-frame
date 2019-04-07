@@ -3,7 +3,7 @@ import React from 'react';
 import {render} from 'react-dom';
 import {createStore} from 'redux';
 import {KProvider, emptyReducer} from '@k-frame/core';
-import App from './components/app';
+const App = require(COMPONENT_PATH).default;
 
 const storeFactory = (typeof window === 'object' &&
   window.__REDUX_DEVTOOLS_EXTENSION__
@@ -24,8 +24,8 @@ const run = (containerDomId, View) => {
 run('root', App);
 
 if (module.hot) {
-  module.hot.accept('./components/app', () => {
-    const NextApp = require('./components/app').default;
+  module.hot.accept(COMPONENT_PATH, () => {
+    const NextApp = require(COMPONENT_PATH).default;
     run('root', NextApp);
   });
 }
