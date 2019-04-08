@@ -1,5 +1,5 @@
 import {useEffect, useMemo, useRef} from 'react';
-import {Observable} from './micro-rx';
+import {Observable} from './micro-rx/index';
 
 const useFormStateObservable = (subscribe, getFormState) => {
   const observer = useRef({});
