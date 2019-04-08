@@ -93,7 +93,8 @@ const createUpdater = (fieldTypes, schema, resetOnSubmit) => {
         },
       })
     ),
-    createPayloadReducer(SUBMIT, () =>
+    createStateReducer(
+      SUBMIT,
       mergeSpec({
         dirty: compose(
           map(always(false)),
