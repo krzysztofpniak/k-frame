@@ -10,7 +10,7 @@ import {
   fromPairs,
   lensProp,
   map,
-  merge,
+  mergeRight,
   prop,
   set,
 } from 'ramda';
@@ -27,7 +27,7 @@ import {
   SUBMIT,
 } from './actionTypes';
 
-const mergeSpec = curry((spec, obj) => merge(obj, applySpec(spec)(obj)));
+const mergeSpec = curry((spec, obj) => mergeRight(obj, applySpec(spec)(obj)));
 
 const getInitialModel = fields => ({
   debouncing: {},
