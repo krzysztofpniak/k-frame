@@ -46,4 +46,9 @@ const SimpleForm = memo(({scope, color, onSubmit}) => (
   />
 ));
 
+SimpleForm.defaultProps = {
+  scope: 'form',
+  args: {color: 'silver'},
+};
+
 export default SimpleForm;
