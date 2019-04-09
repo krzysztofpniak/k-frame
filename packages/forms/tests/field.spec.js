@@ -1,20 +1,8 @@
 import React from 'react';
 import Field from '../src/field';
-import {KProvider} from '@k-frame/core';
 import {render, queryByAttribute, cleanup} from 'react-testing-library';
-//import renderer from 'react-test-renderer';
 import 'jest-dom/extend-expect';
-import {
-  createStoreMock,
-  wrapWithFormContext,
-  createObservableMock,
-} from './testData';
-
-let store = null;
-
-const initStore = () => {
-  store = createStoreMock();
-};
+import {wrapWithFormContext, createObservableMock} from './testData';
 
 afterEach(cleanup);
 
@@ -28,10 +16,6 @@ afterAll(() => {
 
 afterEach(() => {
   console.error.mockClear();
-});
-
-beforeEach(() => {
-  initStore();
 });
 
 const getById = queryByAttribute.bind(null, 'id');
