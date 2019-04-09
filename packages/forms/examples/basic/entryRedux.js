@@ -4,7 +4,6 @@ import {createStore, combineReducers} from 'redux';
 import {Provider} from 'react-redux';
 import SimpleForm from '../common/simpleForm';
 import formReducer, {registerStore} from '../../src/formReducer';
-import formConnect from '../../src/formConnect';
 import {emptyReducer} from '@k-frame/core';
 
 const storeFactory = (typeof window === 'object' &&
