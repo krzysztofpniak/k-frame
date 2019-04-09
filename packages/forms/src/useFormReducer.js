@@ -9,7 +9,17 @@ import {
 import * as formActions from './actions';
 import {bindActionCreators, KContext, shallowEqual} from '@k-frame/core';
 import {createUpdater} from './updater';
-import {compose, filter, indexBy, keys, map, pathOr, prop, find} from 'ramda';
+import {
+  compose,
+  filter,
+  indexBy,
+  keys,
+  map,
+  pathOr,
+  prop,
+  find,
+  identity,
+} from 'ramda';
 import {
   Observable,
   combineLatest,
@@ -58,6 +68,7 @@ const useFormReducer = ({
   const argsRef = useRef(args);
   const inputRefs = useRef({});
   const fieldStatesRef = useRef({});
+  const mountedFieldsRef = useRef({});
 
   const contextMapper = useMemo(
     () =>
@@ -151,7 +162,7 @@ const useFormReducer = ({
           error: f.error,
           asyncError: asyncErrors[f.id] || '',
         })),
-        filter(f => f.visible),
+        filter(f => f.visible && mountedFieldsRef.current[f.id]),
         map(f => fieldStatesRef.current[f.id])
       )(schema),
     []
@@ -224,6 +235,17 @@ const useFormReducer = ({
     }
   }, []);
 
+  const mountField = useCallback(fieldId => {
+    mountedFieldsRef.current[fieldId] = true;
+    console.log(
+      'mounted',
+      Object.keys(filter(identity, mountedFieldsRef.current))
+    );
+    return () => {
+      mountedFieldsRef.current[fieldId] = false;
+    };
+  }, []);
+
   const result = useMemo(
     () => ({
       ...boundActionCreators,
@@ -242,6 +264,7 @@ const useFormReducer = ({
       formContext: {
         getFieldState,
         observable: formContextObservable,
+        mountField,
       },
     }),
     []

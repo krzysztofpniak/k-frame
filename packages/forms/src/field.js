@@ -61,8 +61,11 @@ const Field = memo(
         }, formContext.observable)
       ).subscribe(updateField);
 
+      const unmount = formContext.mountField(id);
+
       return () => {
         unsubscribe();
+        unmount();
       };
     }, []);
 
