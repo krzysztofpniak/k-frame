@@ -1,7 +1,9 @@
-const mergeProps = propName => props => ({
+import {curry} from 'ramda';
+
+const mergeProps = curry((propName, props) => ({
   ...props,
   ...props[propName],
-  [propName]: null,
-});
+  [propName]: undefined,
+}));
 
 export default mergeProps;
