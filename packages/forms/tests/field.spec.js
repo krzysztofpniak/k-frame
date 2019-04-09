@@ -57,6 +57,7 @@ describe('Field', () => {
       visible: true,
     }));
     const observable = createObservableMock();
+    const mountField = jest.fn(() => jest.fn());
 
     const {asFragment} = render(
       <Field
@@ -65,7 +66,7 @@ describe('Field', () => {
         title="Name"
         fieldTemplate={FieldTemplate}
       />,
-      wrapWithFormContext({getFieldState, observable})
+      wrapWithFormContext({getFieldState, observable, mountField})
     );
 
     expect(asFragment()).toMatchSnapshot();
@@ -78,6 +79,8 @@ describe('Field', () => {
       visible: true,
     }));
     const observable = createObservableMock();
+    const mountField = jest.fn(() => jest.fn());
+
     const {container} = render(
       <Field
         id="name"
@@ -87,7 +90,7 @@ describe('Field', () => {
         defaultValue="John"
         fieldTemplate={FieldTemplate}
       />,
-      wrapWithFormContext({getFieldState, observable})
+      wrapWithFormContext({getFieldState, observable, mountField})
     );
 
     expect(getById(container, 'user-name').value).toBe('John');
@@ -100,6 +103,7 @@ describe('Field', () => {
       visible: true,
     }));
     const observable = createObservableMock();
+    const mountField = jest.fn(() => jest.fn());
     const formatCurrency = v => `$${v}`;
 
     const {container} = render(
@@ -111,7 +115,7 @@ describe('Field', () => {
         defaultValue="10"
         fieldTemplate={FieldTemplate}
       />,
-      wrapWithFormContext({getFieldState, observable})
+      wrapWithFormContext({getFieldState, observable, mountField})
     );
 
     expect(getById(container, 'name').value).toBe('$10');
@@ -125,6 +129,7 @@ describe('Field', () => {
         visible: true,
       }));
       const observable = createObservableMock();
+      const mountField = jest.fn(() => jest.fn());
       let triggerOnChange = null;
 
       const TextWithOnChangeExposed = ({id, value, onChange}) => {
@@ -142,7 +147,7 @@ describe('Field', () => {
           fieldTemplate={FieldTemplate}
           onChange={handleOnChange}
         />,
-        wrapWithFormContext({getFieldState, observable})
+        wrapWithFormContext({getFieldState, observable, mountField})
       );
 
       triggerOnChange('john');
@@ -160,6 +165,7 @@ describe('Field', () => {
         visible: true,
       }));
       const observable = createObservableMock();
+      const mountField = jest.fn(() => jest.fn());
       let triggerOnChange = null;
 
       const TextWithOnChangeExposed = ({id, value, onChange}) => {
@@ -183,7 +189,7 @@ describe('Field', () => {
           onChange={handleOnChange}
           parse={parseIntNull}
         />,
-        wrapWithFormContext({getFieldState, observable})
+        wrapWithFormContext({getFieldState, observable, mountField})
       );
 
       triggerOnChange('134');
@@ -212,6 +218,7 @@ describe('Field', () => {
         return jest.fn();
       });
       const observable = {subscribe};
+      const mountField = jest.fn(() => jest.fn());
 
       const {container} = render(
         <Field
@@ -221,7 +228,7 @@ describe('Field', () => {
           defaultValue="John"
           fieldTemplate={FieldTemplate}
         />,
-        wrapWithFormContext({getFieldState, observable})
+        wrapWithFormContext({getFieldState, observable, mountField})
       );
 
       expect(subscribe).toHaveBeenCalledTimes(1);
@@ -242,6 +249,7 @@ describe('Field', () => {
         props: {propA: 'Foo', propB: 'Bar'},
       }));
       const observable = createObservableMock();
+      const mountField = jest.fn(() => jest.fn());
       const CustomComponent = ({id, value, onChange, propA, propB}) => (
         <div>
           <div data-testid="propA">{propA}</div>
@@ -258,7 +266,7 @@ describe('Field', () => {
           title="Name"
           fieldTemplate={FieldTemplate}
         />,
-        wrapWithFormContext({getFieldState, observable})
+        wrapWithFormContext({getFieldState, observable, mountField})
       );
 
       expect(getByTestId('propA').innerHTML).toBe('Foo');
@@ -274,6 +282,7 @@ describe('Field', () => {
         visible: false,
       }));
       const observable = createObservableMock();
+      const mountField = jest.fn(() => jest.fn());
 
       const CustomComponent = jest.fn(() => <div>component</div>);
 
@@ -285,7 +294,7 @@ describe('Field', () => {
           defaultValue="10"
           fieldTemplate={FieldTemplate}
         />,
-        wrapWithFormContext({getFieldState, observable})
+        wrapWithFormContext({getFieldState, observable, mountField})
       );
 
       expect(asFragment()).toMatchSnapshot();
