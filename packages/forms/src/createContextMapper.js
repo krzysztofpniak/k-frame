@@ -50,6 +50,7 @@ const createContextMapper = (
         });
 
         const newState = {
+          id: fieldId,
           value: fieldValue,
           props: shallowEqual(props, fieldsStates[fieldId].props)
             ? fieldsStates[fieldId].props
