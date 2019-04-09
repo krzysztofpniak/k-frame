@@ -57,14 +57,24 @@ const formReducer = (state = {}, action) => {
   return unwrappedAction ? treeReducer.current(state, unwrappedAction) : state;
 };
 
-const registerStore = s =>
+const getPlainReduxKContextValue = () => ({
+  scope: [],
+  assocReducer: assocFormReducer,
+  dispatch: store.current.dispatch,
+  runSaga: function runSaga$$1() {},
+  getState: store.current.getState,
+  subscribe: store.current.subscribe,
+  supplied: true,
+});
+
+const registerStore = (s, formProp = 'form') =>
   (store.current = {
     dispatch: action =>
       s.dispatch({...action, type: `${kFormsActionPrefix}${action.type}`}),
-    getState: () => prop('form', s.getState()),
+    getState: () => prop(formProp, s.getState()),
     subscribe: s.subscribe,
   });
 
 export default formReducer;
 
-export {assocFormReducer, registerStore, store};
+export {getPlainReduxKContextValue, registerStore};
