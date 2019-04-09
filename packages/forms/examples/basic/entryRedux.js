@@ -13,13 +13,13 @@ const storeFactory = (typeof window === 'object' &&
   : a => a)(createStore);
 
 const rootReducer = combineReducers({
-  form: formReducer,
   ...emptyReducer,
+  form2: formReducer,
 });
 
 const store = storeFactory(rootReducer);
 
-registerStore(store);
+registerStore(store, 'form2');
 
 const run = (containerDomId, View) => {
   render(
