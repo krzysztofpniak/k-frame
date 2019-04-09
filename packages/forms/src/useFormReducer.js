@@ -31,6 +31,8 @@ import enrichSchema from './enrichSchema';
 import createContextMapper from './createContextMapper';
 import useFormStateObservable from './useFormStateObservable';
 
+const emptyObject = {};
+
 const useFormReducer = ({
   fieldTypes,
   schema,
@@ -246,6 +248,8 @@ const useFormReducer = ({
     };
   }, []);
 
+  const initialFieldContext = useMemo(() => ({args, fields: getFields()}), []);
+
   const result = useMemo(
     () => ({
       ...boundActionCreators,
@@ -265,6 +269,7 @@ const useFormReducer = ({
         getFieldState,
         observable: formContextObservable,
         mountField,
+        initialFieldContext,
       },
     }),
     []
