@@ -3,9 +3,9 @@ import {render} from 'react-dom';
 import {createStore, combineReducers} from 'redux';
 import {Provider} from 'react-redux';
 import App from './components/app';
-import appReducer from './components/appReducer';
 import formReducer, {registerStore} from '../../src/formReducer';
 import formConnect from '../../src/formConnect';
+import {emptyReducer} from '@k-frame/core';
 
 const storeFactory = (typeof window === 'object' &&
   window.__REDUX_DEVTOOLS_EXTENSION__
@@ -13,8 +13,8 @@ const storeFactory = (typeof window === 'object' &&
   : a => a)(createStore);
 
 const rootReducer = combineReducers({
-  ...appReducer,
   form: formReducer,
+  ...emptyReducer,
 });
 
 const store = storeFactory(rootReducer);
