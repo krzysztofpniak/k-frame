@@ -12,6 +12,8 @@ import {shallowEqual} from '@k-frame/core';
 import {oMap, distinctUntilChanged} from './micro-rx/index';
 import FormContext from './FormContext';
 
+const emptyObject = {};
+
 const FormTemplateProxy = memo(
   ({
     formTemplate,
@@ -24,9 +26,14 @@ const FormTemplateProxy = memo(
     onSubmit,
   }) => {
     const formContext = useContext(FormContext);
+    const initialFormTemplateProps = useMemo(() =>
+      formTemplateProps
+        ? formTemplateProps(formContext.initialFieldContext)
+        : emptyObject
+    );
 
     const prevProps = useRef({});
-    const [props, setProps] = useState({});
+    const [props, setProps] = useState(initialFormTemplateProps);
 
     useLayoutEffect(() => {
       if (formTemplateProps) {
