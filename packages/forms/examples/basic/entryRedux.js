@@ -1,27 +1,23 @@
 import React from 'react';
 import {render} from 'react-dom';
-import {createStore, compose, applyMiddleware, combineReducers} from 'redux';
+import {createStore, combineReducers} from 'redux';
 import {Provider} from 'react-redux';
 import App from './components/app';
 import appReducer from './components/appReducer';
 import formReducer, {registerStore} from '../../src/formReducer';
 import formConnect from '../../src/formConnect';
 
-const composeEnhancers =
-  typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
-    ? window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({
-        // Specify extension’s options like name, actionsBlacklist, actionsCreators, serialize...
-      })
-    : compose;
+const storeFactory = (typeof window === 'object' &&
+  window.__REDUX_DEVTOOLS_EXTENSION__
+  ? window.__REDUX_DEVTOOLS_EXTENSION__()
+  : a => a)(createStore);
 
 const rootReducer = combineReducers({
   ...appReducer,
   form: formReducer,
 });
 
-const store = createStore(
-  rootReducer,
-);
+const store = storeFactory(rootReducer);
 
 registerStore(store);
 
