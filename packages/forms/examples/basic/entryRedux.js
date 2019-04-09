@@ -2,7 +2,7 @@ import React from 'react';
 import {render} from 'react-dom';
 import {createStore, combineReducers} from 'redux';
 import {Provider} from 'react-redux';
-import App from './components/app';
+import SimpleForm from '../common/simpleForm';
 import formReducer, {registerStore} from '../../src/formReducer';
 import formConnect from '../../src/formConnect';
 import {emptyReducer} from '@k-frame/core';
@@ -30,11 +30,11 @@ const run = (containerDomId, View) => {
   );
 };
 
-run('root', App);
+run('root', SimpleForm);
 
 if (module.hot) {
-  module.hot.accept('./components/app', () => {
-    const NextApp = require('./components/app').default;
-    run('root', formConnect(NextApp));
+  module.hot.accept('../common/simpleForm', () => {
+    const SimpleForm = require('../common/simpleForm').default;
+    run('root', SimpleForm);
   });
 }
