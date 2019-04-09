@@ -84,6 +84,16 @@ const wrapWithFormContext = formContext => ({
   wrapper: props => <FormContext.Provider value={formContext} {...props} />,
 });
 
+const wrapWithSuppliedFormContext = (store, scope, formContext) => ({
+  wrapper: props => (
+    <KProvider store={store}>
+      <Scope scope={scope}>
+        <FormContext.Provider value={formContext} {...props} />
+      </Scope>
+    </KProvider>
+  ),
+});
+
 export {
   counterState0,
   counterState1,
@@ -100,5 +110,6 @@ export {
   createStoreMock,
   wrapWithKContext,
   wrapWithFormContext,
+  wrapWithSuppliedFormContext,
   createObservableMock,
 };
