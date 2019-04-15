@@ -8,7 +8,7 @@ import {
 } from 'react';
 import * as formActions from './actions';
 import {bindActionCreators, KContext, shallowEqual} from '@k-frame/core';
-import {createUpdater} from './updater';
+import createFormReducer from './createFormReducer';
 import {
   compose,
   filter,
@@ -46,7 +46,7 @@ const useFormReducer = ({
   const indexedSchema = useMemo(() => indexBy(prop('id'), richSchema), []);
 
   const reducer = useMemo(
-    () => createUpdater(fieldTypes, schema, resetOnSubmit),
+    () => createFormReducer(fieldTypes, schema, resetOnSubmit),
     []
   );
   //TODO: performance

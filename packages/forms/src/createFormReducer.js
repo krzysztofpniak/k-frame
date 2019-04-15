@@ -1,16 +1,11 @@
 import {
   always,
-  applySpec,
   assoc,
   compose,
-  curry,
-  defaultTo,
   evolve,
   filter,
   fromPairs,
-  lensProp,
   map,
-  mergeRight,
   prop,
   propOr,
 } from 'ramda';
@@ -26,8 +21,7 @@ import {
   SET_SUBMIT_REQUESTED,
   SUBMIT,
 } from './actionTypes';
-
-const mergeSpec = curry((spec, obj) => mergeRight(obj, applySpec(spec)(obj)));
+import mergeSpec from './mergeSpec';
 
 const getInitialModel = fields => ({
   submitRequested: false,
@@ -35,13 +29,6 @@ const getInitialModel = fields => ({
   dirty: map(always(false), fields),
   touched: map(always(false), fields),
   defaultValues: fields || {},
-});
-
-const reset = mergeSpec({
-  dirty: always(false),
-  submitRequested: always(false),
-  fields: prop('defaultValues'),
-  subStates: prop('initialSubStates'),
 });
 
 const getFieldType = propOr('text', 'type');
@@ -111,4 +98,4 @@ const createUpdater = (fieldTypes, schema, resetOnSubmit) => {
   ]);
 };
 
-export {createUpdater, reset};
+export default createUpdater;

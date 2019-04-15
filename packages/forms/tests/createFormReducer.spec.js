@@ -1,4 +1,4 @@
-import {createUpdater} from '../src/updater';
+import createFormReducer from '../src/createFormReducer';
 
 const schema = [{id: 'name'}, {id: 'age', defaultValue: 20}];
 
@@ -42,10 +42,10 @@ const state1 = {
   submitRequested: true,
 };
 
-describe('createReducer', () => {
+describe('createFormReducer', () => {
   it('should return initial state', () => {
     expect(
-      createUpdater(
+      createFormReducer(
         {
           text: () => null,
         },
@@ -56,7 +56,7 @@ describe('createReducer', () => {
   });
   it('should handle setField action', () => {
     expect(
-      createUpdater(
+      createFormReducer(
         {
           text: () => null,
         },
@@ -74,7 +74,7 @@ describe('createReducer', () => {
   });
   it('should handle setTouched action', () => {
     expect(
-      createUpdater(
+      createFormReducer(
         {
           text: () => null,
         },
@@ -91,7 +91,7 @@ describe('createReducer', () => {
   });
   it('should handle setSubmitRequested action', () => {
     expect(
-      createUpdater(
+      createFormReducer(
         {
           text: () => null,
         },
@@ -107,7 +107,7 @@ describe('createReducer', () => {
   });
   it('should handle reset action', () => {
     expect(
-      createUpdater(
+      createFormReducer(
         {
           text: () => null,
         },
@@ -122,7 +122,7 @@ describe('createReducer', () => {
   describe('submit action', () => {
     it('should handle with reset', () => {
       expect(
-        createUpdater(
+        createFormReducer(
           {
             text: () => null,
           },
@@ -136,7 +136,7 @@ describe('createReducer', () => {
     });
     it('should handle with persist', () => {
       expect(
-        createUpdater(
+        createFormReducer(
           {
             text: () => null,
           },
