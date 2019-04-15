@@ -12,6 +12,7 @@ import {
   map,
   mergeRight,
   prop,
+  propOr,
 } from 'ramda';
 import {
   createPayloadReducer,
@@ -43,10 +44,7 @@ const reset = mergeSpec({
   subStates: prop('initialSubStates'),
 });
 
-const getFieldType = compose(
-  defaultTo('text'),
-  prop('type')
-);
+const getFieldType = propOr('text', 'type');
 
 const createUpdater = (fieldTypes, schema, resetOnSubmit) => {
   const missingTypes = filter(f => !fieldTypes[getFieldType(f)], schema);
