@@ -32,7 +32,7 @@ const oMap = (predicate, observable) =>
     observable.subscribe({next: data => observer.next(predicate(data))})
   );
 
-const oScan = (accumulator, seed) =>
+const oScan = (accumulator, seed, observable) =>
   Observable(observer =>
     observable.subscribe({
       next: data => observer.next((seed = accumulator(seed, data))),
