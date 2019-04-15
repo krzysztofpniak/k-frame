@@ -1,6 +1,7 @@
 {
   "name": "k-frame",
   "version": "1.0.0",
+  "private": true,
   "description": "Docs for k-frame",
   "main": "index.js",
   "directories": {
@@ -60,5 +61,6 @@
       "packages/forms/src/**/*.{js,jsx}",
       "!<rootDir>/node_modules/"
     ]
-  }
+  },
+  "workspaces": ["packages/*"]
 }
