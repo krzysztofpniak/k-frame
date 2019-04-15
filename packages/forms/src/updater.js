@@ -95,7 +95,14 @@ const createUpdater = (fieldTypes, schema, resetOnSubmit) => {
     ),
     createPayloadReducer(RESET, ({resetOnCancel}) =>
       mergeSpec({
-        dirty: always(false),
+        dirty: compose(
+          map(always(false)),
+          prop('fields')
+        ),
+        touched: compose(
+          map(always(false)),
+          prop('fields')
+        ),
         submitRequested: always(false),
         fields: prop(resetOnCancel ? 'defaultValues' : 'fields'),
       })
