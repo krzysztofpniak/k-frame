@@ -22,6 +22,7 @@ import useScopeProps from './useScopeProps';
 import withMemoContext from './withMemoContext';
 import {curry, unless, is, objOf} from 'ramda';
 import useWithArgs from './useWithArgs';
+import useInputTargetValue from './useInputTargetValue';
 
 const asyncActionTypeName = curry(
   (stage, baseType) => `async/${baseType}/${stage}`
@@ -57,8 +58,6 @@ const useAsync = (fn, key) => {
     return asyncActionExecutor(fn, args, key, context.dispatch);
   }, []);
 };
-
-const useInputTargetValue = fn => useCallback(e => fn(e.target.value), [fn]);
 
 export {
   handleAsyncs,
