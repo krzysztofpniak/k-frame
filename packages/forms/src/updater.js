@@ -12,7 +12,6 @@ import {
   map,
   mergeRight,
   prop,
-  set,
 } from 'ramda';
 import {
   createPayloadReducer,
@@ -30,7 +29,6 @@ import {
 const mergeSpec = curry((spec, obj) => mergeRight(obj, applySpec(spec)(obj)));
 
 const getInitialModel = fields => ({
-  debouncing: {},
   submitRequested: false,
   fields: fields || {},
   dirty: map(always(false), fields),
@@ -38,23 +36,12 @@ const getInitialModel = fields => ({
   defaultValues: fields || {},
 });
 
-const setFields = (model, fields) =>
-  set(lensProp('fields'), {...model.fields, ...fields}, model);
-
 const reset = mergeSpec({
   dirty: always(false),
   submitRequested: always(false),
   fields: prop('defaultValues'),
   subStates: prop('initialSubStates'),
 });
-
-const setFieldsAndDefaults = (model, fields) =>
-  model
-    .set('fields', {...model.fields, ...fields})
-    .set('defaultValues', {...model.defaultValues, ...fields});
-
-const setSubStates = (model, subStates) =>
-  model.set('subStates', {...model.subStates, ...subStates});
 
 const getFieldType = compose(
   defaultTo('text'),
@@ -106,7 +93,6 @@ const createUpdater = (fieldTypes, schema, resetOnSubmit) => {
           prop('fields')
         ),
         fields: prop(resetOnSubmit ? 'defaultValues' : 'fields'),
-        subStates: prop(resetOnSubmit ? 'initialSubStates' : 'subStates'),
       })
     ),
     createPayloadReducer(RESET, ({resetOnCancel}) =>
@@ -114,18 +100,10 @@ const createUpdater = (fieldTypes, schema, resetOnSubmit) => {
         dirty: always(false),
         submitRequested: always(false),
         fields: prop(resetOnCancel ? 'defaultValues' : 'fields'),
-        subStates: prop(resetOnCancel ? 'initialSubStates' : 'subStates'),
       })
     ),
     createStateReducer(SET_SUBMIT_DIRTY, assoc('submitRequested', true)),
   ]);
 };
 
-export {
-  getInitialModel,
-  createUpdater,
-  setFields,
-  setFieldsAndDefaults,
-  setSubStates,
-  reset,
-};
+export {createUpdater, reset};
