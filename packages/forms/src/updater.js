@@ -22,7 +22,7 @@ import {
   RESET,
   SET_FIELD,
   SET_TOUCHED,
-  SET_SUBMIT_DIRTY,
+  SET_SUBMIT_REQUESTED,
   SUBMIT,
 } from './actionTypes';
 
@@ -102,7 +102,7 @@ const createUpdater = (fieldTypes, schema, resetOnSubmit) => {
         fields: prop(resetOnCancel ? 'defaultValues' : 'fields'),
       })
     ),
-    createStateReducer(SET_SUBMIT_DIRTY, assoc('submitRequested', true)),
+    createStateReducer(SET_SUBMIT_REQUESTED, assoc('submitRequested', true)),
   ]);
 };
 
