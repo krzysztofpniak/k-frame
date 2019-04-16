@@ -28,8 +28,8 @@ const createContextMapper = (
   return ([args, formState]) => {
     const fieldsStates = fieldStatesRef.current;
     const fieldContext = {fields: formState.fields, args};
-    for (let fieldId in formState.fields) {
-      if (formState.fields.hasOwnProperty(fieldId)) {
+    for (let fieldId in indexedSchema) {
+      if (indexedSchema.hasOwnProperty(fieldId)) {
         const fieldSchema = indexedSchema[fieldId];
         const fieldValue = formState.fields[fieldId];
 
