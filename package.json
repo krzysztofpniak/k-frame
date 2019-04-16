@@ -40,7 +40,8 @@
   },
   "scripts": {
     "test": "jest",
-    "test:cov": "npm test -- --coverage"
+    "test:cov": "npm test -- --coverage",
+    "bootstrap": "lerna bootstrap --hoist"
   },
   "repository": {
     "type": "git",
