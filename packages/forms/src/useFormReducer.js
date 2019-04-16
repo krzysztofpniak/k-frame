@@ -239,10 +239,6 @@ const useFormReducer = ({
 
   const mountField = useCallback(fieldId => {
     mountedFieldsRef.current[fieldId] = true;
-    console.log(
-      'mounted',
-      Object.keys(filter(identity, mountedFieldsRef.current))
-    );
     return () => {
       mountedFieldsRef.current[fieldId] = false;
     };
