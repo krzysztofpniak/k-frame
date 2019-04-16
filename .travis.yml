@@ -3,15 +3,7 @@ node_js:
   - "node"
 script:
   - yarn
-  - cd packages/core
-  - yarn
-  - cd ../..
-  - cd packages/forms
-  - yarn
-  - cd ../..
-  - cd packages/sagas
-  - yarn
-  - cd ../..
+  - yarn bootstrap
   - yarn test
 branches:
   only:
