@@ -13,7 +13,7 @@ const schema = [
     id: 'surname',
     title: 'Surname',
     defaultValue: '',
-    validate: required,
+    validate: required(),
   },
   {
     id: 'displayName',

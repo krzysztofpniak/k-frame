@@ -31,7 +31,7 @@ const schema = [
     id: 'collection',
     title: 'Collection',
     group: 'mongo',
-    validate: required,
+    validate: required(),
   },
   {
     id: 'mongoUser',
@@ -42,7 +42,7 @@ const schema = [
     id: 'table',
     title: 'Table',
     group: 'sql',
-    validate: required,
+    validate: required(),
   },
 ];
 

@@ -1,4 +1,4 @@
-import React, {memo, useCallback} from 'react';
+import React, {memo, useCallback, useMemo} from 'react';
 import {Form} from '../../../src/main';
 import {required} from '../../../src/validators';
 import {
@@ -21,7 +21,7 @@ const schema2 = [
   {
     id: 'name',
     title: 'Name',
-    validate: required,
+    validate: required(),
   },
   {
     id: 'age',
@@ -38,7 +38,7 @@ const schema2 = [
     defaultValue: '',
     props: ({fields: {age}, args: {color}}) => ({age, color}),
     validate: [
-      required,
+      required(),
       (v, {args: {color}}, useMemo) => {
         const message = useMemo(
           () =>
@@ -56,7 +56,7 @@ const schema2 = [
     title: 'Password',
     type: 'password',
     defaultValue: '',
-    validate: required,
+    validate: required(),
   },
   {
     id: 'passwordConfirm',
@@ -71,7 +71,7 @@ const schema2 = [
 ];
 
 const validateColor = [
-  required,
+  required(),
   (v, {args: {color}}) =>
     v !== color ? `Color is different than ${color}` : '',
 ];
@@ -139,8 +139,10 @@ const SimpleButton = memo(({text, onClick, color}) => (
 
 const getColorArg = ({args: {color}}) => ({color});
 
-const App = () => {
-  const {colorIndex, nextColor} = useKReducer(appReducer, appActions);
+const App = memo(() => {
+  const {colorIndex, nextColor} = useKReducer(appReducer, appActions, [
+    'colorIndex',
+  ]);
   const handleSubmit = useCallback((defaultSubmitHandler, fields) => {
     const errors = defaultSubmitHandler();
     if (errors.length === 0) {
@@ -148,33 +150,38 @@ const App = () => {
     }
   }, []);
 
-  return (
-    <Scope scope="app">
-      <SimpleButton
-        text="Next Color"
-        onClick={nextColor}
-        color={colors[colorIndex]}
-      />
-      <div>First Form</div>
-      <SimpleForm
-        scope="form1"
-        color={colors[colorIndex]}
-        onSubmit={handleSubmit}
-      />
-      <div>Second Form</div>
-      <Form
-        scope="form2"
-        schema={schema2}
-        fieldTypes={fieldTypes}
-        fieldTemplate={Row}
-        formTemplate={FormTemplate}
-        formTemplateProps={getColorArg}
-        buttonsTemplate={Button}
-        args={{color: colors[colorIndex]}}
-        onSubmit={handleSubmit}
-      />
-    </Scope>
+  return useMemo(
+    () => (
+      <div style={{padding: '50px'}}>
+        <Scope scope="app">
+          <SimpleButton
+            text="Next Color"
+            onClick={nextColor}
+            color={colors[colorIndex]}
+          />
+          <div>First Form</div>
+          <SimpleForm
+            scope="form1"
+            color={colors[colorIndex]}
+            onSubmit={handleSubmit}
+          />
+          <div>Second Form</div>
+          <Form
+            scope="form2"
+            schema={schema2}
+            fieldTypes={fieldTypes}
+            fieldTemplate={Row}
+            formTemplate={FormTemplate}
+            formTemplateProps={getColorArg}
+            buttonsTemplate={Button}
+            args={{color: colors[colorIndex]}}
+            onSubmit={handleSubmit}
+          />
+        </Scope>
+      </div>
+    ),
+    [colorIndex]
   );
-};
+});
 
 export default App;
