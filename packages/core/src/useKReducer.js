@@ -3,14 +3,20 @@ import {KContext} from './kLogicProvider';
 import {mergeDeepRight, pathOr} from 'ramda';
 import bindActionCreators from './bindActionCreators';
 import shallowEqual from './shallowEqual';
+import arePropsEqual from './arePropsEqual';
 
 const emptyObject = {};
 
-const useKReducer = (reducer, actions = emptyObject) => {
+const useKReducer = (reducer, actions = emptyObject, watchedProps = null) => {
   const context = useContext(KContext);
 
   const [state, setState] = useState(
     pathOr({}, context.scope, context.getState())
+  );
+
+  const areStatesEqual = useMemo(
+    () => (watchedProps ? arePropsEqual(watchedProps) : shallowEqual),
+    []
   );
 
   const stateRef = useRef(state);
@@ -21,7 +27,7 @@ const useKReducer = (reducer, actions = emptyObject) => {
     context.assocReducer(reducerPath, reducer);
     const tryUpdateState = () => {
       const newState = pathOr(emptyObject, context.scope, context.getState());
-      if (!shallowEqual(newState, stateRef.current)) {
+      if (!areStatesEqual(newState, stateRef.current)) {
         setState(newState);
         stateRef.current = newState;
       }
