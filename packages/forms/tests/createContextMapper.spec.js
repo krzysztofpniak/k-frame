@@ -59,5 +59,16 @@ describe('createContextMapper', () => {
         fields: {name: 'John', _id: '123'},
       },
     });
+
+    expect(fieldStatesRef.current).toEqual({
+      name: {
+        error: '',
+        errorVisible: true,
+        id: 'name',
+        props: {},
+        value: 'John',
+        visible: true,
+      },
+    });
   });
 });
