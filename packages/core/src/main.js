@@ -3,6 +3,7 @@ import bindActionCreators from './bindActionCreators';
 import Scope from './scope';
 import withScope from './withScope';
 import withDebug from './withDebug';
+import arePropsEqual from './arePropsEqual';
 import shallowEqual from './shallowEqual';
 import useKReducer from './useKReducer';
 import handleAsyncs from './handleAsyncs';
@@ -69,6 +70,7 @@ export {
   withScope,
   withDebug,
   shallowEqual,
+  arePropsEqual,
   bindActionCreators,
   createReducer,
   createPayloadReducer,
