@@ -8,6 +8,7 @@ import {
   map,
   prop,
   propOr,
+  mergeLeft,
 } from 'ramda';
 import {
   createPayloadReducer,
@@ -17,6 +18,7 @@ import {
 import {
   RESET,
   SET_FIELD,
+  SET_FIELDS,
   SET_TOUCHED,
   SET_SUBMIT_REQUESTED,
   SUBMIT,
@@ -56,6 +58,11 @@ const createUpdater = (fieldTypes, schema, resetOnSubmit) => {
         fields: {
           [name]: always(value),
         },
+      })
+    ),
+    createPayloadReducer(SET_FIELDS, fields =>
+      evolve({
+        fields: mergeLeft(fields),
       })
     ),
     createPayloadReducer(SET_TOUCHED, fieldId =>

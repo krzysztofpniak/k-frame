@@ -216,20 +216,30 @@ const useFormReducer = ({
     return formErrors;
   }, []);
 
+  const nextFieldsRef = useRef(null);
+
+  const setFieldsInt = useCallback(fields => {
+    nextFieldsRef.current = fields;
+  }, []);
+
   const handleOnChange = useCallback((value, fieldId) => {
-    const {setField} = boundActionCreators;
+    const {setField, setFields} = boundActionCreators;
     const fieldSchema = indexedSchema[fieldId];
 
     if (fieldSchema.onChange) {
       const fieldsValues = getFields();
       const currentValue = prop(fieldId, fieldsValues);
+      nextFieldsRef.current = null;
       const overriddenValue =
-        fieldSchema.onChange({
-          value,
+        fieldSchema.onChange(value, {
+          currentValue,
           args: argsRef.current,
           fields: fieldsValues,
+          setFields: setFieldsInt,
         }) || value;
-      if (overriddenValue !== currentValue) {
+      if (nextFieldsRef.current !== null) {
+        setFields({...nextFieldsRef.current, [fieldId]: overriddenValue});
+      } else if (overriddenValue !== currentValue) {
         setField(fieldId, overriddenValue);
       }
     } else {
