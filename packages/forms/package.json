@@ -69,7 +69,7 @@
     "dev": "rollup -c -w",
     "start": "cross-env COMPONENT_PATH=./components/app.js webpack-dev-server --history-api-fallback --hot --inline --open",
     "start2": "cross-env COMPONENT_PATH=./components/app.js webpack-dev-server --entry ./examples/basic/entryRedux.js --history-api-fallback --hot --inline --open",
-    "start3": "cross-env COMPONENT_PATH=./formTemplate.js webpack-dev-server --history-api-fallback --hot --inline --open"
+    "start-on-change": "cross-env COMPONENT_PATH=./onChange.js webpack-dev-server --history-api-fallback --hot --inline --open"
   },
   "files": [
     "dist"
