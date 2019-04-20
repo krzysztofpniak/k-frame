@@ -7,7 +7,7 @@ import {
   SET_SUBMIT_REQUESTED,
 } from './actionTypes';
 
-const setField = createAction(SET_FIELD, (name, value, debounce) => ({
+const setField = createAction(SET_FIELD, (name, value) => ({
   name,
   value,
 }));
