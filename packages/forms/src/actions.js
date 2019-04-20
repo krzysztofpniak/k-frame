@@ -10,7 +10,6 @@ import {
 const setField = createAction(SET_FIELD, (name, value, debounce) => ({
   name,
   value,
-  debounce,
 }));
 
 const setTouched = createAction(SET_TOUCHED);
