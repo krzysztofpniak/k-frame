@@ -29,6 +29,8 @@
 /docs/introducing-scopes/  /docs/introducing-scopes.html  302
 /docs/glossary  /docs/glossary.html  302
 /docs/glossary/  /docs/glossary.html  302
+/docs/stack-intro  /docs/stack-intro.html  302
+/docs/stack-intro/  /docs/stack-intro.html  302
 /docs/k-frame-api  /docs/k-frame-api.html  302
 /docs/k-frame-api/  /docs/k-frame-api.html  302
 /docs/reference.html  /docs/k-frame-api.html  302
@@ -37,7 +39,5 @@
 /docs/top-level-api-ja-JP.html  /docs/k-frame-api.html  302
 /docs/top-level-api-ko-KR.html  /docs/k-frame-api.html  302
 /docs/top-level-api-zh-CN.html  /docs/k-frame-api.html  302
-/docs/stack-intro  /docs/stack-intro.html  302
-/docs/stack-intro/  /docs/stack-intro.html  302
 /blog/  /blog/2013/06/05/why-react.html  302
 /blog  /blog/2013/06/05/why-react.html  302
