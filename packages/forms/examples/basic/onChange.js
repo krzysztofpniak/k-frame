@@ -16,55 +16,36 @@ const parseIntNull = v => {
   return isNaN(parsed) ? null : parsed;
 };
 
+const dbOptions = ['mongo', 'sql'];
+
+const defaultConnections = {
+  mongo: 'mongodb://mongodb0.example.com:27017/admin',
+  sql:
+    'Server=myServerAddress;Database=myDataBase;Uid=myUsername;Pwd=myPassword;',
+};
+
 const schema = [
   {id: 'name', title: 'ConnectionName'},
-  {id: 'server', title: 'Server'},
-  {id: 'port', title: 'Port'},
   {
     id: 'dbType',
     defaultValue: 'mongo',
     title: 'Database Type',
     type: 'select',
     onChange: (value, {setFields}) => {
-      setFields({name: ''});
+      setFields({
+        connectionString: defaultConnections[value],
+      });
     },
-    props: () => ({options: ['mongo', 'sql']}),
+    props: () => ({options: dbOptions}),
   },
   {
-    id: 'collection',
-    title: 'Collection',
-    group: 'mongo',
-    validate: required(),
-  },
-  {
-    id: 'mongoUser',
-    title: 'Mongo User',
-    group: 'mongo',
-  },
-  {
-    id: 'table',
-    title: 'Table',
-    group: 'sql',
-    validate: required(),
+    id: 'connectionString',
+    title: 'Connection String',
+    defaultValue: defaultConnections['mongo'],
   },
 ];
 
-const MongoForm = ({fields}) => (
-  <div>
-    <h3>Mongo details</h3>
-    <div>{fields.mongo}</div>
-  </div>
-);
-const SqlForm = ({fields}) => (
-  <div>
-    <h3>Sql details</h3>
-    <div>{fields.sql}</div>
-  </div>
-);
-
-const DbForm = cond([[propEq('dbType', 'mongo'), MongoForm], [T, SqlForm]]);
-
-const FormTemplate = ({buttons, fields, indexedFields, dbType}) => (
+const FormTemplate = ({buttons, fields}) => (
   <form>
     <div
       style={{
@@ -73,34 +54,17 @@ const FormTemplate = ({buttons, fields, indexedFields, dbType}) => (
         padding: '10px',
       }}
     >
-      <h3>Connection Info</h3>
-      {indexedFields.name}
-      {indexedFields.dbType}
-      <div style={{display: 'flex'}}>
-        <div>{indexedFields.server}</div>
-        <div>{indexedFields.port}</div>
-      </div>
-      <DbForm dbType={dbType} fields={fields} />
+      {fields.default}
       {buttons}
     </div>
   </form>
 );
-
-const formTemplateProps = ({fields, args}) => ({dbType: fields.dbType});
 
 const Row = ({input, title, error}) => (
   <div style={{margin: '10px 0'}}>
     <div style={{fontFamily: 'Arial, Helvetica'}}>{title}</div>
     <div>{input}</div>
     <div style={{color: 'red', fontFamily: 'Arial, Helvetica'}}>{error}</div>
-  </div>
-);
-
-const Button = ({onSubmit, onReset}) => (
-  <div>
-    <button onClick={onSubmit} type="submit">
-      Commit
-    </button>
   </div>
 );
 
@@ -120,8 +84,6 @@ const App = () => {
         fieldTypes={fieldTypes}
         fieldTemplate={Row}
         formTemplate={FormTemplate}
-        formTemplateProps={formTemplateProps}
-        buttonsTemplate={Button}
         onSubmit={handleSubmit}
       />
     </Scope>
