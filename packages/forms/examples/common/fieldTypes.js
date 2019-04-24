@@ -41,6 +41,7 @@ const Input = ({value, onChange, onBlur, inputRef, type}) => (
     onBlur={onBlur}
     ref={inputRef}
     type={type}
+    style={{width: '500px'}}
   />
 );
 
