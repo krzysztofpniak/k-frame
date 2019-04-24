@@ -7,7 +7,6 @@ describe('setField', () => {
       payload: {
         name: 'age',
         value: 12,
-        debounce: false,
       },
     });
   });
