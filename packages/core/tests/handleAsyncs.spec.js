@@ -150,6 +150,34 @@ describe('handleAsyncs', () => {
       });
     });
 
+    it('uses custom object lens', () => {
+      const state = {
+        data: {
+          user: {pending: false, error: null},
+        },
+        userName: '',
+        lastName: '',
+      };
+      const newState = handleAsyncs({
+        user: {
+          defaultValue: '',
+          resultLens: {
+            name: lensProp('userName'),
+            surname: lensProp('lastName'),
+          },
+        },
+      })(state, {
+        type: 'async/user/succeeded',
+        payload: {name: 'John', surname: 'Brown'},
+      });
+
+      expect(newState).toEqual({
+        data: {user: {error: null, pending: false}},
+        userName: 'John',
+        lastName: 'Brown',
+      });
+    });
+
     it('logs error on unhandled actions', () => {
       const newState = handleAsyncs({user: {defaultValue: ''}})(
         {
