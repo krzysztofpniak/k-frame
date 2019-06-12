@@ -1,6 +1,9 @@
 import {
   compose,
+  curry,
+  equals,
   identity,
+  ifElse,
   keys,
   lensPath,
   lensProp,
@@ -8,12 +11,31 @@ import {
   mergeRight,
   reduce,
   set,
+  toPairs,
+  type,
   uncurryN,
 } from 'ramda';
 
 const asyncActionRegexp = new RegExp(`^async/(.+)/(.+)$`);
 
-const getStageLens = (modelDef, resource, stage, dataProp) => {
+const setObject = curry((lens, source, target) =>
+  reduce(
+    (p, [key, value]) => (lens[key] ? set(lens[key], value, p) : p),
+    target,
+    toPairs(source)
+  )
+);
+
+const smartSet = ifElse(
+  compose(
+    equals('Object'),
+    type
+  ),
+  setObject,
+  set
+);
+
+const getStageSetter = (modelDef, resource, stage, dataProp) => {
   const defaultLens = compose(
     lensProp(dataProp),
     lensPath([resource, stage])
@@ -21,18 +43,20 @@ const getStageLens = (modelDef, resource, stage, dataProp) => {
 
   const stageLensProp = `${stage}Lens`;
 
-  return modelDef[resource] && modelDef[resource][stageLensProp]
-    ? modelDef[resource][stageLensProp]
-    : defaultLens;
+  return smartSet(
+    modelDef[resource] && modelDef[resource][stageLensProp]
+      ? modelDef[resource][stageLensProp]
+      : defaultLens
+  );
 };
 
-const buildModelLenses = (modelDef, options) => {
+const buildModelSetters = (modelDef, options) => {
   const dataProp = options.dataProp || 'data';
   return mapObjIndexed(
     (def, resource) => ({
-      pending: getStageLens(modelDef, resource, 'pending', dataProp),
-      result: getStageLens(modelDef, resource, 'result', dataProp),
-      error: getStageLens(modelDef, resource, 'error', dataProp),
+      pending: getStageSetter(modelDef, resource, 'pending', dataProp),
+      result: getStageSetter(modelDef, resource, 'result', dataProp),
+      error: getStageSetter(modelDef, resource, 'error', dataProp),
     }),
     modelDef
   );
@@ -40,9 +64,9 @@ const buildModelLenses = (modelDef, options) => {
 
 const initModelField = (fieldLens, defaultValue, target) =>
   compose(
-    set(fieldLens.result, defaultValue),
-    set(fieldLens.pending, false),
-    set(fieldLens.error, null)
+    fieldLens.result(defaultValue),
+    fieldLens.pending(false),
+    fieldLens.error(null)
   )(target);
 
 const initModel = (modelDef, modelLenses, target) =>
@@ -57,7 +81,7 @@ const initModel = (modelDef, modelLenses, target) =>
   );
 
 const handleAsyncs = (modelDef, options = {}) => {
-  const modelLenses = buildModelLenses(modelDef, options);
+  const modelLenses = buildModelSetters(modelDef, options);
 
   return (model, {type, payload}) => {
     if (type === '@@INIT') {
@@ -80,18 +104,16 @@ const handleAsyncs = (modelDef, options = {}) => {
       const errorTransform = modelDef[resource].errorTransform || identity;
 
       if (stage === 'request') {
-        return set(modelLenses[resource].pending, true, model);
+        return modelLenses[resource].pending(true, model);
       } else if (stage === 'succeeded') {
-        const m1 = set(modelLenses[resource].pending, false, model);
-        return set(
-          modelLenses[resource].result,
+        const m1 = modelLenses[resource].pending(false, model);
+        return modelLenses[resource].result(
           uncurryN(2, resultTransform)(payload, model),
           m1
         );
       } else if (stage === 'failed') {
-        const m1 = set(modelLenses[resource].pending, false, model);
-        return set(
-          modelLenses[resource].error,
+        const m1 = modelLenses[resource].pending(false, model);
+        return modelLenses[resource].error(
           uncurryN(2, errorTransform)(payload, model),
           m1
         );
