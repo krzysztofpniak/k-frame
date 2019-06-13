@@ -112,10 +112,10 @@ describe('createFormReducer', () => {
           text: () => null,
         },
         schema,
+        true,
         true
       )(state1, {
         type: 'Reset',
-        payload: {resetOnCancel: true},
       })
     ).toEqual(initialState);
   });
