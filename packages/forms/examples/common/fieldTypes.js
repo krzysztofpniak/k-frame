@@ -41,15 +41,16 @@ const Input = ({value, onChange, onBlur, inputRef, type}) => (
     onBlur={onBlur}
     ref={inputRef}
     type={type}
-    style={{width: '500px'}}
+    style={{width: '100%', boxSizing: 'border-box'}}
   />
 );
 
-const SelectField = ({id, value, onChange, options}) => (
+const SelectField = ({id, value, onChange, options, valueKey, labelKey}) => (
   <select id={id} value={value} onChange={onChange}>
+    <option value="">Choose ...</option>
     {options.map((o, idx) => (
-      <option key={idx} value={o}>
-        {o}
+      <option key={idx} value={valueKey ? o[valueKey] : o}>
+        {labelKey ? o[labelKey] : o}
       </option>
     ))}
   </select>
