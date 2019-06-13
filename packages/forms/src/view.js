@@ -36,6 +36,7 @@ const FormInt = withScope(
     fieldTypes,
     schema,
     resetOnSubmit,
+    resetOnCancel,
     cancelText,
     submitText,
     additionalButtons,
@@ -50,6 +51,7 @@ const FormInt = withScope(
       handleOnBlur,
       handleRefSet,
       getFields,
+      reset,
       formContext,
       handleOnChange,
       focusFirstField,
@@ -60,6 +62,7 @@ const FormInt = withScope(
       errorsDisplayStrategy,
       args,
       resetOnSubmit,
+      resetOnCancel,
     });
 
     const argsRef = useRef(args);
@@ -73,7 +76,9 @@ const FormInt = withScope(
       }
     }, []);
 
-    const defaultResetHandler = useCallback(() => {}, []);
+    const defaultResetHandler = useCallback(() => {
+      reset();
+    }, []);
 
     const handleReset = useCallback(e => {
       e.preventDefault();
@@ -163,6 +168,7 @@ const FormInt = withScope(
             genericError,
             legend,
             onSubmit: handleSubmit,
+            onReset: handleReset,
           })}
         </FormContext.Provider>
       ),
@@ -242,6 +248,7 @@ Form.defaultProps = {
   submitText: 'Submit',
   errorsDisplayStrategy: fieldTouchedStrategy,
   resetOnSubmit: true,
+  resetOnCancel: true,
 };
 
 export {Form};

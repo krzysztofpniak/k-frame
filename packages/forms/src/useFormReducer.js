@@ -39,6 +39,7 @@ const useFormReducer = ({
   errorsDisplayStrategy,
   args,
   resetOnSubmit,
+  resetOnCancel,
 }) => {
   const context = useContext(KContext);
 
@@ -46,7 +47,7 @@ const useFormReducer = ({
   const indexedSchema = useMemo(() => indexBy(prop('id'), richSchema), []);
 
   const reducer = useMemo(
-    () => createFormReducer(fieldTypes, schema, resetOnSubmit),
+    () => createFormReducer(fieldTypes, schema, resetOnSubmit, resetOnCancel),
     []
   );
   //TODO: performance

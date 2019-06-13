@@ -110,6 +110,7 @@ const Field = memo(
               scope: `sub.${id}`,
               ...props,
             }),
+            ...props,
             error,
           })
         : null;

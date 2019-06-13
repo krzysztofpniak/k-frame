@@ -35,7 +35,7 @@ const getInitialModel = fields => ({
 
 const getFieldType = propOr('text', 'type');
 
-const createUpdater = (fieldTypes, schema, resetOnSubmit) => {
+const createUpdater = (fieldTypes, schema, resetOnSubmit, resetOnCancel) => {
   const missingTypes = filter(f => !fieldTypes[getFieldType(f)], schema);
   if (missingTypes.length > 0) {
     console.error(
@@ -87,7 +87,8 @@ const createUpdater = (fieldTypes, schema, resetOnSubmit) => {
         fields: prop(resetOnSubmit ? 'defaultValues' : 'fields'),
       })
     ),
-    createPayloadReducer(RESET, ({resetOnCancel}) =>
+    createStateReducer(
+      RESET,
       mergeSpec({
         dirty: compose(
           map(always(false)),

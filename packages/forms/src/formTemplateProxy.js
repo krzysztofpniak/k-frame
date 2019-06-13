@@ -24,6 +24,7 @@ const FormTemplateProxy = memo(
     genericError,
     legend,
     onSubmit,
+    onReset,
   }) => {
     const formContext = useContext(FormContext);
     const initialFormTemplateProps = useMemo(() =>
@@ -57,6 +58,7 @@ const FormTemplateProxy = memo(
         genericError,
         legend,
         onSubmit,
+        onReset,
         ...props,
       });
     }, [props]);
