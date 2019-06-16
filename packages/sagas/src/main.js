@@ -13,7 +13,10 @@ const useSaga = (saga, args = [], dependencies = []) => {
   const context = useContext(KContext);
 
   return useEffect(() => {
-    context.runSaga({scope: context.scope}, saga, ...args);
+    const sagaTask = context.runSaga({scope: context.scope}, saga, ...args);
+    return () => {
+      sagaTask.cancel();
+    };
   }, dependencies);
 };
 
