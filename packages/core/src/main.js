@@ -24,6 +24,7 @@ import withMemoContext from './withMemoContext';
 import {curry, unless, is, objOf} from 'ramda';
 import useWithArgs from './useWithArgs';
 import useInputTargetValue from './useInputTargetValue';
+import withStaticScope from './withStaticScope';
 
 const asyncActionTypeName = curry(
   (stage, baseType) => `async/${baseType}/${stage}`
@@ -90,4 +91,5 @@ export {
   succeededAction,
   failedAction,
   withMemoContext,
+  withStaticScope,
 };
