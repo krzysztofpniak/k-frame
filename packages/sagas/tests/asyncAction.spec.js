@@ -29,13 +29,19 @@ describe('asyncAction', () => {
     const fn = jest.fn(() => Promise.reject('some error'));
 
     const gen = asyncAction('test', fn, 1, 2);
-    return co(gen).then(() => {
-      expect(put).toHaveBeenCalledTimes(2);
-      expect(put).toHaveBeenNthCalledWith(1, {type: 'async/test/request'});
-      expect(put).toHaveBeenNthCalledWith(2, {
-        type: 'async/test/failed',
-        payload: 'some error',
-      });
-    });
+    return co(gen).then(
+      () => {
+        expect(put).toHaveBeenCalledTimes(2);
+        expect(put).toHaveBeenNthCalledWith(1, {type: 'async/test/request'});
+        expect(put).toHaveBeenNthCalledWith(2, {
+          type: 'async/test/failed',
+          payload: 'some error',
+        });
+      },
+      e => {
+        //TODO ensure call
+        expect(e).toEqual('some error');
+      }
+    );
   });
 });
