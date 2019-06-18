@@ -9,6 +9,7 @@ function* asyncAction(baseType, fn, ...args) {
     return result;
   } catch (e) {
     yield put(failedAction(baseType, e));
+    throw e;
   }
 }
 
