@@ -1,6 +1,6 @@
 {
   "name": "@k-frame/sagas",
-  "version": "0.13.4",
+  "version": "0.13.5",
   "description": "Complete React'n'Redux based framework",
   "license": "MIT",
   "homepage": "https://klabs.gitbook.io/k-logic/",
@@ -9,7 +9,7 @@
   "module": "dist/k-frame-sagas.esm.js",
   "unpkg": "dist/k-frame-sagas.umd.js",
   "peerDependencies": {
-    "@k-frame/core": "^0.13.4",
+    "@k-frame/core": "^0.13.5",
     "ramda": "^0.26.1",
     "react": "^16.8.0",
     "react-dom": "^16.8.0",
@@ -27,7 +27,7 @@
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "@babel/register": "^7.0.0",
-    "@k-frame/core": "^0.13.4",
+    "@k-frame/core": "^0.13.5",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^24.5.0",
