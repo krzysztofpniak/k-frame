@@ -19,6 +19,18 @@ const notImplementedYet = () => {
   throw new Error('this function is not implemented yet');
 };
 
+const parseSagaArgs = props => {
+  let name, saga, args;
+
+  if (typeof props[0] === 'string') {
+    [name, saga, ...args] = props;
+  } else {
+    [saga, ...args] = props;
+  }
+
+  return [name, saga, args];
+};
+
 const useSagaRunner = sagaContext => {
   const context = useContext(KContext);
   if (!context.supplied) {
@@ -68,23 +80,25 @@ const useSagaRunner = sagaContext => {
     setTasks(get('tasks'));
   }, []);
 
-  const fork = useCallback(
-    (...props) => {
-      let name, saga, args;
-
-      if (typeof props[0] === 'string') {
-        [name, saga, ...args] = props;
-      } else {
-        [saga, ...args] = props;
-      }
-
+  const runInternal = useCallback(
+    ({
+      saga,
+      name,
+      args,
+      kind = 'fork',
+      override = 'throw',
+      sagaContext,
+      scope,
+    }) => {
       const task = context.runSaga(
-        {scope: context.scope, context: sagaContext},
+        {scope, context: sagaContext},
         saga,
         ...args
       );
 
-      forkedTasksRef.current.push(task);
+      if (kind === 'fork') {
+        forkedTasksRef.current.push(task);
+      }
 
       if (name) {
         updateTask(name, task);
@@ -98,13 +112,44 @@ const useSagaRunner = sagaContext => {
 
       return task;
     },
+    []
+  );
+
+  const fork = useCallback(
+    (...props) => {
+      const [name, saga, args] = parseSagaArgs(props);
+
+      return runInternal({
+        saga,
+        name,
+        args,
+        kind: 'fork',
+        scope: context.scope,
+        sagaContext,
+      });
+    },
+    [context.scope, ...argsValues]
+  );
+
+  const spawn = useCallback(
+    (...props) => {
+      const [name, saga, args] = parseSagaArgs(props);
+
+      return runInternal({
+        saga,
+        name,
+        args,
+        kind: 'spawn',
+        scope: context.scope,
+        sagaContext,
+      });
+    },
     [context.scope, ...argsValues]
   );
 
   const forkLeading = useCallback(notImplementedYet, []);
   const forkLatest = useCallback(notImplementedYet, []);
 
-  const spawn = useCallback(notImplementedYet, []);
   const spawnLeading = useCallback(notImplementedYet, []);
   const spawnLatest = useCallback(notImplementedYet, []);
 
