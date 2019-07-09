@@ -43,9 +43,10 @@ const useKReducer = (reducer, actions = emptyObject, watchedProps = null) => {
     [actions, context.dispatch]
   );
 
-  const initialState = useMemo(() => reducer(undefined, {type: '@@INIT'}), []);
-
-  const finalState = mergeDeepRight(initialState, state);
+  const finalState = mergeDeepRight(
+    reducer(undefined, {type: '@@INIT'}),
+    state
+  );
 
   if (isFirstRender.current) {
     isFirstRender.current = false;
