@@ -10,7 +10,12 @@ const enrichSchema = schema =>
   map(
     fieldSchema => ({
       ...fieldSchema,
-      props: fieldSchema.props ? fieldSchema.props : propsDefault,
+      props: fieldSchema.props
+        ? withMemoContext(fieldSchema.props, (useMemo, context) => [
+            context,
+            useMemo,
+          ])
+        : propsDefault,
       validate: fieldSchema.validate
         ? map(
             validator =>
