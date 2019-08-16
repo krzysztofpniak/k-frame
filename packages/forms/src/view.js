@@ -6,8 +6,18 @@ import React, {
   useRef,
   useContext,
   memo,
+  useLayoutEffect,
+  useState,
 } from 'react';
-import {map, fromPairs, reduceBy, pathOr, keys, flip} from 'ramda';
+import {
+  map,
+  fromPairs,
+  reduceBy,
+  pathOr,
+  keys,
+  flip,
+  mapObjIndexed,
+} from 'ramda';
 import useFormReducer from './useFormReducer';
 import {KContext, withScope, shallowEqual} from '@k-frame/core';
 import FormContext from './FormContext';
@@ -16,6 +26,7 @@ import mergeProps from './mergeProps';
 import Field from './field';
 import FormTemplateProxy from './formTemplateProxy';
 import {fieldTouchedStrategy} from './errorsDisplayStrategies';
+import {distinctUntilChanged, oMap} from './micro-rx';
 
 const GenericError = ({content}) => (
   <div className="alert alert-danger" role="alert">
@@ -151,10 +162,30 @@ const FormInt = withScope(
       [fieldsElements]
     );
 
+    const [fieldsVisibility, setFieldsVisibility] = useState({});
+
     const indexedFields = useMemo(
-      () => fromPairs(map(([f, e]) => [f.id, e], fieldsElements)),
-      [fieldsElements]
+      () =>
+        fromPairs(
+          map(
+            ([f, e]) => [f.id, fieldsVisibility[f.id] ? e : null],
+            fieldsElements
+          )
+        ),
+      [fieldsElements, fieldsVisibility]
     );
+
+    useLayoutEffect(() => {
+      const updateField = state => {
+        setFieldsVisibility(state);
+      };
+
+      return distinctUntilChanged(
+        oMap(({fieldsStates}) => {
+          return map(e => e.visible, fieldsStates);
+        }, formContext.observable)
+      ).subscribe(updateField);
+    }, []);
 
     const renderedForm = useMemo(
       () => (
