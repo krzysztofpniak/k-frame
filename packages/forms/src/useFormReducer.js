@@ -209,7 +209,7 @@ const useFormReducer = ({
 
     if (formErrors.length > 0) {
       const erroredInput = inputRefs.current[formErrors[0].id];
-      if (erroredInput) {
+      if (erroredInput && erroredInput.focus) {
         erroredInput.focus();
       }
     }
