@@ -9,15 +9,7 @@ import React, {
   useLayoutEffect,
   useState,
 } from 'react';
-import {
-  map,
-  fromPairs,
-  reduceBy,
-  pathOr,
-  keys,
-  flip,
-  mapObjIndexed,
-} from 'ramda';
+import {map, fromPairs, reduceBy, pathOr, keys, flip} from 'ramda';
 import useFormReducer from './useFormReducer';
 import {KContext, withScope, shallowEqual} from '@k-frame/core';
 import FormContext from './FormContext';
@@ -26,7 +18,7 @@ import mergeProps from './mergeProps';
 import Field from './field';
 import FormTemplateProxy from './formTemplateProxy';
 import {fieldTouchedStrategy} from './errorsDisplayStrategies';
-import {distinctUntilChanged, oMap} from './micro-rx';
+import {distinctUntilChanged, oMap} from './micro-rx/index';
 
 const GenericError = ({content}) => (
   <div className="alert alert-danger" role="alert">
@@ -168,7 +160,7 @@ const FormInt = withScope(
       () =>
         fromPairs(
           map(
-            ([f, e]) => [f.id, fieldsVisibility[f.id] ? e : null],
+            ([f, e]) => [f.id, fieldsVisibility[f.id] !== false ? e : null],
             fieldsElements
           )
         ),
@@ -203,7 +195,7 @@ const FormInt = withScope(
           })}
         </FormContext.Provider>
       ),
-      [buttons, groupedFields]
+      [buttons, groupedFields, indexedFields]
     );
 
     return renderedForm;
