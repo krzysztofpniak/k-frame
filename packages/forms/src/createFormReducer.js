@@ -45,7 +45,7 @@ const createUpdater = (fieldTypes, schema, resetOnSubmit, resetOnCancel) => {
   }
   const fields = compose(
     fromPairs,
-    map(f => [f.id, f.defaultValue || ''])
+    map(f => [f.id, f.defaultValue !== undefined ? f.defaultValue : ''])
   )(schema);
   const initialModel = getInitialModel(fields);
 
