@@ -61,7 +61,7 @@ const FormTemplateProxy = memo(
         onReset,
         ...props,
       });
-    }, [props, indexedFields]);
+    }, [props, indexedFields, buttons]);
 
     return formLayout;
   }
