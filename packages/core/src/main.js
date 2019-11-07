@@ -37,6 +37,7 @@ const createAsyncAction = stage => (baseType, payload) => ({
 
 const requestAction = createAsyncAction('request');
 const succeededAction = createAsyncAction('succeeded');
+const chunkAction = createAsyncAction('chunk');
 const failedAction = createAsyncAction('failed');
 
 const ensureObject = unless(is(Object), objOf('value'));
@@ -89,6 +90,7 @@ export {
   useScopeProps,
   requestAction,
   succeededAction,
+  chunkAction,
   failedAction,
   withMemoContext,
   withStaticScope,
