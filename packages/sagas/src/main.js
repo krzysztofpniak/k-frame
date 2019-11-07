@@ -8,6 +8,7 @@ import {
 import scopedSagaMiddleware from './scopedSagaMiddleware';
 import useSagaRunner from './useSagaRunner';
 import asyncAction from './asyncAction';
+import asyncSubscribe from './asyncSubscribe';
 
 const useSaga = (saga, args = [], dependencies = []) => {
   const context = useContext(KContext);
@@ -20,4 +21,10 @@ const useSaga = (saga, args = [], dependencies = []) => {
   }, dependencies);
 };
 
-export {asyncAction, scopedSagaMiddleware, useSaga, useSagaRunner};
+export {
+  asyncAction,
+  asyncSubscribe,
+  scopedSagaMiddleware,
+  useSaga,
+  useSagaRunner,
+};
