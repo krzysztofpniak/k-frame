@@ -95,7 +95,9 @@ const handleAsyncs = (modelDef, options = {}) => {
 
       if (!modelDef[resource]) {
         console.error(
-          `Async action has been dispatched without registering async handler. Please register a handler using handleAsyncs function.`
+          `Async action has been dispatched without registering async handler. Please register a handler for %c${resource}%c resource using handleAsyncs function.`,
+          'font-weight: bold',
+          'font-weight:normal'
         );
         return model;
       }
@@ -110,6 +112,11 @@ const handleAsyncs = (modelDef, options = {}) => {
         return modelLenses[resource].result(
           uncurryN(2, resultTransform)(payload, model),
           m1
+        );
+      } else if (stage === 'chunk') {
+        return modelLenses[resource].result(
+          uncurryN(2, resultTransform)(payload, model),
+          model
         );
       } else if (stage === 'failed') {
         const m1 = modelLenses[resource].pending(false, model);
