@@ -3,6 +3,7 @@ import {
   memo,
   useCallback,
   useContext,
+  useEffect,
   useLayoutEffect,
   useMemo,
   useRef,
@@ -19,7 +20,7 @@ const useLazyState = initialValue => {
       setValue(newValue);
       valueRef.current = newValue;
     }
-  });
+  }, []);
   return [value, trySet];
 };
 
@@ -47,7 +48,7 @@ const Field = memo(
     const [props, setProps] = useLazyState(initialState.props);
     const [isVisible, setVisibility] = useLazyState(initialState.visible);
 
-    useLayoutEffect(() => {
+    useEffect(() => {
       const updateField = state => {
         setValue(state.value);
         setProps(state.props);
