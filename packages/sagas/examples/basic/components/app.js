@@ -1,6 +1,14 @@
 import React, {useEffect} from 'react';
 import {add, addIndex, assoc, lensProp, map, over, take, always} from 'ramda';
-import {put, select, takeEvery, delay, getContext} from 'redux-saga/effects';
+import {
+  put,
+  select,
+  takeEvery,
+  delay,
+  getContext,
+  setContext,
+  fork,
+} from 'redux-saga/effects';
 import {
   createReducer,
   handleAsyncs,
@@ -26,8 +34,8 @@ const gistsSaga = function*() {
   const name = yield select(m => m.name);
   console.log('name', name);
 
-  const hello = yield getContext('hello');
-  hello();
+  //const hello = yield getContext('hello');
+  //hello();
 
   //yield asyncCall();
 
@@ -76,7 +84,7 @@ const Gists = withScope(() => {
 
   useEffect(() => {
     //fork('dupa', gistsSaga, 1, 2, 3);
-    //fork(gistsSaga);
+    fork(gistsSaga);
   }, []);
 
   return (
@@ -113,10 +121,25 @@ const appReducer = createReducer({view: 'gists'}, [
   createPayloadReducer(appActions.setView, assoc('view')),
 ]);
 
+function* appSaga() {
+  let counter = 0;
+  while (true) {
+    yield delay(300);
+    yield setContext({xx: counter++});
+    console.log('appSaga', yield getContext('xx'));
+  }
+}
+
 const Projects4 = withScope(() => {
   const {view, setView} = useKReducer(appReducer, appActions);
   const showGists = useWithArgs(setView, 'gists');
   const showOther = useWithArgs(setView, 'other');
+
+  const {fork} = useSagaRunner({hello});
+
+  useEffect(() => {
+    fork(appSaga);
+  }, []);
 
   return (
     <div style={{display: 'flex'}}>

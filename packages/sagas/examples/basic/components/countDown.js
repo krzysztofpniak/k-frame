@@ -1,6 +1,6 @@
 import React, {useCallback} from 'react';
 import {assoc} from 'ramda';
-import {put, delay} from 'redux-saga/effects';
+import {put, delay, getContext} from 'redux-saga/effects';
 import {
   createPayloadReducer,
   createAction,
@@ -19,10 +19,13 @@ const reducer = createReducer({counter: 0}, [
 ]);
 
 const countdownSaga = function*(from) {
+  const hello = yield getContext('hello');
+  console.log(hello);
   for (let counter = from; counter >= 0; counter--) {
     yield put(actions.setCounter(counter));
     if (counter > 0) {
       yield delay(1000);
+      console.log('countdownSaga xx', yield getContext('xx'));
     }
   }
 
