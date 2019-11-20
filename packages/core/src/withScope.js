@@ -1,16 +1,11 @@
-import React, {Component, createFactory} from 'react';
+import React, {forwardRef} from 'react';
 import Scope from './scope';
 
-const withScope = BaseComponent => {
-  const factory = createFactory(BaseComponent);
-
-  class WithScope extends Component {
-    render() {
-      return <Scope scope={this.props.scope}>{factory(this.props)}</Scope>;
-    }
-  }
-
-  return WithScope;
-};
+const withScope = BaseComponent =>
+  forwardRef((props, ref) => (
+    <Scope scope={props.scope}>
+      <BaseComponent ref={ref} {...props} />
+    </Scope>
+  ));
 
 export default withScope;
