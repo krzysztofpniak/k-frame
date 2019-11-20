@@ -75,7 +75,8 @@
     "start2": "cross-env COMPONENT_PATH=./components/app.js webpack-dev-server --entry ./examples/basic/entryRedux.js --history-api-fallback --hot --inline --open",
     "start-on-change": "cross-env COMPONENT_PATH=./onChange.js webpack-dev-server --history-api-fallback --hot --inline --open",
     "start-args": "cross-env COMPONENT_PATH=./passingArgs.js webpack-dev-server --history-api-fallback --hot --inline --open",
-    "start-callbacks": "cross-env COMPONENT_PATH=./callbacks.js webpack-dev-server --history-api-fallback --hot --inline --open"
+    "start-callbacks": "cross-env COMPONENT_PATH=./callbacks.js webpack-dev-server --history-api-fallback --hot --inline --open",
+    "start-schema": "cross-env COMPONENT_PATH=./schemaChange.js webpack-dev-server --history-api-fallback --hot --inline --open"
   },
   "files": [
     "dist"
