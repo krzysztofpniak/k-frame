@@ -231,13 +231,14 @@ const useFormReducer = ({
       const fieldsValues = getFields();
       const currentValue = prop(fieldId, fieldsValues);
       nextFieldsRef.current = null;
+      const onChangeResult = fieldSchema.onChange(value, {
+        currentValue,
+        args: argsRef.current,
+        fields: fieldsValues,
+        setFields: setFieldsInt,
+      });
       const overriddenValue =
-        fieldSchema.onChange(value, {
-          currentValue,
-          args: argsRef.current,
-          fields: fieldsValues,
-          setFields: setFieldsInt,
-        }) || value;
+        onChangeResult !== undefined ? onChangeResult : value;
       if (nextFieldsRef.current !== null) {
         setFields({...nextFieldsRef.current, [fieldId]: overriddenValue});
       } else if (overriddenValue !== currentValue) {
