@@ -37,6 +37,7 @@ const Field = memo(
     format,
     parse,
     inputRef,
+    disabled,
   }) => {
     const formContext = useContext(FormContext);
     const initialState = useMemo(() => formContext.getFieldState(id), []);
@@ -106,6 +107,7 @@ const Field = memo(
               value: formattedValue,
               onChange: handleOnChange,
               onBlur: handleOnBlur,
+              disabled,
               type,
               error,
               scope: `sub.${id}`,
@@ -115,7 +117,7 @@ const Field = memo(
             error,
           })
         : null;
-    }, [value, error, isVisible, props]);
+    }, [value, error, isVisible, props, disabled]);
 
     return field;
   }

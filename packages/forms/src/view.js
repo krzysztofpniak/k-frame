@@ -46,6 +46,7 @@ const FormInt = withScope(
     args,
     autoFocus,
     errorsDisplayStrategy,
+    disabled,
   }) => {
     const argsKeys = useMemo(() => keys(args), []);
     const argsValues = map(k => args[k], argsKeys);
@@ -107,8 +108,9 @@ const FormInt = withScope(
           cancelText,
           submitText,
           dirty: false,
+          disabled,
         }),
-      [buttonsTemplate, handleSubmit, name, cancelText, submitText]
+      [buttonsTemplate, handleSubmit, name, cancelText, submitText, disabled]
     );
     const genericError = <div>genericError</div>;
 
@@ -131,11 +133,12 @@ const FormInt = withScope(
               format={f.format}
               type={f.type || 'text'}
               component={fieldTypes[f.type || 'text']}
+              disabled={disabled}
             />,
           ],
           schema
         ),
-      [schema]
+      [schema, disabled]
     );
 
     const groupFields = useCallback((acc, [f, e]) => acc.concat(e), [
@@ -192,10 +195,11 @@ const FormInt = withScope(
             legend,
             onSubmit: handleSubmit,
             onReset: handleReset,
+            disabled,
           })}
         </FormContext.Provider>
       ),
-      [buttons, groupedFields, indexedFields]
+      [buttons, groupedFields, indexedFields, disabled]
     );
 
     return renderedForm;
@@ -224,7 +228,7 @@ const Form = flip(memo)((props, nextProps) =>
   return createElement(FormInt, props);
 });
 
-const FormTemplate = ({fields, buttons, onSubmit}) => (
+const FormTemplate = ({fields, buttons, onSubmit, disabled}) => (
   <form>
     {fields.default} {buttons}
   </form>
@@ -239,25 +243,27 @@ const FieldTemplate = ({title, input, error}) => (
   </div>
 );
 
-const ButtonsTemplate = ({onSubmit, onReset}) => (
-  <div>
-    <button type="submit" onClick={onSubmit}>
-      Save
-    </button>
-    <button type="button" onClick={onReset}>
-      Cancel
-    </button>
-  </div>
-);
+const ButtonsTemplate = ({onSubmit, onReset, disabled}) =>
+  !disabled && (
+    <div>
+      <button type="submit" onClick={onSubmit}>
+        Save
+      </button>
+      <button type="button" onClick={onReset}>
+        Cancel
+      </button>
+    </div>
+  );
 
 const fieldTypes = {
-  text: ({id, value, onChange, onBlur, inputRef}) => (
+  text: ({id, value, onChange, onBlur, inputRef, disabled}) => (
     <input
       id={id}
       value={value}
       onChange={onChange}
       onBlur={onBlur}
       ref={inputRef}
+      disabled={disabled}
     />
   ),
 };
