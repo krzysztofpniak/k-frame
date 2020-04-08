@@ -56,6 +56,8 @@ const SelectField = ({id, value, onChange, options, valueKey, labelKey}) => (
   </select>
 );
 
+const JSONView = ({data}) => <pre>{JSON.stringify(data, null, 2)}</pre>;
+
 const fieldTypes = {
   text: Input,
   password: Input,
@@ -63,6 +65,7 @@ const fieldTypes = {
   counter: Counter,
   select: SelectField,
   static: ({value}) => <div style={{fontWeight: 'bold'}}>{value}</div>,
+  json: JSONView,
 };
 
 export default fieldTypes;
