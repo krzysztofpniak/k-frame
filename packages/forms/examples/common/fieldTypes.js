@@ -34,7 +34,7 @@ const Counter = compose(
   );
 });
 
-const Input = ({value, onChange, onBlur, inputRef, type}) => (
+const Input = ({value, onChange, onBlur, inputRef, type, disabled}) => (
   <input
     value={value}
     onChange={onChange}
@@ -42,6 +42,7 @@ const Input = ({value, onChange, onBlur, inputRef, type}) => (
     ref={inputRef}
     type={type}
     style={{width: '100%', boxSizing: 'border-box'}}
+    disabled={disabled}
   />
 );
 
