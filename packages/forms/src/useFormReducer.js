@@ -220,6 +220,13 @@ const useFormReducer = ({
   const validateForm = useCallback(() => {
     const asyncErrors = {};
     const formErrors = validateFormInt(asyncErrors || {});
+    const syncErrors = filter(e => e.error, formErrors);
+
+    const {setSubmitDirty} = boundActionCreators;
+
+    if (syncErrors.length > 0) {
+      setSubmitDirty();
+    }
 
     if (formErrors.length > 0) {
       const erroredInput = inputRefs.current[formErrors[0].id];

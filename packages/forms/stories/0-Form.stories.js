@@ -94,8 +94,8 @@ export const ImperativeApi = () => {
   const form = useRef({});
 
   const externalApiCall = useCallback(() => {
-    const {validateForm, getFields} = form.current;
-    const errors = validateForm();
+    const {validate, getFields} = form.current;
+    const errors = validate();
     alert(JSON.stringify(errors.length ? errors : getFields()));
   }, []);
 

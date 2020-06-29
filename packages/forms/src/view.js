@@ -109,7 +109,7 @@ const FormInt = withScope(
       useImperativeHandle(ref, () => ({
         submit: handleSubmit,
         getFields,
-        validateForm,
+        validate: validateForm,
       }));
 
       const buttons = useMemo(
