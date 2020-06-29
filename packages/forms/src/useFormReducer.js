@@ -156,7 +156,7 @@ const useFormReducer = ({
     return pathOr(false, ['touched', fieldId], state);
   }, []);
 
-  const validateForm = useCallback(
+  const validateFormInt = useCallback(
     asyncErrors =>
       compose(
         filter(f => f.error || f.asyncErrors),
@@ -201,11 +201,25 @@ const useFormReducer = ({
   const defaultSubmitHandler = useCallback(e => {
     const asyncErrors = {};
     const model = getFormState();
-    const formErrors = validateForm(asyncErrors || {});
+    const formErrors = validateFormInt(asyncErrors || {});
     const syncErrors = filter(e => e.error, formErrors);
     const {submit, setSubmitDirty} = boundActionCreators;
 
     syncErrors.length === 0 ? submit({fields: model.fields}) : setSubmitDirty();
+
+    if (formErrors.length > 0) {
+      const erroredInput = inputRefs.current[formErrors[0].id];
+      if (erroredInput && erroredInput.focus) {
+        erroredInput.focus();
+      }
+    }
+
+    return formErrors;
+  }, []);
+
+  const validateForm = useCallback(() => {
+    const asyncErrors = {};
+    const formErrors = validateFormInt(asyncErrors || {});
 
     if (formErrors.length > 0) {
       const erroredInput = inputRefs.current[formErrors[0].id];
