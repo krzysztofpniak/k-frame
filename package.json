@@ -41,7 +41,9 @@
   "scripts": {
     "test": "jest",
     "test:cov": "npm test -- --coverage",
-    "bootstrap": "lerna bootstrap --hoist"
+    "bootstrap": "lerna bootstrap --hoist",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "repository": {
     "type": "git",
