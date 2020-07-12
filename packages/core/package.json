@@ -25,6 +25,10 @@
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
     "@babel/register": "^7.0.0",
+    "@storybook/addon-actions": "^5.3.19",
+    "@storybook/addon-docs": "^5.3.19",
+    "@storybook/addon-links": "^5.3.19",
+    "@storybook/react": "^5.3.19",
     "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.0.1",
     "babel-jest": "^24.3.1",
@@ -67,7 +71,9 @@
     "test:cov": "npm test -- --coverage",
     "build": "rollup -c",
     "dev": "rollup -c -w",
-    "start": "webpack-dev-server --history-api-fallback --hot --inline --open"
+    "start": "webpack-dev-server --history-api-fallback --hot --inline --open",
+    "storybook": "start-storybook -p 6006",
+    "build-storybook": "build-storybook"
   },
   "files": [
     "dist"
