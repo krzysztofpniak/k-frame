@@ -1,8 +1,7 @@
 import {useContext, useLayoutEffect, useRef, useState, useMemo} from 'react';
 import {KContext} from './kLogicProvider';
-import {mergeDeepRight, pathOr} from 'ramda';
+import {mergeDeepRight, pathOr, keys} from 'ramda';
 import bindActionCreators from './bindActionCreators';
-import shallowEqual from './shallowEqual';
 import arePropsEqual from './arePropsEqual';
 
 const emptyObject = {};
@@ -14,8 +13,14 @@ const useKReducer = (reducer, actions = emptyObject, watchedProps = null) => {
     pathOr({}, context.scope, context.getState())
   );
 
+  const initialKeys = useMemo(
+    () => keys(reducer(undefined, {type: '@@INIT'})),
+    []
+  );
+
   const areStatesEqual = useMemo(
-    () => (watchedProps ? arePropsEqual(watchedProps) : shallowEqual),
+    () =>
+      watchedProps ? arePropsEqual(watchedProps) : arePropsEqual(initialKeys),
     []
   );
 
