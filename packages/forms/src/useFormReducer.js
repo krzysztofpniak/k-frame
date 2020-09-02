@@ -32,6 +32,7 @@ import createContextMapper from './createContextMapper';
 import useFormStateObservable from './useFormStateObservable';
 
 const emptyObject = {};
+const emptyArray = [];
 
 const useFormReducer = ({
   fieldTypes,
@@ -244,7 +245,7 @@ const useFormReducer = ({
     nextFieldsRef.current = fields;
   }, []);
 
-  const handleOnChange = useCallback((value, fieldId) => {
+  const handleOnChange = useCallback((value, fieldId, errors) => {
     const {setField, setFields} = boundActionCreators;
     const fieldSchema = indexedSchema[fieldId];
 
@@ -263,10 +264,10 @@ const useFormReducer = ({
       if (nextFieldsRef.current !== null) {
         setFields({...nextFieldsRef.current, [fieldId]: overriddenValue});
       } else if (overriddenValue !== currentValue) {
-        setField(fieldId, overriddenValue);
+        setField(fieldId, overriddenValue, errors || emptyArray);
       }
     } else {
-      setField(fieldId, value);
+      setField(fieldId, value, errors || emptyArray);
     }
   }, []);
 

@@ -8,9 +8,10 @@ import {
   SET_SUBMIT_REQUESTED,
 } from './actionTypes';
 
-const setField = createAction(SET_FIELD, (name, value) => ({
+const setField = createAction(SET_FIELD, (name, value, errors) => ({
   name,
   value,
+  errors,
 }));
 
 const setFields = createAction(SET_FIELDS);

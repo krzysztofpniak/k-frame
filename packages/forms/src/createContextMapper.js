@@ -13,7 +13,7 @@ const createContextMapper = (
 ) => {
   const errors = map(always(''), indexedSchema);
   const fields = initialState.fields;
-  const fieldContext = {fields: initialState.fields, args};
+  const fieldContext = {fields: initialState.fields, args, fieldErrors: []};
 
   fieldStatesRef.current = map(
     fieldSchema => ({
@@ -27,15 +27,18 @@ const createContextMapper = (
 
   return ([args, formState]) => {
     const fieldsStates = fieldStatesRef.current;
-    const fieldContext = {fields: formState.fields, args};
+
     for (let fieldId in indexedSchema) {
       if (indexedSchema.hasOwnProperty(fieldId)) {
         const fieldSchema = indexedSchema[fieldId];
         const fieldValue = formState.fields[fieldId];
+        const fieldErrors = formState.fieldsErrors[fieldId];
 
         const props = fieldSchema.props
           ? fieldSchema.props(fieldContext)
           : emptyObject;
+
+        const fieldContext = {fields: formState.fields, args, fieldErrors};
 
         const error = validateField(fieldSchema, fieldValue, fieldContext);
 

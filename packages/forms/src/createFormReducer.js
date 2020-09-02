@@ -28,6 +28,7 @@ import mergeSpec from './mergeSpec';
 const getInitialModel = fields => ({
   submitRequested: false,
   fields: fields || {},
+  fieldsErrors: map(always([]), fields),
   dirty: map(always(false), fields),
   touched: map(always(false), fields),
   defaultValues: fields || {},
@@ -50,13 +51,16 @@ const createUpdater = (fieldTypes, schema, resetOnSubmit, resetOnCancel) => {
   const initialModel = getInitialModel(fields);
 
   return createReducer(initialModel, [
-    createPayloadReducer(SET_FIELD, ({name, value}) =>
+    createPayloadReducer(SET_FIELD, ({name, value, errors}) =>
       evolve({
         dirty: {
           [name]: always(true),
         },
         fields: {
           [name]: always(value),
+        },
+        fieldsErrors: {
+          [name]: always(errors),
         },
       })
     ),

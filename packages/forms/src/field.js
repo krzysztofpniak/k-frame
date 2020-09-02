@@ -32,6 +32,7 @@ const Field = memo(
     formName,
     title,
     onChange,
+    onErrorsChange,
     onBlur,
     component,
     format,
@@ -46,6 +47,9 @@ const Field = memo(
     const [error, setError] = useLazyState(
       initialState.errorVisible && initialState.error
     );
+    const [errorVisible, setErrorVisible] = useLazyState(
+      initialState.errorVisible
+    );
     const [props, setProps] = useLazyState(initialState.props);
     const [isVisible, setVisibility] = useLazyState(initialState.visible);
 
@@ -54,6 +58,7 @@ const Field = memo(
         setValue(state.value);
         setProps(state.props);
         setError(state.errorVisible && state.error);
+        setErrorVisible(state.errorVisible);
         setVisibility(state.visible);
       };
 
@@ -76,11 +81,11 @@ const Field = memo(
     ]);
 
     const handleOnChange = useCallback(
-      e => {
+      (e, errors) => {
         const value = !e.target ? e : e.target.value;
         const parsedValue = parse ? parse(value) : value;
 
-        onChange(parsedValue, id);
+        onChange(parsedValue, id, errors);
       },
       [id, onChange]
     );
@@ -110,6 +115,7 @@ const Field = memo(
               disabled,
               type,
               error,
+              showErrors: errorVisible,
               scope: `sub.${id}`,
               ...props,
             }),

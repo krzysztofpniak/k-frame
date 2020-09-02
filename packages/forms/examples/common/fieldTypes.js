@@ -1,5 +1,19 @@
-import {add, compose, lensProp, over} from 'ramda';
-import {memo} from 'react';
+import {
+  add,
+  compose,
+  concat,
+  flip,
+  lensProp,
+  lt,
+  over,
+  split,
+  take,
+  unless,
+  filter,
+  length,
+  identity,
+} from 'ramda';
+import {memo, useCallback, useEffect, useMemo, useState} from 'react';
 import {
   useKReducer,
   withScope,
@@ -57,6 +71,55 @@ const SelectField = ({id, value, onChange, options, valueKey, labelKey}) => (
   </select>
 );
 
+const parseName = compose(
+  take(2),
+  unless(
+    compose(
+      lt(1),
+      length
+    ),
+    flip(concat)(['', ''])
+  ),
+  split(' ')
+);
+
+const FullName = ({id, value, onChange, showErrors}) => {
+  const [firstName, lastName] = useMemo(() => parseName(value || ''), [value]);
+
+  const handleOnChange = useCallback(
+    (first, last) => {
+      const firstNameError = !first ? 'First Name is required' : '';
+      const lastNameError = !last ? 'Last Name is required' : '';
+      const errors = filter(identity, [firstNameError, lastNameError]);
+      onChange(`${first} ${last}`, errors);
+    },
+    [onChange]
+  );
+
+  return (
+    <div id={id} style={{display: 'flex'}}>
+      <div>
+        <input
+          value={firstName}
+          onChange={e => handleOnChange(e.target.value, lastName)}
+        />
+        <div style={{color: 'red'}}>
+          {showErrors && !firstName && 'First Name is required'}
+        </div>
+      </div>
+      <div>
+        <input
+          value={lastName}
+          onChange={e => handleOnChange(firstName, e.target.value)}
+        />
+        <div style={{color: 'red'}}>
+          {showErrors && !lastName && 'Last Name is required'}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const JSONView = ({data}) => <pre>{JSON.stringify(data, null, 2)}</pre>;
 
 const fieldTypes = {
@@ -67,6 +130,7 @@ const fieldTypes = {
   select: SelectField,
   static: ({value}) => <div style={{fontWeight: 'bold'}}>{value}</div>,
   json: JSONView,
+  fullName: FullName,
 };
 
 export default fieldTypes;

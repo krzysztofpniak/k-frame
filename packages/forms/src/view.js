@@ -91,10 +91,13 @@ const FormInt = withScope(
         reset();
       }, []);
 
-      const handleReset = useCallback(e => {
-        e.preventDefault();
-        return onReset ? onReset(defaultResetHandler) : defaultResetHandler();
-      });
+      const handleReset = useCallback(
+        e => {
+          e.preventDefault();
+          return onReset ? onReset(defaultResetHandler) : defaultResetHandler();
+        },
+        [onReset]
+      );
 
       const handleSubmit = useCallback(
         e => {
