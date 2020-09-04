@@ -19,6 +19,7 @@ import {
   RESET,
   SET_FIELD,
   SET_FIELDS,
+  SET_FIELD_ERRORS,
   SET_TOUCHED,
   SET_SUBMIT_REQUESTED,
   SUBMIT,
@@ -51,7 +52,7 @@ const createUpdater = (fieldTypes, schema, resetOnSubmit, resetOnCancel) => {
   const initialModel = getInitialModel(fields);
 
   return createReducer(initialModel, [
-    createPayloadReducer(SET_FIELD, ({name, value, errors}) =>
+    createPayloadReducer(SET_FIELD, ({name, value}) =>
       evolve({
         dirty: {
           [name]: always(true),
@@ -59,14 +60,18 @@ const createUpdater = (fieldTypes, schema, resetOnSubmit, resetOnCancel) => {
         fields: {
           [name]: always(value),
         },
-        fieldsErrors: {
-          [name]: always(errors),
-        },
       })
     ),
     createPayloadReducer(SET_FIELDS, fields =>
       evolve({
         fields: mergeLeft(fields),
+      })
+    ),
+    createPayloadReducer(SET_FIELD_ERRORS, ({name, errors}) =>
+      evolve({
+        fieldsErrors: {
+          [name]: always(errors),
+        },
       })
     ),
     createPayloadReducer(SET_TOUCHED, fieldId =>

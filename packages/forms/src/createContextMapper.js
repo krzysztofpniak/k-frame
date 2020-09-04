@@ -33,12 +33,10 @@ const createContextMapper = (
         const fieldSchema = indexedSchema[fieldId];
         const fieldValue = formState.fields[fieldId];
         const fieldErrors = formState.fieldsErrors[fieldId];
-
+        const fieldContext = {fields: formState.fields, args, fieldErrors};
         const props = fieldSchema.props
           ? fieldSchema.props(fieldContext)
           : emptyObject;
-
-        const fieldContext = {fields: formState.fields, args, fieldErrors};
 
         const error = validateField(fieldSchema, fieldValue, fieldContext);
 

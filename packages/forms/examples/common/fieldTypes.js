@@ -83,18 +83,29 @@ const parseName = compose(
   split(' ')
 );
 
-const FullName = ({id, value, onChange, showErrors}) => {
+const FullName = ({id, value, onChange, showErrors, onErrorsChange}) => {
   const [firstName, lastName] = useMemo(() => parseName(value || ''), [value]);
+
+  const firstNameError = !firstName ? 'First Name is required' : '';
+  const lastNameError = !lastName ? 'Last Name is required' : '';
+
+  const errors = useMemo(
+    () => filter(identity, [firstNameError, lastNameError]),
+    [firstNameError, lastNameError]
+  );
 
   const handleOnChange = useCallback(
     (first, last) => {
-      const firstNameError = !first ? 'First Name is required' : '';
-      const lastNameError = !last ? 'Last Name is required' : '';
-      const errors = filter(identity, [firstNameError, lastNameError]);
-      onChange(`${first} ${last}`, errors);
+      onChange(`${first} ${last}`);
     },
     [onChange]
   );
+
+  useEffect(() => {
+    if (onErrorsChange) {
+      onErrorsChange(errors);
+    }
+  }, [errors]);
 
   return (
     <div id={id} style={{display: 'flex'}}>
@@ -103,18 +114,14 @@ const FullName = ({id, value, onChange, showErrors}) => {
           value={firstName}
           onChange={e => handleOnChange(e.target.value, lastName)}
         />
-        <div style={{color: 'red'}}>
-          {showErrors && !firstName && 'First Name is required'}
-        </div>
+        <div style={{color: 'red'}}>{showErrors && firstNameError}</div>
       </div>
       <div>
         <input
           value={lastName}
           onChange={e => handleOnChange(firstName, e.target.value)}
         />
-        <div style={{color: 'red'}}>
-          {showErrors && !lastName && 'Last Name is required'}
-        </div>
+        <div style={{color: 'red'}}>{showErrors && lastNameError}</div>
       </div>
     </div>
   );

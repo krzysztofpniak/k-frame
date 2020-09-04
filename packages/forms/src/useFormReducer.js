@@ -245,7 +245,7 @@ const useFormReducer = ({
     nextFieldsRef.current = fields;
   }, []);
 
-  const handleOnChange = useCallback((value, fieldId, errors) => {
+  const handleOnChange = useCallback((value, fieldId) => {
     const {setField, setFields} = boundActionCreators;
     const fieldSchema = indexedSchema[fieldId];
 
@@ -264,11 +264,16 @@ const useFormReducer = ({
       if (nextFieldsRef.current !== null) {
         setFields({...nextFieldsRef.current, [fieldId]: overriddenValue});
       } else if (overriddenValue !== currentValue) {
-        setField(fieldId, overriddenValue, errors || emptyArray);
+        setField(fieldId, overriddenValue);
       }
     } else {
-      setField(fieldId, value, errors || emptyArray);
+      setField(fieldId, value);
     }
+  }, []);
+
+  const handleErrorsChange = useCallback((errors, fieldId) => {
+    const {setFieldErrors} = boundActionCreators;
+    setFieldErrors(fieldId, errors);
   }, []);
 
   const mountField = useCallback(fieldId => {
@@ -295,6 +300,7 @@ const useFormReducer = ({
       focusFirstField,
       defaultSubmitHandler,
       handleOnChange,
+      handleErrorsChange,
       formContext: {
         getFieldState,
         observable: formContextObservable,

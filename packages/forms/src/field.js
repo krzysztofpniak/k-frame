@@ -81,13 +81,20 @@ const Field = memo(
     ]);
 
     const handleOnChange = useCallback(
-      (e, errors) => {
+      e => {
         const value = !e.target ? e : e.target.value;
         const parsedValue = parse ? parse(value) : value;
 
-        onChange(parsedValue, id, errors);
+        onChange(parsedValue, id);
       },
       [id, onChange]
+    );
+
+    const handleErrorsChange = useCallback(
+      errors => {
+        onErrorsChange(errors, id);
+      },
+      [id, onErrorsChange]
     );
 
     const handleOnBlur = useCallback(() => {
@@ -111,6 +118,7 @@ const Field = memo(
               inputRef: handleRefSet,
               value: formattedValue,
               onChange: handleOnChange,
+              onErrorsChange: handleErrorsChange,
               onBlur: handleOnBlur,
               disabled,
               type,

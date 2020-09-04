@@ -64,6 +64,7 @@ const FormInt = withScope(
         reset,
         formContext,
         handleOnChange,
+        handleErrorsChange,
         focusFirstField,
         defaultSubmitHandler,
         validateForm,
@@ -143,6 +144,7 @@ const FormInt = withScope(
                 fieldTemplate={fieldTemplate}
                 formName={name}
                 onChange={handleOnChange}
+                onErrorsChange={handleErrorsChange}
                 onBlur={handleOnBlur}
                 defaultValue={f.defaultValue}
                 parse={f.parse}
