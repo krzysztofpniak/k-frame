@@ -13,7 +13,16 @@ import {
   length,
   identity,
 } from 'ramda';
-import {memo, useCallback, useEffect, useMemo, useState} from 'react';
+import {
+  forwardRef,
+  memo,
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  useImperativeHandle,
+  useRef,
+} from 'react';
 import {
   useKReducer,
   withScope,
@@ -83,8 +92,12 @@ const parseName = compose(
   split(' ')
 );
 
-const FullName = ({id, value, onChange, showErrors, onErrorsChange}) => {
-  const [firstName, lastName] = useMemo(() => parseName(value || ''), [value]);
+const FullName = ({id, value, rawValue, onChange}) => {
+  console.log('FullName', value, rawValue);
+
+  const [firstName, lastName] = useMemo(() => parseName(rawValue || ''), [
+    rawValue,
+  ]);
 
   const firstNameError = !firstName ? 'First Name is required' : '';
   const lastNameError = !lastName ? 'Last Name is required' : '';
@@ -101,12 +114,6 @@ const FullName = ({id, value, onChange, showErrors, onErrorsChange}) => {
     [onChange]
   );
 
-  useEffect(() => {
-    if (onErrorsChange) {
-      onErrorsChange(errors);
-    }
-  }, [errors]);
-
   return (
     <div id={id} style={{display: 'flex'}}>
       <div>
@@ -114,14 +121,14 @@ const FullName = ({id, value, onChange, showErrors, onErrorsChange}) => {
           value={firstName}
           onChange={e => handleOnChange(e.target.value, lastName)}
         />
-        <div style={{color: 'red'}}>{showErrors && firstNameError}</div>
+        <div style={{color: 'red'}}>{firstNameError}</div>
       </div>
       <div>
         <input
           value={lastName}
           onChange={e => handleOnChange(firstName, e.target.value)}
         />
-        <div style={{color: 'red'}}>{showErrors && lastNameError}</div>
+        <div style={{color: 'red'}}>{lastNameError}</div>
       </div>
     </div>
   );

@@ -87,16 +87,16 @@ describe('createReducer', () => {
     const state0 = {c1: counterState0, c2: counterState0};
     const state1 = {c1: counterState0, c2: counterState1};
 
-    const state2 = createReducer(state0, [
-      (s, {type}) =>
-        type === 'c1.inc'
-          ? {...s, c1: {...s.c1, counter: s.c1.counter + 1}}
-          : s,
-    ])(state1, {
+    const red1 = (s, {type}) =>
+      type === 'c1.inc' ? {...s, c1: {...s.c1, counter: s.c1.counter + 1}} : s;
+
+    const reducer = createReducer(state0, [red1]);
+
+    const state2 = reducer(state1, {
       type: 'c1.inc',
     });
 
-    expect(state2.c1).toEqual(counterState1);
     expect(state2.c2).toBe(state1.c2);
+    expect(state2.c1).toEqual(counterState1);
   });
 });

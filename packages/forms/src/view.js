@@ -10,6 +10,7 @@ import React, {
   useState,
   forwardRef,
   useImperativeHandle,
+  createRef,
 } from 'react';
 import {map, fromPairs, reduceBy, pathOr, keys, flip} from 'ramda';
 import useFormReducer from './useFormReducer';
@@ -57,6 +58,13 @@ const FormInt = withScope(
       const argsKeys = useMemo(() => keys(args), []);
       const argsValues = map(k => args[k], argsKeys);
 
+      const refsInitialValue = useMemo(
+        () => fromPairs(map(f => [f.id, createRef()], schema)),
+        [schema]
+      );
+
+      let fieldsRefs = useRef(refsInitialValue);
+
       const {
         handleOnBlur,
         handleRefSet,
@@ -64,12 +72,13 @@ const FormInt = withScope(
         reset,
         formContext,
         handleOnChange,
-        handleErrorsChange,
         focusFirstField,
+        validating,
         defaultSubmitHandler,
         validateForm,
       } = useFormReducer({
         fieldTypes,
+        fieldsRefs,
         schema,
         errorsDisplayStrategy,
         args,
@@ -126,8 +135,17 @@ const FormInt = withScope(
             submitText,
             dirty: false,
             disabled,
+            validating,
           }),
-        [buttonsTemplate, handleSubmit, name, cancelText, submitText, disabled]
+        [
+          buttonsTemplate,
+          handleSubmit,
+          name,
+          cancelText,
+          submitText,
+          disabled,
+          validating,
+        ]
       );
       const genericError = <div>genericError</div>;
 
@@ -140,11 +158,11 @@ const FormInt = withScope(
                 key={(name || '') + (name ? '-' : '') + f.id}
                 id={f.id}
                 inputRef={handleRefSet}
+                fieldRef={fieldsRefs.current[f.id]}
                 title={f.title}
                 fieldTemplate={fieldTemplate}
                 formName={name}
                 onChange={handleOnChange}
-                onErrorsChange={handleErrorsChange}
                 onBlur={handleOnBlur}
                 defaultValue={f.defaultValue}
                 parse={f.parse}
@@ -264,11 +282,11 @@ const FieldTemplate = ({title, input, error}) => (
   </div>
 );
 
-const ButtonsTemplate = ({onSubmit, onReset, disabled}) =>
+const ButtonsTemplate = ({onSubmit, onReset, disabled, validating}) =>
   !disabled && (
     <div>
-      <button type="submit" onClick={onSubmit}>
-        Save
+      <button type="submit" onClick={onSubmit} disabled={validating}>
+        {validating ? 'Validating ...' : 'Save'}
       </button>
       <button type="button" onClick={onReset}>
         Cancel

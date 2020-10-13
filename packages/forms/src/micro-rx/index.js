@@ -1,4 +1,5 @@
 import {shallowEqual} from '@k-frame/core';
+import {equals} from 'ramda';
 
 const Observable = subscribe => {
   const s = observer =>

@@ -11,6 +11,7 @@ import {
 } from 'react';
 import {oMap, distinctUntilChanged} from './micro-rx/index';
 import FormContext from './FormContext';
+import {identity} from 'ramda';
 
 const useLazyState = initialValue => {
   const [value, setValue] = useState(initialValue);
@@ -32,18 +33,19 @@ const Field = memo(
     formName,
     title,
     onChange,
-    onErrorsChange,
     onBlur,
     component,
     format,
     parse,
     inputRef,
+    fieldRef,
     disabled,
   }) => {
     const formContext = useContext(FormContext);
     const initialState = useMemo(() => formContext.getFieldState(id), []);
 
     const [value, setValue] = useLazyState(initialState.value);
+    const [rawValue, setRawValue] = useLazyState(initialState.rawValue);
     const [error, setError] = useLazyState(
       initialState.errorVisible && initialState.error
     );
@@ -56,6 +58,7 @@ const Field = memo(
     useEffect(() => {
       const updateField = state => {
         setValue(state.value);
+        setRawValue(state.rawValue);
         setProps(state.props);
         setError(state.errorVisible && state.error);
         setErrorVisible(state.errorVisible);
@@ -76,9 +79,17 @@ const Field = memo(
       };
     }, []);
 
-    const formattedValue = useMemo(() => (format ? format(value) : value), [
-      value,
-    ]);
+    const [formattedValue, setFormattedValue] = useState(
+      format ? null : initialState.value
+    );
+
+    useEffect(() => {
+      if (format) {
+        Promise.resolve(value).then(setFormattedValue);
+      } else {
+        setFormattedValue(value);
+      }
+    }, [value]);
 
     const handleOnChange = useCallback(
       e => {
@@ -88,13 +99,6 @@ const Field = memo(
         onChange(parsedValue, id);
       },
       [id, onChange]
-    );
-
-    const handleErrorsChange = useCallback(
-      errors => {
-        onErrorsChange(errors, id);
-      },
-      [id, onErrorsChange]
     );
 
     const handleOnBlur = useCallback(() => {
@@ -108,6 +112,12 @@ const Field = memo(
       [id, inputRef]
     );
 
+    const [errorText, setErrorText] = useState('');
+
+    useEffect(() => {
+      Promise.resolve(error).then(setErrorText);
+    }, [error]);
+
     const field = useMemo(() => {
       return isVisible
         ? createElement(fieldTemplate, {
@@ -116,22 +126,23 @@ const Field = memo(
               id: (formName || '') + (formName ? '-' : '') + id,
               title,
               inputRef: handleRefSet,
-              value: formattedValue,
+              value: format ? formattedValue : rawValue,
+              rawValue: rawValue,
               onChange: handleOnChange,
-              onErrorsChange: handleErrorsChange,
               onBlur: handleOnBlur,
               disabled,
               type,
-              error,
+              error: errorText,
               showErrors: errorVisible,
               scope: `sub.${id}`,
+              ref: fieldRef,
               ...props,
             }),
             ...props,
-            error,
+            error: errorText,
           })
         : null;
-    }, [value, error, isVisible, props, disabled]);
+    }, [value, formattedValue, errorText, isVisible, props, disabled]);
 
     return field;
   }

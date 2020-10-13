@@ -80,6 +80,7 @@ describe('useFormReducer', () => {
           error: '',
           errorVisible: false,
           visible: true,
+          rawValue: '',
         });
 
         expect(result.current.formContext.getFieldState('favColor')).toEqual({
@@ -89,11 +90,13 @@ describe('useFormReducer', () => {
           error: '',
           errorVisible: false,
           visible: true,
+          rawValue: 'green',
         });
 
         expect(result.current.formContext.getFieldState('age')).toEqual({
           id: 'age',
           value: 22,
+          rawValue: 22,
           props: {},
           error: '',
           errorVisible: false,
@@ -103,6 +106,7 @@ describe('useFormReducer', () => {
         expect(result.current.formContext.getFieldState('language')).toEqual({
           id: 'language',
           value: '',
+          rawValue: '',
           props: {options: ['en', 'de'], age: 22},
           error: 'This field is required',
           errorVisible: false,

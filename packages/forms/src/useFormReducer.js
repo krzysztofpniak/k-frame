@@ -5,6 +5,7 @@ import {
   useLayoutEffect,
   useMemo,
   useRef,
+  useState,
 } from 'react';
 import * as formActions from './actions';
 import {bindActionCreators, KContext, shallowEqual} from '@k-frame/core';
@@ -19,6 +20,7 @@ import {
   prop,
   find,
   identity,
+  tap,
 } from 'ramda';
 import {
   Observable,
@@ -36,6 +38,7 @@ const emptyArray = [];
 
 const useFormReducer = ({
   fieldTypes,
+  fieldsRefs,
   schema,
   errorsDisplayStrategy,
   args,
@@ -81,6 +84,7 @@ const useFormReducer = ({
         initialState,
         errorsDisplayStrategy,
         fieldStatesRef,
+        fieldsRefs,
         args
       ),
     []
@@ -199,23 +203,35 @@ const useFormReducer = ({
     }
   }, []);
 
+  const [validating, setValidating] = useState(false);
+
   const defaultSubmitHandler = useCallback(e => {
     const asyncErrors = {};
     const model = getFormState();
+    setValidating(true);
     const formErrors = validateFormInt(asyncErrors || {});
-    const syncErrors = filter(e => e.error, formErrors);
+
     const {submit, setSubmitDirty} = boundActionCreators;
 
-    syncErrors.length === 0 ? submit({fields: model.fields}) : setSubmitDirty();
+    return Promise.all(map(e => e.error, formErrors))
+      .then(errors => filter(identity, errors))
+      .then(syncErrors => {
+        //const syncErrors = filter(e => e.error, formErrors);
+        syncErrors.length === 0
+          ? submit({fields: model.fields})
+          : setSubmitDirty();
 
-    if (formErrors.length > 0) {
-      const erroredInput = inputRefs.current[formErrors[0].id];
-      if (erroredInput && erroredInput.focus) {
-        erroredInput.focus();
-      }
-    }
+        if (formErrors.length > 0) {
+          const erroredInput = inputRefs.current[formErrors[0].id];
+          if (erroredInput && erroredInput.focus) {
+            erroredInput.focus();
+          }
+        }
 
-    return formErrors;
+        setValidating(false);
+
+        return formErrors;
+      });
   }, []);
 
   const validateForm = useCallback(() => {
@@ -271,10 +287,6 @@ const useFormReducer = ({
     }
   }, []);
 
-  const handleErrorsChange = useCallback((errors, fieldId) => {
-    const {setFieldErrors} = boundActionCreators;
-    setFieldErrors(fieldId, errors);
-  }, []);
 
   const mountField = useCallback(fieldId => {
     mountedFieldsRef.current[fieldId] = true;
@@ -300,7 +312,6 @@ const useFormReducer = ({
       focusFirstField,
       defaultSubmitHandler,
       handleOnChange,
-      handleErrorsChange,
       formContext: {
         getFieldState,
         observable: formContextObservable,
@@ -311,7 +322,7 @@ const useFormReducer = ({
     []
   );
 
-  return result;
+  return {...result, validating};
 };
 
 export default useFormReducer;

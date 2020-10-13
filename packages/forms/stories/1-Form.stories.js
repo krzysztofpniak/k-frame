@@ -5,6 +5,9 @@ import {Form} from '../src/view';
 import {required} from '../src/validators';
 import kFrameDecorator from './helpers/kFrameDecorator';
 
+const delayedValue = v =>
+  new Promise(resolve => setTimeout(() => resolve(v), 1000));
+
 export default {
   title: 'Complex',
   component: Form,
@@ -17,8 +20,11 @@ const schema = [
     title: 'Full Name',
     type: 'fullName',
     defaultValue: 'John Brown',
-    validate: (_, {fieldErrors}) =>
-      fieldErrors.length > 0 ? 'Fix errors above' : '',
+    validate: (value, ctx) =>
+      value.then(v =>
+        delayedValue(isNaN(v) ? 'This field must be a number' : '')
+      ),
+    format: value => delayedValue(parseInt(value)),
   },
 ];
 
