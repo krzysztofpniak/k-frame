@@ -1,8 +1,9 @@
-import {always, prop} from 'ramda';
+import {always, prop, map, F} from 'ramda';
 import mergeSpec from './mergeSpec';
 
 const reset = mergeSpec({
-  dirty: always(false),
+  touched: map(F),
+  dirty: map(F),
   submitRequested: always(false),
   fields: prop('defaultValues'),
   subStates: prop('initialSubStates'),
