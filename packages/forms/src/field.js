@@ -142,7 +142,15 @@ const Field = memo(
             error: errorText,
           })
         : null;
-    }, [value, formattedValue, errorText, isVisible, props, disabled]);
+    }, [
+      value,
+      formattedValue,
+      errorText,
+      isVisible,
+      props,
+      disabled,
+      rawValue,
+    ]);
 
     return field;
   }
