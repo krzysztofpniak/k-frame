@@ -11,7 +11,7 @@ import {
 } from 'react';
 import {oMap, distinctUntilChanged} from './micro-rx/index';
 import FormContext from './FormContext';
-import {identity} from 'ramda';
+import {is} from 'ramda';
 
 const useLazyState = initialValue => {
   const [value, setValue] = useState(initialValue);
@@ -135,7 +135,7 @@ const Field = memo(
               error: errorText,
               showErrors: errorVisible,
               scope: `sub.${id}`,
-              ref: fieldRef,
+              ref: is(Function, component) ? undefined : fieldRef,
               ...props,
             }),
             ...props,
