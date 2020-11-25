@@ -76,6 +76,8 @@ const FormInt = withScope(
         validating,
         defaultSubmitHandler,
         validateForm,
+        setField,
+        setFields,
       } = useFormReducer({
         fieldTypes,
         fieldsRefs,
@@ -122,6 +124,8 @@ const FormInt = withScope(
       useImperativeHandle(ref, () => ({
         submit: handleSubmit,
         getFields,
+        setField,
+        setFields,
         validate: validateForm,
       }));
 
