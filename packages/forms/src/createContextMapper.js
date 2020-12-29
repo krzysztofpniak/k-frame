@@ -9,7 +9,6 @@ const createContextMapper = (
   initialState,
   errorsDisplayStrategy,
   fieldStatesRef,
-  fieldsRefs,
   args
 ) => {
   const errors = map(always(''), indexedSchema);

@@ -38,7 +38,6 @@ const Field = memo(
     format,
     parse,
     inputRef,
-    fieldRef,
     disabled,
   }) => {
     const formContext = useContext(FormContext);
@@ -135,7 +134,6 @@ const Field = memo(
               error: errorText,
               showErrors: errorVisible,
               scope: `sub.${id}`,
-              ref: is(Function, component) ? undefined : fieldRef,
               ...props,
             }),
             ...props,

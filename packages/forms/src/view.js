@@ -58,13 +58,6 @@ const FormInt = withScope(
       const argsKeys = useMemo(() => keys(args), []);
       const argsValues = map(k => args[k], argsKeys);
 
-      const refsInitialValue = useMemo(
-        () => fromPairs(map(f => [f.id, createRef()], schema)),
-        [schema]
-      );
-
-      let fieldsRefs = useRef(refsInitialValue);
-
       const {
         handleOnBlur,
         handleRefSet,
@@ -80,7 +73,6 @@ const FormInt = withScope(
         setFields,
       } = useFormReducer({
         fieldTypes,
-        fieldsRefs,
         schema,
         errorsDisplayStrategy,
         args,
@@ -162,7 +154,6 @@ const FormInt = withScope(
                 key={(name || '') + (name ? '-' : '') + f.id}
                 id={f.id}
                 inputRef={handleRefSet}
-                fieldRef={fieldsRefs.current[f.id]}
                 title={f.title}
                 fieldTemplate={fieldTemplate}
                 formName={name}

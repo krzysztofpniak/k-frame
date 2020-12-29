@@ -38,7 +38,6 @@ const emptyArray = [];
 
 const useFormReducer = ({
   fieldTypes,
-  fieldsRefs,
   schema,
   errorsDisplayStrategy,
   args,
@@ -84,7 +83,6 @@ const useFormReducer = ({
         initialState,
         errorsDisplayStrategy,
         fieldStatesRef,
-        fieldsRefs,
         args
       ),
     []
@@ -286,7 +284,6 @@ const useFormReducer = ({
       setField(fieldId, value);
     }
   }, []);
-
 
   const mountField = useCallback(fieldId => {
     mountedFieldsRef.current[fieldId] = true;
