@@ -22,6 +22,7 @@ import {
   SET_TOUCHED,
   SET_SUBMIT_REQUESTED,
   SUBMIT,
+  INIT,
 } from './actionTypes';
 import mergeSpec from './mergeSpec';
 
@@ -63,6 +64,15 @@ const createUpdater = (fieldTypes, schema, resetOnSubmit, resetOnCancel) => {
     createPayloadReducer(SET_FIELDS, fields =>
       evolve({
         fields: mergeLeft(fields),
+      })
+    ),
+    createPayloadReducer(INIT, fields =>
+      evolve({
+        fields: always(fields),
+        defaultValues: always(fields),
+        dirty: always(map(always(false), fields)),
+        touched: always(map(always(false), fields)),
+        submitRequested: always(false),
       })
     ),
     createPayloadReducer(SET_TOUCHED, fieldId =>

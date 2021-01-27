@@ -1,5 +1,6 @@
 import {createAction} from '@k-frame/core';
 import {
+  INIT,
   SET_FIELD,
   SET_FIELDS,
   SET_TOUCHED,
@@ -13,10 +14,11 @@ const setField = createAction(SET_FIELD, (name, value) => ({
   value,
 }));
 
+const init = createAction(INIT);
 const setFields = createAction(SET_FIELDS);
 const setTouched = createAction(SET_TOUCHED);
 const submit = createAction(SUBMIT);
 const reset = createAction(RESET);
 const setSubmitDirty = createAction(SET_SUBMIT_REQUESTED);
 
-export {setField, setFields, setTouched, submit, reset, setSubmitDirty};
+export {init, setField, setFields, setTouched, submit, reset, setSubmitDirty};

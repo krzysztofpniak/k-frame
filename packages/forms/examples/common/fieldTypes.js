@@ -12,6 +12,10 @@ import {
   filter,
   length,
   identity,
+  assoc,
+  map,
+  addIndex,
+  assocPath,
 } from 'ramda';
 import {
   forwardRef,
@@ -30,6 +34,8 @@ import {
   createStateReducer,
 } from '@k-frame/core';
 import React from 'react';
+
+const mapWithKey = addIndex(map);
 
 const counterReducer = createReducer({counter: 0}, [
   createStateReducer('INC', over(lensProp('counter'), add(1))),
@@ -136,6 +142,54 @@ const FullName = ({id, value, rawValue, onChange}) => {
 
 const JSONView = ({data}) => <pre>{JSON.stringify(data, null, 2)}</pre>;
 
+const InputWithIdx = ({idx, value, onChange}) => {
+  const handleChange = useCallback(e => onChange(e.target.value, idx), [
+    idx,
+    onChange,
+  ]);
+
+  return <input key={idx} value={value} onChange={handleChange} />;
+};
+
+const ComplexField = ({value, onChange}) => {
+  const handleFirstChange = useCallback(
+    (v, idx) => onChange(assocPath(['first', idx], v, value)),
+    [value, onChange]
+  );
+
+  const handleSecondChange = useCallback(
+    (v, idx) => onChange(assocPath(['second', idx], v, value)),
+    [value, onChange]
+  );
+
+  return (
+    <div>
+      {mapWithKey(
+        (x, idx) => (
+          <InputWithIdx
+            key={idx}
+            idx={idx}
+            value={x}
+            onChange={handleFirstChange}
+          />
+        ),
+        value.first
+      )}
+      {mapWithKey(
+        (x, idx) => (
+          <InputWithIdx
+            key={idx}
+            idx={idx}
+            value={x}
+            onChange={handleSecondChange}
+          />
+        ),
+        value.second
+      )}
+    </div>
+  );
+};
+
 const fieldTypes = {
   text: Input,
   password: Input,
@@ -145,6 +199,7 @@ const fieldTypes = {
   static: ({value}) => <div style={{fontWeight: 'bold'}}>{value}</div>,
   json: JSONView,
   fullName: FullName,
+  complexField: ComplexField,
 };
 
 export default fieldTypes;

@@ -1,3 +1,4 @@
+const INIT = 'Init';
 const SET_FIELD = 'SetField';
 const SET_FIELDS = 'SetFields';
 const SET_TOUCHED = 'SetTouched';
@@ -6,6 +7,7 @@ const RESET = 'Reset';
 const SET_SUBMIT_REQUESTED = 'SetSubmitRequested';
 
 export {
+  INIT,
   SET_FIELD,
   SET_FIELDS,
   SET_TOUCHED,

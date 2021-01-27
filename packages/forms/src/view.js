@@ -12,7 +12,25 @@ import React, {
   useImperativeHandle,
   createRef,
 } from 'react';
-import {map, fromPairs, reduceBy, pathOr, keys, flip} from 'ramda';
+import {
+  map,
+  fromPairs,
+  reduceBy,
+  pathOr,
+  keys,
+  flip,
+  lens,
+  lensPath,
+  over,
+  path,
+  mergeLeft,
+  always,
+  tap,
+  compose,
+  propOr,
+  indexBy,
+  prop,
+} from 'ramda';
 import useFormReducer from './useFormReducer';
 import {KContext, withScope, shallowEqual} from '@k-frame/core';
 import FormContext from './FormContext';
@@ -29,6 +47,11 @@ const GenericError = ({content}) => (
   </div>
 );
 
+const getDefaultValues = compose(
+  map(propOr('', 'defaultValue')),
+  indexBy(prop('id'))
+);
+
 const FormInt = withScope(
   forwardRef(
     (
@@ -40,6 +63,7 @@ const FormInt = withScope(
         fieldTemplate,
         buttonsTemplate,
         onSubmit,
+        onValidated,
         onReset,
         fieldTypes,
         schema,
@@ -63,6 +87,7 @@ const FormInt = withScope(
         handleRefSet,
         getFields,
         reset,
+        init,
         formContext,
         handleOnChange,
         focusFirstField,
@@ -106,18 +131,32 @@ const FormInt = withScope(
       const handleSubmit = useCallback(
         e => {
           e.preventDefault();
+
+          const callOnValidated = () =>
+            defaultSubmitHandler().then(
+              tap(errors => {
+                if (errors.length === 0 && onValidated) {
+                  onValidated(getFields());
+                }
+              })
+            );
+
           return onSubmit
-            ? onSubmit(defaultSubmitHandler, getFields())
-            : defaultSubmitHandler();
+            ? onSubmit(callOnValidated, getFields())
+            : callOnValidated();
         },
-        [defaultSubmitHandler, onSubmit]
+        [defaultSubmitHandler, onSubmit, onValidated]
       );
+
+      const clear = useCallback(() => init(getDefaultValues(schema)), [schema]);
 
       useImperativeHandle(ref, () => ({
         submit: handleSubmit,
         getFields,
         setField,
         setFields,
+        reset,
+        clear,
         validate: validateForm,
       }));
 
@@ -302,6 +341,19 @@ const fieldTypes = {
   ),
 };
 
+const getFormInitialModel = fields => ({
+  submitRequested: false,
+  fields: fields || {},
+  dirty: map(always(false), fields),
+  touched: map(always(false), fields),
+  defaultValues: fields || {},
+});
+
+const lensForm = form =>
+  lens(path([form, 'fields']), (fields, data) =>
+    over(lensPath([form]), mergeLeft(getFormInitialModel(fields)), data)
+  );
+
 Form.defaultProps = {
   formTemplate: FormTemplate,
   fieldTemplate: FieldTemplate,
@@ -314,4 +366,4 @@ Form.defaultProps = {
   resetOnCancel: true,
 };
 
-export {Form};
+export {Form, lensForm};

@@ -1,4 +1,4 @@
-import {Form} from './view';
+import {Form, lensForm} from './view';
 import reset from './reset';
 
-export {Form, reset};
+export {Form, reset, lensForm};
