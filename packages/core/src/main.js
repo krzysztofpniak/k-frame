@@ -42,15 +42,14 @@ const failedAction = createAsyncAction('failed');
 
 const ensureObject = unless(is(Object), objOf('value'));
 
-const asyncActionExecutor = async (fn, args, key, dispatch) => {
+const asyncActionExecutor = async (fn, key, dispatch) => {
   try {
     dispatch(requestAction(key));
-    const result = await fn(...args);
+    const result = await fn();
     dispatch(succeededAction(key, result));
     return result;
   } catch (e) {
     dispatch(failedAction(key, e));
-    throw e;
   }
 };
 
@@ -58,7 +57,11 @@ const useAsync = (fn, key) => {
   const context = useContext(KContext);
 
   return useCallback((...args) => {
-    return asyncActionExecutor(fn, args, key, context.dispatch);
+    return asyncActionExecutor(
+      () => context.asyncMiddleware(context.store)(fn)(args),
+      key,
+      context.dispatch
+    );
   }, []);
 };
 

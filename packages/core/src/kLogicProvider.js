@@ -24,12 +24,22 @@ const defaultContextValue = {
   subscribe: printMissingKProviderError,
   setScopeProp: printMissingKProviderError,
   getScopeProp: printMissingKProviderError,
+  asyncMiddleware: printMissingKProviderError,
   supplied: false,
+  store: {},
 };
 
 const KContext = createContext(defaultContextValue);
 
-const KProvider = ({store, runSaga, staticReducer, children}) => {
+const defaultAsyncMiddleware = fn => args => fn(args);
+
+const KProvider = ({
+  store,
+  runSaga,
+  staticReducer,
+  asyncMiddleware,
+  children,
+}) => {
   const ancestorContext = useContext(KContext);
   const [context, setContext] = useState(defaultContextValue);
   const reducersTree = useRef({});
@@ -78,6 +88,8 @@ const KProvider = ({store, runSaga, staticReducer, children}) => {
       setScopeProp,
       getScopeProp,
       supplied: true,
+      asyncMiddleware: asyncMiddleware || defaultAsyncMiddleware,
+      store,
     }),
     [runSaga, assocReducer]
   );
