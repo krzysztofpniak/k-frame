@@ -31,7 +31,7 @@ const defaultContextValue = {
 
 const KContext = createContext(defaultContextValue);
 
-const defaultAsyncMiddleware = fn => args => fn(args);
+const defaultAsyncMiddleware = store => fn => args => fn(args);
 
 const KProvider = ({
   store,
