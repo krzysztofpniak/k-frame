@@ -62,6 +62,7 @@ const createContextMapper = (
 
         const errorVisible = errorsDisplayStrategy({
           submitRequested: formState.submitRequested,
+          validating: formState.validating,
           touched,
           dirty,
         });

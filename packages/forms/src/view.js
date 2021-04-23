@@ -91,7 +91,6 @@ const FormInt = withScope(
         formContext,
         handleOnChange,
         focusFirstField,
-        validating,
         defaultSubmitHandler,
         validateForm,
         setField,
@@ -159,6 +158,19 @@ const FormInt = withScope(
         clear,
         validate: validateForm,
       }));
+
+      const [validating, setValidating] = useState(false);
+
+      useLayoutEffect(
+        () =>
+          distinctUntilChanged(
+            oMap(
+              ({formState: {validating}}) => validating,
+              formContext.observable
+            )
+          ).subscribe(setValidating),
+        []
+      );
 
       const buttons = useMemo(
         () =>
@@ -347,6 +359,7 @@ const getFormInitialModel = fields => ({
   dirty: map(always(false), fields),
   touched: map(always(false), fields),
   defaultValues: fields || {},
+  validating: false,
 });
 
 const lensForm = form =>

@@ -5,6 +5,7 @@ const SET_TOUCHED = 'SetTouched';
 const SUBMIT = 'Submit';
 const RESET = 'Reset';
 const SET_SUBMIT_REQUESTED = 'SetSubmitRequested';
+const TOGGLE_VALIDATING = 'ToggleValidating';
 
 export {
   INIT,
@@ -14,4 +15,5 @@ export {
   SUBMIT,
   RESET,
   SET_SUBMIT_REQUESTED,
+  TOGGLE_VALIDATING,
 };

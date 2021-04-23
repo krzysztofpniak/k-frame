@@ -23,6 +23,7 @@ import {
   SET_SUBMIT_REQUESTED,
   SUBMIT,
   INIT,
+  TOGGLE_VALIDATING,
 } from './actionTypes';
 import mergeSpec from './mergeSpec';
 
@@ -32,6 +33,7 @@ const getInitialModel = fields => ({
   dirty: map(always(false), fields),
   touched: map(always(false), fields),
   defaultValues: fields || {},
+  validating: false,
 });
 
 const getFieldType = propOr('text', 'type');
@@ -113,6 +115,7 @@ const createUpdater = (fieldTypes, schema, resetOnSubmit, resetOnCancel) => {
       })
     ),
     createStateReducer(SET_SUBMIT_REQUESTED, assoc('submitRequested', true)),
+    createPayloadReducer(TOGGLE_VALIDATING, assoc('validating')),
   ]);
 };
 

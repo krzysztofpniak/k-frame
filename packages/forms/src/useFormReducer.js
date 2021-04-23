@@ -201,12 +201,11 @@ const useFormReducer = ({
     }
   }, []);
 
-  const [validating, setValidating] = useState(false);
-
   const defaultSubmitHandler = useCallback(e => {
+    const {toggleValidating} = boundActionCreators;
     const asyncErrors = {};
     const model = getFormState();
-    setValidating(true);
+    toggleValidating(true);
     const formErrors = validateFormInt(asyncErrors || {});
 
     const {submit, setSubmitDirty} = boundActionCreators;
@@ -226,7 +225,7 @@ const useFormReducer = ({
           }
         }
 
-        setValidating(false);
+        toggleValidating(false);
 
         return formErrors;
       });
@@ -294,7 +293,7 @@ const useFormReducer = ({
 
   const initialFieldContext = useMemo(() => ({args, fields: getFields()}), []);
 
-  const result = useMemo(
+  return useMemo(
     () => ({
       ...boundActionCreators,
       ...initialState,
@@ -318,8 +317,6 @@ const useFormReducer = ({
     }),
     []
   );
-
-  return {...result, validating};
 };
 
 export default useFormReducer;

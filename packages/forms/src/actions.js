@@ -7,6 +7,7 @@ import {
   SUBMIT,
   RESET,
   SET_SUBMIT_REQUESTED,
+  TOGGLE_VALIDATING,
 } from './actionTypes';
 
 const setField = createAction(SET_FIELD, (name, value) => ({
@@ -20,5 +21,15 @@ const setTouched = createAction(SET_TOUCHED);
 const submit = createAction(SUBMIT);
 const reset = createAction(RESET);
 const setSubmitDirty = createAction(SET_SUBMIT_REQUESTED);
+const toggleValidating = createAction(TOGGLE_VALIDATING);
 
-export {init, setField, setFields, setTouched, submit, reset, setSubmitDirty};
+export {
+  init,
+  setField,
+  setFields,
+  setTouched,
+  submit,
+  reset,
+  setSubmitDirty,
+  toggleValidating,
+};
