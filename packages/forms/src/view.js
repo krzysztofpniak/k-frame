@@ -102,6 +102,15 @@ const FormInt = withScope(
         args,
         resetOnSubmit,
         resetOnCancel,
+        formRefCreator: () => ({
+          submit: handleSubmit,
+          getFields,
+          setField,
+          setFields,
+          reset,
+          clear,
+          validate: validateForm,
+        }),
       });
 
       const argsRef = useRef(args);

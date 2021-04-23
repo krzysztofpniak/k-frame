@@ -43,6 +43,7 @@ const useFormReducer = ({
   args,
   resetOnSubmit,
   resetOnCancel,
+  formRefCreator,
 }) => {
   const context = useContext(KContext);
 
@@ -271,6 +272,7 @@ const useFormReducer = ({
         args: argsRef.current,
         fields: fieldsValues,
         setFields: setFieldsInt,
+        formRef: formRefCreator(),
       });
       const overriddenValue =
         onChangeResult !== undefined ? onChangeResult : value;
