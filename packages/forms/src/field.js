@@ -46,7 +46,7 @@ const Field = memo(
     const [value, setValue] = useLazyState(initialState.value);
     const [rawValue, setRawValue] = useLazyState(initialState.rawValue);
     const [error, setError] = useLazyState(
-      initialState.errorVisible && initialState.error
+      initialState.errorVisible ? initialState.error : ''
     );
     const [errorVisible, setErrorVisible] = useLazyState(
       initialState.errorVisible
@@ -59,7 +59,7 @@ const Field = memo(
         setValue(state.value);
         setRawValue(state.rawValue);
         setProps(state.props);
-        setError(state.errorVisible && state.error);
+        setError(state.errorVisible ? state.error : '');
         setErrorVisible(state.errorVisible);
         setVisibility(state.visible);
       };
