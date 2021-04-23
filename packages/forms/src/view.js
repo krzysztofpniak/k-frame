@@ -129,7 +129,9 @@ const FormInt = withScope(
 
       const handleSubmit = useCallback(
         e => {
-          e.preventDefault();
+          if (e) {
+            e.preventDefault();
+          }
 
           const callOnValidated = () =>
             defaultSubmitHandler().then(
