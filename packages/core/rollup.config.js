@@ -1,5 +1,6 @@
 import babel from 'rollup-plugin-babel';
 import nodeResolve from 'rollup-plugin-node-resolve';
+import commonjs from 'rollup-plugin-commonjs';
 import replace from 'rollup-plugin-replace';
 import pkg from './package.json';
 
@@ -16,8 +17,9 @@ export default [
     plugins: [
       babel({
         exclude: ['node_modules/**'],
-      }),
+      })
     ],
+
   },
   {
     input: 'src/main.js',
@@ -43,6 +45,10 @@ export default [
       replace({
         'process.env.NODE_ENV': JSON.stringify('development'),
       }),
+      commonjs({
+        namedExports: {
+        'node_modules/react-is/index.js': ['isForwardRef', 'isValidElementType'],
+      },})
     ],
   },
 ];
