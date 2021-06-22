@@ -26,6 +26,10 @@ module.exports = {
     ],
   ],
   plugins: [
+    [
+      require('@babel/plugin-proposal-pipeline-operator'),
+      {proposal: 'minimal'},
+    ],
     // don't use `loose` mode here - need to copy symbols when spreading
     '@babel/plugin-transform-template-literals',
     '@babel/proposal-object-rest-spread',

@@ -24,12 +24,16 @@ import {
   SUBMIT,
   INIT,
   TOGGLE_VALIDATING,
+  SET_FORMATTED_FIELD,
+  SET_FIELD_ERROR,
 } from './actionTypes';
 import mergeSpec from './mergeSpec';
 
 const getInitialModel = fields => ({
   submitRequested: false,
   fields: fields || {},
+  formattedFields: map(always(null), fields),
+  errors: map(always(''), fields),
   dirty: map(always(false), fields),
   touched: map(always(false), fields),
   defaultValues: fields || {},
@@ -59,6 +63,20 @@ const createUpdater = (fieldTypes, schema, resetOnSubmit, resetOnCancel) => {
           [name]: always(true),
         },
         fields: {
+          [name]: always(value),
+        },
+      })
+    ),
+    createPayloadReducer(SET_FORMATTED_FIELD, ({name, value}) =>
+      evolve({
+        formattedFields: {
+          [name]: always(value),
+        },
+      })
+    ),
+    createPayloadReducer(SET_FIELD_ERROR, ({name, value}) =>
+      evolve({
+        errors: {
           [name]: always(value),
         },
       })

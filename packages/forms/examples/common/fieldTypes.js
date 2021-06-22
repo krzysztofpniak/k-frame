@@ -190,6 +190,29 @@ const ComplexField = ({value, onChange}) => {
   );
 };
 
+const Color = ({
+  value,
+  rawValue,
+  onChange,
+  onBlur,
+  inputRef,
+  type,
+  disabled,
+}) => (
+  <div>
+    <input
+      value={rawValue}
+      onChange={onChange}
+      onBlur={onBlur}
+      ref={inputRef}
+      type="text"
+      style={{width: '100%', boxSizing: 'border-box'}}
+      disabled={disabled}
+    />
+    <span>{value}</span>
+  </div>
+);
+
 const fieldTypes = {
   text: Input,
   password: Input,
@@ -200,6 +223,7 @@ const fieldTypes = {
   json: JSONView,
   fullName: FullName,
   complexField: ComplexField,
+  color: Color,
 };
 
 export default fieldTypes;

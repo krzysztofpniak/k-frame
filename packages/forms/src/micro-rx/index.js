@@ -1,4 +1,3 @@
-import {shallowEqual} from '@k-frame/core';
 import {equals} from 'ramda';
 
 const Observable = subscribe => {
@@ -90,7 +89,7 @@ const distinctUntilChanged = observable =>
     let prev = null;
     return observable.subscribe({
       next: data => {
-        if (!shallowEqual(data, prev)) {
+        if (!equals(data, prev)) {
           observer.next(data);
           prev = data;
         }

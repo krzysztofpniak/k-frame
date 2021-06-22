@@ -1,4 +1,5 @@
 import React, {useCallback} from 'react';
+import {fork} from 'fluture';
 
 const FormTemplate = ({buttons, fields}) => (
   <form>
@@ -17,20 +18,25 @@ const FormTemplate = ({buttons, fields}) => (
 
 const fontFamily = 'Arial, Helvetica';
 
-const Row = ({input, title, error, pending}) => (
+const Row = ({input, title, error, errorPending, pending}) => (
   <div style={{margin: '10px 0'}}>
     <div style={{fontFamily}}>{title}</div>
     {pending ? <div style={{fontFamily}}>Loading ...</div> : <div>{input}</div>}
-    <div style={{color: 'red', fontFamily}}>{error}</div>
+    <div
+      style={{color: 'red', fontFamily}}
+      className={errorPending && 'opacity-transition'}
+    >
+      {error}
+    </div>
   </div>
 );
 
 const useSubmitAlert = () =>
-  useCallback((defaultSubmitHandler, fields) => {
-    const errors = defaultSubmitHandler();
-    if (errors.length === 0) {
-      alert(JSON.stringify(fields, null, 2));
-    }
+  useCallback((defaultSubmitFuture, fields) => {
+    defaultSubmitFuture
+      |> fork(errors => alert(JSON.stringify(errors, null, 2)))(() =>
+        alert(JSON.stringify(fields, null, 2))
+      );
   }, []);
 
 export {FormTemplate, Row, useSubmitAlert};

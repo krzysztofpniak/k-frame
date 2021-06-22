@@ -5,33 +5,51 @@ import {
   useLayoutEffect,
   useMemo,
   useRef,
-  useState,
 } from 'react';
 import * as formActions from './actions';
 import {bindActionCreators, KContext, shallowEqual} from '@k-frame/core';
 import createFormReducer from './createFormReducer';
 import {
-  compose,
   filter,
+  find,
+  identity,
+  ifElse,
   indexBy,
   keys,
   map,
   pathOr,
+  pluck,
   prop,
-  find,
-  identity,
-  tap,
+  propEq,
+  unless,
 } from 'ramda';
 import {
-  Observable,
   combineLatest,
+  Observable,
+  oFilter,
   oMap,
   share,
-  oFilter,
 } from './micro-rx/index';
 import enrichSchema from './enrichSchema';
 import createContextMapper from './createContextMapper';
 import useFormStateObservable from './useFormStateObservable';
+import {
+  after,
+  and,
+  attempt,
+  bichain,
+  bimap,
+  chain,
+  coalesce,
+  encase,
+  fork,
+  hook,
+  isFuture,
+  parallel,
+  reject,
+  resolve,
+} from 'fluture';
+import validateField from './validateField';
 
 const emptyObject = {};
 const emptyArray = [];
@@ -160,18 +178,63 @@ const useFormReducer = ({
     return pathOr(false, ['touched', fieldId], state);
   }, []);
 
-  const validateFormInt = useCallback(
-    asyncErrors =>
-      compose(
-        filter(f => f.error || f.asyncErrors),
+  const validateFuture = useMemo(
+    () =>
+      attempt(() => richSchema)
+      |> map(
         map(f => ({
           id: f.id,
-          error: f.error,
-          asyncError: asyncErrors[f.id] || '',
-        })),
-        filter(f => f.visible && mountedFieldsRef.current[f.id]),
-        map(f => fieldStatesRef.current[f.id])
-      )(schema),
+          fieldSchema: f,
+          state: fieldStatesRef.current[f.id],
+        }))
+      )
+      |> map(filter(f => f.state.visible && mountedFieldsRef.current[f.id]))
+      |> map(
+        map(f => ({
+          ...f,
+          context: {
+            fields: getFields(),
+            args: argsRef.current,
+            rawValue: getFields()[f.id],
+          },
+        }))
+      )
+      |> map(
+        map(f => ({
+          ...f,
+          errorFuture:
+            f.fieldSchema.format(f.context.rawValue, f.context)
+            |> unless(isFuture)(resolve)
+            |> chain(
+              validateField(boundActionCreators.setFieldError)(f.fieldSchema)(
+                f.context
+              )
+            ),
+        }))
+      )
+      |> map(
+        map(
+          f =>
+            f.errorFuture
+            |> chain(ifElse(x => x === '')(resolve)(reject))
+            |> coalesce(reason => ({
+              type: 'rejected',
+              reason: {id: f.id, error: reason},
+            }))(value => ({
+              type: 'fulfilled',
+              value,
+            }))
+        )
+      )
+      |> chain(parallel(4))
+      |> chain(
+        errors =>
+          errors
+          |> filter(propEq('type', 'rejected'))
+          |> pluck('reason')
+          |> ifElse(x => x.length > 0)(reject)(resolve)
+      )
+      |> and(encase(getFields)()),
     []
   );
 
@@ -202,55 +265,32 @@ const useFormReducer = ({
     }
   }, []);
 
-  const defaultSubmitHandler = useCallback(e => {
+  const defaultSubmitFuture = useMemo(() => {
     const {toggleValidating} = boundActionCreators;
-    const asyncErrors = {};
-    const model = getFormState();
-    toggleValidating(true);
-    const formErrors = validateFormInt(asyncErrors || {});
 
     const {submit, setSubmitDirty} = boundActionCreators;
 
-    return Promise.all(map(e => e.error, formErrors))
-      .then(errors => filter(identity, errors))
-      .then(syncErrors => {
-        //const syncErrors = filter(e => e.error, formErrors);
-        syncErrors.length === 0
-          ? submit({fields: model.fields})
-          : setSubmitDirty();
+    return hook(encase(toggleValidating)(true))(() =>
+      encase(toggleValidating)(false)
+    )(
+      () =>
+        validateFuture
+        |> bimap(syncErrors => {
+          setSubmitDirty();
 
-        if (formErrors.length > 0) {
-          const erroredInput = inputRefs.current[formErrors[0].id];
-          if (erroredInput && erroredInput.focus) {
-            erroredInput.focus();
+          if (syncErrors.length > 0) {
+            const erroredInput = inputRefs.current[syncErrors[0].id];
+            if (erroredInput && erroredInput.focus) {
+              erroredInput.focus();
+            }
           }
-        }
 
-        toggleValidating(false);
-
-        return formErrors;
-      });
-  }, []);
-
-  const validateForm = useCallback(() => {
-    const asyncErrors = {};
-    const formErrors = validateFormInt(asyncErrors || {});
-    const syncErrors = filter(e => e.error, formErrors);
-
-    const {setSubmitDirty} = boundActionCreators;
-
-    if (syncErrors.length > 0) {
-      setSubmitDirty();
-    }
-
-    if (formErrors.length > 0) {
-      const erroredInput = inputRefs.current[formErrors[0].id];
-      if (erroredInput && erroredInput.focus) {
-        erroredInput.focus();
-      }
-    }
-
-    return formErrors;
+          return syncErrors;
+        })(syncErrors => {
+          submit({fields: getFormState().fields});
+          return syncErrors;
+        })
+    );
   }, []);
 
   const nextFieldsRef = useRef(null);
@@ -259,12 +299,24 @@ const useFormReducer = ({
     nextFieldsRef.current = fields;
   }, []);
 
+  const taskReferences = useRef({});
+
+  const forkLatest = useCallback(
+    id => cancelCallback => {
+      if (taskReferences.current[id]) {
+        taskReferences.current[id]();
+      }
+      taskReferences.current[id] = cancelCallback;
+    },
+    []
+  );
+
   const handleOnChange = useCallback((value, fieldId) => {
     const {setField, setFields} = boundActionCreators;
     const fieldSchema = indexedSchema[fieldId];
+    const fieldsValues = getFields();
 
     if (fieldSchema.onChange) {
-      const fieldsValues = getFields();
       const currentValue = prop(fieldId, fieldsValues);
       nextFieldsRef.current = null;
       const onChangeResult = fieldSchema.onChange(value, {
@@ -286,6 +338,35 @@ const useFormReducer = ({
     }
   }, []);
 
+  const handleOnUpdate = useCallback((value, fieldId) => {
+    const {setFormattedField, setFieldError} = boundActionCreators;
+    const fieldSchema = indexedSchema[fieldId];
+    const fieldsValues = getFields();
+
+    const fieldContext = {
+      fields: fieldsValues,
+      args: argsRef.current,
+      rawValue: value,
+    };
+
+    value
+      |> after(fieldSchema.debounce || 100)
+      |> chain(
+        v =>
+          fieldSchema.format(v, fieldContext)
+          |> unless(isFuture)(v => resolve(v))
+      )
+      |> chain(v =>
+        attempt(() => {
+          setFormattedField(fieldSchema.id, v);
+          return v;
+        })
+      )
+      |> chain(validateField(setFieldError)(fieldSchema)(fieldContext))
+      |> fork(identity)(identity)
+      |> forkLatest(fieldId);
+  }, []);
+
   const mountField = useCallback(fieldId => {
     mountedFieldsRef.current[fieldId] = true;
     return () => {
@@ -303,13 +384,14 @@ const useFormReducer = ({
       getTouched,
       getFormState,
       isFieldTouched,
-      validateForm,
+      validateFuture,
       indexedSchema,
       handleOnBlur,
       handleRefSet,
       focusFirstField,
-      defaultSubmitHandler,
+      defaultSubmitFuture,
       handleOnChange,
+      handleOnUpdate,
       formContext: {
         getFieldState,
         observable: formContextObservable,

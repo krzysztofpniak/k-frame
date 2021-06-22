@@ -1,14 +1,22 @@
-import {reduceWhile} from 'ramda';
+import {reduce, unless} from 'ramda';
+import {and, attempt, bichain, chain, isFuture, reject, resolve} from 'fluture';
 
-const validateField = (fieldSchema, fieldValue, fieldContext) => {
-  return fieldSchema.validate
-    ? reduceWhile(
-        p => !p,
-        (p, c) => c(fieldValue, fieldContext),
-        '',
+const validateField = setFieldError => fieldSchema => fieldContext => fieldValue =>
+  (fieldSchema.validate
+    ? reduce(
+        (p, c) =>
+          p
+          |> chain(
+            () =>
+              c(fieldValue, fieldContext)
+              |> unless(isFuture)(v => (v === '' ? resolve(v) : reject(v)))
+          )
+          |> chain(v => (v === '' ? resolve(v) : reject(v))),
+        resolve(''),
         fieldSchema.validate
       )
-    : '';
-};
-
+    : resolve(''))
+  |> bichain(
+    v => attempt(() => setFieldError(fieldSchema.id, v)) |> and(reject(v))
+  )(() => attempt(() => setFieldError(fieldSchema.id, '')) |> and(resolve('')));
 export default validateField;

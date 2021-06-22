@@ -25,6 +25,8 @@ import {curry, unless, is, objOf} from 'ramda';
 import useWithArgs from './useWithArgs';
 import useInputTargetValue from './useInputTargetValue';
 import withStaticScope from './withStaticScope';
+import useDebounce from './useDebounce';
+import useEqualsEffect from './useEqualsEffect';
 
 const asyncActionTypeName = curry(
   (stage, baseType) => `async/${baseType}/${stage}`
@@ -72,6 +74,8 @@ export {
   KContext,
   useKReducer,
   useAsync,
+  useDebounce,
+  useEqualsEffect,
   Scope,
   withScope,
   withDebug,

@@ -1,6 +1,5 @@
-import {always, identity, map} from 'ramda';
+import {always, map} from 'ramda';
 import {shallowEqual} from '@k-frame/core';
-import validateField from './validateField';
 
 const emptyObject = {};
 
@@ -16,19 +15,18 @@ const createContextMapper = (
 
   fieldStatesRef.current = map(fieldSchema => {
     const fieldValue = fields[fieldSchema.id];
+    const formattedValue = initialState.formattedFields[fieldSchema.id];
+    const error = initialState.errors[fieldSchema.id];
     const fieldContext = {
       fields: initialState.fields,
       args,
       rawValue: fieldValue,
     };
-    const formattedValue = (indexedSchema[fieldSchema.id].format || identity)(
-      fieldValue,
-      fieldContext
-    );
+
     return {
       value: formattedValue,
       rawValue: fieldValue,
-      error: validateField(fieldSchema, formattedValue, fieldContext),
+      error,
       visible: fieldSchema.visible(fieldContext),
       props: fieldSchema.props ? fieldSchema.props(fieldContext) : emptyObject,
     };
@@ -41,22 +39,18 @@ const createContextMapper = (
       if (indexedSchema.hasOwnProperty(fieldId)) {
         const fieldSchema = indexedSchema[fieldId];
         const fieldValue = formState.fields[fieldId];
+        const formattedValue = formState.formattedFields[fieldId];
+        const error = formState.errors[fieldId];
         const fieldContext = {
           fields: formState.fields,
           args,
           rawValue: fieldValue,
         };
-        const formattedValue = (indexedSchema[fieldId].format || identity)(
-          fieldValue,
-          fieldContext
-        );
+
         const props = fieldSchema.props
           ? fieldSchema.props(fieldContext)
           : emptyObject;
 
-        const error = validateField(fieldSchema, formattedValue, fieldContext);
-
-        errors[fieldId] = error;
         const touched = formState.touched[fieldId];
         const dirty = formState.dirty[fieldId];
 
@@ -85,7 +79,7 @@ const createContextMapper = (
       }
     }
 
-    return {args, formState, errors, fieldsStates};
+    return {args, formState, fieldsStates};
   };
 };
 

@@ -34,6 +34,7 @@ const schema2 = [
   },
   {
     id: 'color',
+    type: 'color',
     title: 'Favorite Color',
     defaultValue: '',
     props: ({fields: {age}, args: {color}}) => ({age, color}),

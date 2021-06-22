@@ -30,6 +30,7 @@ import {
   propOr,
   indexBy,
   prop,
+  identity,
 } from 'ramda';
 import useFormReducer from './useFormReducer';
 import {KContext, withScope, shallowEqual} from '@k-frame/core';
@@ -40,6 +41,7 @@ import Field from './field';
 import FormTemplateProxy from './formTemplateProxy';
 import {fieldTouchedStrategy} from './errorsDisplayStrategies';
 import {distinctUntilChanged, oMap} from './micro-rx/index';
+import {fork} from 'fluture';
 
 const GenericError = ({content}) => (
   <div className="alert alert-danger" role="alert">
@@ -90,11 +92,13 @@ const FormInt = withScope(
         init,
         formContext,
         handleOnChange,
+        handleOnUpdate,
         focusFirstField,
-        defaultSubmitHandler,
-        validateForm,
+        defaultSubmitFuture,
+        validateFuture,
         setField,
         setFields,
+        setSubmitDirty,
       } = useFormReducer({
         fieldTypes,
         schema,
@@ -107,9 +111,10 @@ const FormInt = withScope(
           getFields,
           setField,
           setFields,
+          setSubmitDirty,
           reset,
           clear,
-          validate: validateForm,
+          validateFuture,
         }),
       });
 
@@ -143,19 +148,13 @@ const FormInt = withScope(
           }
 
           const callOnValidated = () =>
-            defaultSubmitHandler().then(
-              tap(errors => {
-                if (errors.length === 0 && onValidated) {
-                  onValidated(getFields());
-                }
-              })
-            );
+            defaultSubmitFuture |> fork(identity)(onValidated || identity);
 
           return onSubmit
-            ? onSubmit(callOnValidated, getFields())
+            ? onSubmit(defaultSubmitFuture, getFields())
             : callOnValidated();
         },
-        [defaultSubmitHandler, onSubmit, onValidated]
+        [defaultSubmitFuture, onSubmit, onValidated]
       );
 
       const clear = useCallback(() => init(getDefaultValues(schema)), [schema]);
@@ -167,7 +166,7 @@ const FormInt = withScope(
         setFields,
         reset,
         clear,
-        validate: validateForm,
+        validateFuture,
       }));
 
       const [validating, setValidating] = useState(false);
@@ -220,6 +219,7 @@ const FormInt = withScope(
                 fieldTemplate={fieldTemplate}
                 formName={name}
                 onChange={handleOnChange}
+                onUpdate={handleOnUpdate}
                 onBlur={handleOnBlur}
                 defaultValue={f.defaultValue}
                 parse={f.parse}

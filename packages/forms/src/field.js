@@ -4,20 +4,20 @@ import {
   useCallback,
   useContext,
   useEffect,
-  useLayoutEffect,
   useMemo,
   useRef,
   useState,
 } from 'react';
-import {oMap, distinctUntilChanged} from './micro-rx/index';
+import {equals} from 'ramda';
+import {distinctUntilChanged, oMap} from './micro-rx/index';
 import FormContext from './FormContext';
-import {is} from 'ramda';
+import {useEqualsEffect} from '@k-frame/core';
 
 const useLazyState = initialValue => {
   const [value, setValue] = useState(initialValue);
   const valueRef = useRef(initialValue);
   const trySet = useCallback(newValue => {
-    if (valueRef.current !== newValue) {
+    if (!equals(valueRef.current, newValue)) {
       setValue(newValue);
       valueRef.current = newValue;
     }
@@ -33,6 +33,7 @@ const Field = memo(
     formName,
     title,
     onChange,
+    onUpdate,
     onBlur,
     component,
     format,
@@ -54,19 +55,26 @@ const Field = memo(
     const [props, setProps] = useLazyState(initialState.props);
     const [isVisible, setVisibility] = useLazyState(initialState.visible);
 
+    const [argsState, setArgsState] = useLazyState({});
+
+    useEqualsEffect(() => {
+      onUpdate(rawValue, id);
+    }, [onUpdate, rawValue, id, argsState]);
+
     useEffect(() => {
-      const updateField = state => {
+      const updateField = ([state, args]) => {
         setValue(state.value);
         setRawValue(state.rawValue);
         setProps(state.props);
         setError(state.errorVisible ? state.error : '');
         setErrorVisible(state.errorVisible);
         setVisibility(state.visible);
+        setArgsState(args);
       };
 
       const unsubscribe = distinctUntilChanged(
-        oMap(({fieldsStates}) => {
-          return fieldsStates[id];
+        oMap(({fieldsStates, args}) => {
+          return [fieldsStates[id], args];
         }, formContext.observable)
       ).subscribe(updateField);
 
@@ -77,18 +85,6 @@ const Field = memo(
         unmount();
       };
     }, []);
-
-    const [formattedValue, setFormattedValue] = useState(
-      format ? null : initialState.value
-    );
-
-    useEffect(() => {
-      if (format) {
-        Promise.resolve(value).then(setFormattedValue);
-      } else {
-        setFormattedValue(value);
-      }
-    }, [value]);
 
     const handleOnChange = useCallback(
       e => {
@@ -111,11 +107,7 @@ const Field = memo(
       [id, inputRef]
     );
 
-    const [errorText, setErrorText] = useState('');
-
-    useEffect(() => {
-      Promise.resolve(error).then(setErrorText);
-    }, [error]);
+    const [errorPending, setErrorPending] = useState(false);
 
     const field = useMemo(() => {
       return isVisible
@@ -125,30 +117,24 @@ const Field = memo(
               id: (formName || '') + (formName ? '-' : '') + id,
               title,
               inputRef: handleRefSet,
-              value: format ? formattedValue : rawValue,
+              value: format ? value : rawValue,
               rawValue: rawValue,
               onChange: handleOnChange,
               onBlur: handleOnBlur,
               disabled,
               type,
-              error: errorText,
+              error,
+              errorPending,
               showErrors: errorVisible,
               scope: `sub.${id}`,
               ...props,
             }),
             ...props,
-            error: errorText,
+            error,
+            errorPending,
           })
         : null;
-    }, [
-      value,
-      formattedValue,
-      errorText,
-      isVisible,
-      props,
-      disabled,
-      rawValue,
-    ]);
+    }, [value, error, isVisible, props, disabled, rawValue, errorPending]);
 
     return field;
   }

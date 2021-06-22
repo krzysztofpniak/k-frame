@@ -1,5 +1,5 @@
 import {withMemoContext} from '@k-frame/core';
-import {always, of, unless, map} from 'ramda';
+import {always, of, unless, map, identity} from 'ramda';
 
 const ensureArray = unless(Array.isArray, of);
 const emptyObject = {};
@@ -16,6 +16,7 @@ const enrichSchema = schema =>
             useMemo,
           ])
         : propsDefault,
+      format: fieldSchema.format || identity,
       validate: fieldSchema.validate
         ? map(
             validator =>
