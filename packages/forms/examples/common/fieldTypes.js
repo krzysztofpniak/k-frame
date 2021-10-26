@@ -192,7 +192,7 @@ const ComplexField = ({value, onChange}) => {
 
 const Color = ({
   value,
-  rawValue,
+  formattedValue,
   onChange,
   onBlur,
   inputRef,
@@ -201,7 +201,7 @@ const Color = ({
 }) => (
   <div>
     <input
-      value={rawValue}
+      value={value}
       onChange={onChange}
       onBlur={onBlur}
       ref={inputRef}
@@ -209,7 +209,7 @@ const Color = ({
       style={{width: '100%', boxSizing: 'border-box'}}
       disabled={disabled}
     />
-    <span>{value}</span>
+    <span>{formattedValue}</span>
   </div>
 );
 

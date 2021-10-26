@@ -1,9 +1,9 @@
-import React, {memo, useCallback, useState} from 'react';
+import React, {memo, useCallback, useRef, useState} from 'react';
 import {Form} from '../../src/main';
 import fieldTypes from '../common/fieldTypes';
 import {FormTemplate, Row, useSubmitAlert} from '../common';
 import {required} from '../../src/validators';
-import {after, chain, resolve, reject} from 'fluture';
+import {after, chain, resolve, reject, fork} from 'fluture';
 import {alwaysStrategy} from '../../src/errorsDisplayStrategies';
 import {Scope} from '@k-frame/core';
 
@@ -35,7 +35,7 @@ const schema = [
     format: c => console.log('color.format') || after(500)(c ? '#' + c : ''),
     validate: [
       required(),
-      (v, {args: {color}}, useMemo) => {
+      (v, {args: {color}, formattedValue}, useMemo) => {
         console.log('color.validate');
         const message = useMemo(
           () =>
@@ -43,7 +43,7 @@ const schema = [
             `Color is different than ${color}`,
           [color]
         );
-        return v !== '#' + color ? message : '';
+        return formattedValue !== '#' + color ? message : '';
       },
     ],
     visible: ({fields: {age}}) => age < 25,
@@ -71,6 +71,7 @@ const schema = [
 const App = () => {
   const handleSubmit = useSubmitAlert();
   const [color, setColor] = useState('red');
+  const formRef = useRef();
 
   return (
     <Scope scope="root">
@@ -78,6 +79,7 @@ const App = () => {
         <input value={color} onChange={e => setColor(e.target.value)} />
         <Form
           scope="form"
+          ref={formRef}
           schema={schema}
           fieldTypes={fieldTypes}
           fieldTemplate={Row}
@@ -86,6 +88,24 @@ const App = () => {
           args={{color}}
           //errorsDisplayStrategy={alwaysStrategy}
         />
+        <button
+          onClick={() =>
+            formRef.current.validatePickFuture(['name'])
+            |> fork(console.error)(console.log)
+          }
+          type="button"
+        >
+          validate name
+        </button>
+        <button
+          onClick={() =>
+            formRef.current.validateOmitFuture(['name'])
+            |> fork(console.error)(console.log)
+          }
+          type="button"
+        >
+          validate except name
+        </button>
       </div>
     </Scope>
   );
