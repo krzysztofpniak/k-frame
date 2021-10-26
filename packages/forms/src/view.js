@@ -96,6 +96,8 @@ const FormInt = withScope(
         focusFirstField,
         defaultSubmitFuture,
         validateFuture,
+        validatePickFuture,
+        validateOmitFuture,
         setField,
         setFields,
         setSubmitDirty,
@@ -115,6 +117,8 @@ const FormInt = withScope(
           reset,
           clear,
           validateFuture,
+          validatePickFuture,
+          validateOmitFuture,
         }),
       });
 
@@ -167,6 +171,8 @@ const FormInt = withScope(
         reset,
         clear,
         validateFuture,
+        validatePickFuture,
+        validateOmitFuture,
       }));
 
       const [validating, setValidating] = useState(false);
@@ -330,7 +336,7 @@ const FormTemplate = ({fields, buttons, onSubmit, disabled}) => (
   </form>
 );
 
-const FieldTemplate = ({title, input, error}) => (
+const FieldTemplate = ({id, title, input, error}) => (
   <div>
     <div>
       {title} {input}

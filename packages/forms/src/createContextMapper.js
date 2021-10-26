@@ -20,12 +20,12 @@ const createContextMapper = (
     const fieldContext = {
       fields: initialState.fields,
       args,
-      rawValue: fieldValue,
+      value: fieldValue,
     };
 
     return {
-      value: formattedValue,
-      rawValue: fieldValue,
+      formattedValue,
+      value: fieldValue,
       error,
       visible: fieldSchema.visible(fieldContext),
       props: fieldSchema.props ? fieldSchema.props(fieldContext) : emptyObject,
@@ -44,7 +44,7 @@ const createContextMapper = (
         const fieldContext = {
           fields: formState.fields,
           args,
-          rawValue: fieldValue,
+          value: fieldValue,
         };
 
         const props = fieldSchema.props
@@ -63,8 +63,8 @@ const createContextMapper = (
 
         const newState = {
           id: fieldId,
-          value: formattedValue,
-          rawValue: fieldValue,
+          formattedValue,
+          value: fieldValue,
           props: shallowEqual(props, fieldsStates[fieldId].props)
             ? fieldsStates[fieldId].props
             : props,

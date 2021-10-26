@@ -36,7 +36,6 @@ const Field = memo(
     onUpdate,
     onBlur,
     component,
-    format,
     parse,
     inputRef,
     disabled,
@@ -45,7 +44,9 @@ const Field = memo(
     const initialState = useMemo(() => formContext.getFieldState(id), []);
 
     const [value, setValue] = useLazyState(initialState.value);
-    const [rawValue, setRawValue] = useLazyState(initialState.rawValue);
+    const [formattedValue, setFormattedValue] = useLazyState(
+      initialState.formattedValue
+    );
     const [error, setError] = useLazyState(
       initialState.errorVisible ? initialState.error : ''
     );
@@ -58,13 +59,13 @@ const Field = memo(
     const [argsState, setArgsState] = useLazyState({});
 
     useEqualsEffect(() => {
-      onUpdate(rawValue, id);
-    }, [onUpdate, rawValue, id, argsState]);
+      onUpdate(value, id);
+    }, [onUpdate, value, id, argsState]);
 
     useEffect(() => {
       const updateField = ([state, args]) => {
         setValue(state.value);
-        setRawValue(state.rawValue);
+        setFormattedValue(state.formattedValue);
         setProps(state.props);
         setError(state.errorVisible ? state.error : '');
         setErrorVisible(state.errorVisible);
@@ -113,12 +114,13 @@ const Field = memo(
       return isVisible
         ? createElement(fieldTemplate, {
             title,
+            id,
             input: createElement(component, {
               id: (formName || '') + (formName ? '-' : '') + id,
               title,
               inputRef: handleRefSet,
-              value: format ? value : rawValue,
-              rawValue: rawValue,
+              value,
+              formattedValue,
               onChange: handleOnChange,
               onBlur: handleOnBlur,
               disabled,
@@ -134,7 +136,15 @@ const Field = memo(
             errorPending,
           })
         : null;
-    }, [value, error, isVisible, props, disabled, rawValue, errorPending]);
+    }, [
+      value,
+      error,
+      isVisible,
+      props,
+      disabled,
+      formattedValue,
+      errorPending,
+    ]);
 
     return field;
   }

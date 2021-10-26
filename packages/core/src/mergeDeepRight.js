@@ -24,14 +24,8 @@ const mergeWithKey2 = curry(function mergeWithKey2(l, r) {
   return result;
 });
 
-function compareKeys(a, b) {
-  const aKeys = Object.keys(a).sort();
-  const bKeys = Object.keys(b).sort();
-  return JSON.stringify(aKeys) === JSON.stringify(bKeys);
-}
-
 const mergeDeepRight = (left, right) => {
-  if (left === right || !left || !right || compareKeys(left, right)) {
+  if (left === right || !left || !right || equals(left, right)) {
     return right;
   } else if (isObject(left) && isObject(right)) {
     return mergeWithKey2(left, right);

@@ -10,17 +10,23 @@ import * as formActions from './actions';
 import {bindActionCreators, KContext, shallowEqual} from '@k-frame/core';
 import createFormReducer from './createFormReducer';
 import {
+  assoc,
   filter,
   find,
+  flip,
   identity,
   ifElse,
   indexBy,
+  innerJoin,
   keys,
   map,
+  omit,
   pathOr,
+  pick,
   pluck,
   prop,
   propEq,
+  tap,
   unless,
 } from 'ramda';
 import {
@@ -178,9 +184,10 @@ const useFormReducer = ({
     return pathOr(false, ['touched', fieldId], state);
   }, []);
 
-  const validateFuture = useMemo(
-    () =>
+  const validateFutureCreator = useCallback(
+    schemaMapper =>
       attempt(() => richSchema)
+      |> map(schemaMapper)
       |> map(
         map(f => ({
           id: f.id,
@@ -195,7 +202,7 @@ const useFormReducer = ({
           context: {
             fields: getFields(),
             args: argsRef.current,
-            rawValue: getFields()[f.id],
+            value: getFields()[f.id],
           },
         }))
       )
@@ -203,12 +210,13 @@ const useFormReducer = ({
         map(f => ({
           ...f,
           errorFuture:
-            f.fieldSchema.format(f.context.rawValue, f.context)
+            f.fieldSchema.format(f.context.value, f.context)
             |> unless(isFuture)(resolve)
+            |> map(formattedValue =>
+              assoc('formattedValue', formattedValue, f.context)
+            )
             |> chain(
-              validateField(boundActionCreators.setFieldError)(f.fieldSchema)(
-                f.context
-              )
+              validateField(boundActionCreators.setFieldError)(f.fieldSchema)
             ),
         }))
       )
@@ -235,7 +243,28 @@ const useFormReducer = ({
           |> ifElse(x => x.length > 0)(reject)(resolve)
       )
       |> and(encase(getFields)()),
-    []
+    [richSchema]
+  );
+
+  const validateFuture = useMemo(() => validateFutureCreator(identity), [
+    validateFutureCreator,
+  ]);
+
+  const validatePickFuture = useCallback(
+    fields =>
+      validateFutureCreator(schemaFields =>
+        innerJoin((e, id) => e.id === id, schemaFields, fields)
+      ),
+    [validateFutureCreator]
+  );
+
+  const validateOmitFuture = useCallback(
+    fields =>
+      validateFutureCreator(schemaFields => {
+        const indexedFields = fields |> indexBy(identity);
+        return schemaFields |> filter(f => !indexedFields[f.id]);
+      }),
+    [validateFutureCreator]
   );
 
   const handleRefSet = useCallback((ref, fieldId) => {
@@ -346,7 +375,7 @@ const useFormReducer = ({
     const fieldContext = {
       fields: fieldsValues,
       args: argsRef.current,
-      rawValue: value,
+      value,
     };
 
     value
@@ -356,13 +385,16 @@ const useFormReducer = ({
           fieldSchema.format(v, fieldContext)
           |> unless(isFuture)(v => resolve(v))
       )
-      |> chain(v =>
+      |> chain(formattedValue =>
         attempt(() => {
-          setFormattedField(fieldSchema.id, v);
-          return v;
+          setFormattedField(fieldSchema.id, formattedValue);
+          return formattedValue;
         })
       )
-      |> chain(validateField(setFieldError)(fieldSchema)(fieldContext))
+      |> map(formattedValue =>
+        assoc('formattedValue', formattedValue, fieldContext)
+      )
+      |> chain(validateField(setFieldError)(fieldSchema))
       |> fork(identity)(identity)
       |> forkLatest(fieldId);
   }, []);
@@ -385,6 +417,8 @@ const useFormReducer = ({
       getFormState,
       isFieldTouched,
       validateFuture,
+      validatePickFuture,
+      validateOmitFuture,
       indexedSchema,
       handleOnBlur,
       handleRefSet,
