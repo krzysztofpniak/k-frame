@@ -10,3 +10,4 @@ dist
 coverage
 npm-debug.log
 _book
+.yarn
