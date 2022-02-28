@@ -11,6 +11,15 @@ const AsyncState = daggy.taggedSum('AsyncState', {
   Faulted: ['reason', 'meta'], //Faulted {started: timestamp, finshed: timestamp}
 });
 
+AsyncState.prototype['@@show'] = function(other) {
+  return this.cata({
+    Created: () => 'Created',
+    Running: () => 'Running',
+    Completed: (result, meta) => `Completed(${result |> JSON.stringify}`,
+    Faulted: (reason, meta) => `Faulted(${result |> JSON.stringify}`,
+  });
+};
+
 AsyncState.prototype['fantasy-land/equals'] = function(other) {
   return this.cata({
     Created: () => AsyncState.Created.is(other),
