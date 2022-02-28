@@ -3,9 +3,13 @@ import {equals} from 'ramda';
 
 const useEqualsEffect = (effect, inputs) => {
   const prev = useRef(null);
+  const prevDispose = useRef(null);
 
   if (!equals(inputs, prev.current)) {
-    effect();
+    if (typeof prevDispose.current === 'function') {
+      prevDispose.current();
+    }
+    prevDispose.current = effect();
   }
 
   prev.current = inputs;
