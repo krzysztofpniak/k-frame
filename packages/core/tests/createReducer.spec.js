@@ -96,7 +96,7 @@ describe('createReducer', () => {
       type: 'c1.inc',
     });
 
-    expect(state2.c2).toBe(state1.c2);
+    expect(state2.c2).toEqual(state1.c2);
     expect(state2.c1).toEqual(counterState1);
   });
 });
