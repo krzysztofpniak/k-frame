@@ -4,6 +4,7 @@ import fieldTypes from '../examples/common/fieldTypes';
 import {Form} from '../src/view';
 import {required} from '../src/validators';
 import kFrameDecorator from './helpers/kFrameDecorator';
+import {fork, rejectAfter} from 'fluture';
 
 const delayedValue = v =>
   new Promise(resolve => setTimeout(() => resolve(v), 1000));
@@ -20,11 +21,8 @@ const schema = [
     title: 'Full Name',
     type: 'fullName',
     defaultValue: 'John Brown',
-    validate: (value, ctx) =>
-      value.then(v =>
-        delayedValue(isNaN(v) ? 'This field must be a number' : '')
-      ),
-    format: value => delayedValue(parseInt(value)),
+    validate: (value, ctx) => 'błąd' |> rejectAfter(1000),
+    format: value => value,
   },
 ];
 
@@ -32,9 +30,9 @@ export const ComplexValidation = () => {
   const form = useRef({});
 
   const externalApiCall = useCallback(() => {
-    const {validate, getFields} = form.current;
-    const errors = validate();
-    alert(JSON.stringify(errors.length ? errors : getFields()));
+    const {validateFuture, getFields} = form.current;
+    const errors = validateFuture |> fork(console.error)(console.log);
+    //alert(JSON.stringify(errors.length ? errors : getFields()));
   }, []);
 
   return (

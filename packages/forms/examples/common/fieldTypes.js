@@ -98,12 +98,10 @@ const parseName = compose(
   split(' ')
 );
 
-const FullName = ({id, value, rawValue, onChange}) => {
-  console.log('FullName', value, rawValue);
+const FullName = ({id, value, onChange}) => {
+  console.log('FullName', value);
 
-  const [firstName, lastName] = useMemo(() => parseName(rawValue || ''), [
-    rawValue,
-  ]);
+  const [firstName, lastName] = useMemo(() => parseName(value || ''), [value]);
 
   const firstNameError = !firstName ? 'First Name is required' : '';
   const lastNameError = !lastName ? 'Last Name is required' : '';
