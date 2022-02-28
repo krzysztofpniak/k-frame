@@ -1,4 +1,5 @@
 import {
+  assocPath,
   compose,
   curry,
   equals,
@@ -9,12 +10,15 @@ import {
   lensProp,
   mapObjIndexed,
   mergeRight,
+  over,
+  propEq,
   reduce,
   set,
   toPairs,
   type,
   uncurryN,
 } from 'ramda';
+import {AsyncState} from './asyncState';
 
 const asyncActionRegexp = new RegExp(`^async/(.+)/(.+)$`);
 
@@ -57,6 +61,7 @@ const buildModelSetters = (modelDef, options) => {
       pending: getStageSetter(modelDef, resource, 'pending', dataProp),
       result: getStageSetter(modelDef, resource, 'result', dataProp),
       error: getStageSetter(modelDef, resource, 'error', dataProp),
+      adt: lensPath([dataProp, resource]),
     }),
     modelDef
   );
@@ -74,7 +79,9 @@ const initModel = (modelDef, modelLenses, target) =>
     (a, c) =>
       mergeRight(
         a,
-        initModelField(modelLenses[c], modelDef[c].defaultValue || null, a)
+        modelDef[c] |> propEq('mode', 'adt')
+          ? a |> assocPath(['data', c], AsyncState.Created)
+          : initModelField(modelLenses[c], modelDef[c].defaultValue || null, a)
       ),
     target,
     keys(modelDef)
@@ -104,8 +111,35 @@ const handleAsyncs = (modelDef, options = {}) => {
 
       const resultTransform = modelDef[resource].resultTransform || identity;
       const errorTransform = modelDef[resource].errorTransform || identity;
+      const isAdtMode = modelDef[resource] |> propEq('mode', 'adt');
 
-      if (stage === 'request') {
+      if (isAdtMode && stage === 'request') {
+        return set(
+          modelLenses[resource].adt,
+          AsyncState.Running({started: Date.now()}),
+          model
+        );
+      } else if (isAdtMode && stage === 'succeeded') {
+        return over(
+          modelLenses[resource].adt,
+          x =>
+            AsyncState.Completed(payload, {
+              started: x.meta.started,
+              stopped: Date.now(),
+            }),
+          model
+        );
+      } else if (isAdtMode && stage === 'failed') {
+        return over(
+          modelLenses[resource].adt,
+          x =>
+            AsyncState.Faulted(payload, {
+              started: x.meta.started,
+              stopped: Date.now(),
+            }),
+          model
+        );
+      } else if (stage === 'request') {
         return modelLenses[resource].pending(true, model);
       } else if (stage === 'succeeded') {
         const m1 = modelLenses[resource].pending(false, model);

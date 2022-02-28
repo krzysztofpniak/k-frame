@@ -1,6 +1,7 @@
 import {handleAsyncs} from '../src/main';
 import {initAction, someRandomAction} from './testData';
 import {lensProp} from 'ramda';
+import {AsyncState} from '../src/asyncState';
 
 beforeAll(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});
@@ -190,7 +191,7 @@ describe('handleAsyncs', () => {
 
       expect(console.error.mock.calls.length).toBe(1);
       expect(console.error.mock.calls[0][0]).toBe(
-        'Async action has been dispatched without registering async handler. Please register a handler using handleAsyncs function.'
+        'Async action has been dispatched without registering async handler. Please register a handler for %cthread%c resource using handleAsyncs function.'
       );
 
       expect(newState).toEqual({
@@ -215,6 +216,75 @@ describe('handleAsyncs', () => {
       });
 
       expect(newState).toEqual(state);
+    });
+  });
+
+  describe('mode=adt', () => {
+    it('initializes state with simple model definition', () => {
+      expect(
+        handleAsyncs({users: {mode: 'adt'}})(undefined, initAction())
+      ).toEqual({
+        data: {
+          users: AsyncState.Created,
+        },
+      });
+    });
+
+    it('handles request action', () => {
+      expect(
+        handleAsyncs({user: {mode: 'adt'}})(
+          {
+            data: {
+              user: AsyncState.Created,
+            },
+          },
+          {type: 'async/user/request'}
+        )
+      ).toFLEqual({
+        data: {
+          user: AsyncState.Running({}),
+        },
+      });
+    });
+
+    it('handles succeeded action', () => {
+      expect(
+        handleAsyncs({user: {mode: 'adt'}})(
+          {
+            data: {
+              user: AsyncState.Running({started: 10}),
+            },
+          },
+          {
+            type: 'async/user/succeeded',
+            payload: {name: 'John', surname: 'Brown'},
+          }
+        )
+      ).toFLEqual({
+        data: {
+          user: AsyncState.Completed({name: 'John', surname: 'Brown'}, {}),
+        },
+      });
+    });
+
+    it('handles failed action', () => {
+      expect(
+        handleAsyncs({user: {mode: 'adt'}})(
+          {
+            data: {
+              user: AsyncState.Running({started: 10}),
+            },
+          },
+          {
+            type: 'async/user/failed',
+            payload: {message: 'reason'},
+          }
+        )
+      ).toFLEqual({
+        data: {
+          user: AsyncState.Faulted({message: 'reason'}, {}),
+        },
+      });
     });
   });
 });
