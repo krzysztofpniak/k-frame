@@ -2,12 +2,16 @@ import React from 'react';
 import {useAsync, KContext} from '../src/main';
 import {renderHook, act} from 'react-hooks-testing-library';
 
+const asyncMiddleware = store => fn => args => fn(...args);
+
 describe('useAsync', () => {
   it('dispatches suceeded with one arg', () => {
     const fn = jest.fn(a => Promise.resolve(a * 10));
     const dispatch = jest.fn();
     const {result} = renderHook(() => useAsync(fn, 'test', 9), {
-      wrapper: props => <KContext.Provider value={{dispatch}} {...props} />,
+      wrapper: props => (
+        <KContext.Provider value={{dispatch, asyncMiddleware}} {...props} />
+      ),
     });
 
     return result.current(2).then(data => {
@@ -30,7 +34,9 @@ describe('useAsync', () => {
     const fn = jest.fn(a => Promise.reject('an error occurred'));
     const dispatch = jest.fn();
     const {result} = renderHook(() => useAsync(fn, 'test', 9), {
-      wrapper: props => <KContext.Provider value={{dispatch}} {...props} />,
+      wrapper: props => (
+        <KContext.Provider value={{dispatch, asyncMiddleware}} {...props} />
+      ),
     });
 
     return result.current(2).then(
