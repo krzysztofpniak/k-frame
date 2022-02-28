@@ -32,6 +32,7 @@ module.exports = {
     '@babel/plugin-transform-spread',
     '@babel/plugin-proposal-class-properties',
     '@babel/plugin-transform-async-to-generator',
+    ['@babel/plugin-proposal-pipeline-operator', {proposal: 'minimal'}],
     NODE_ENV === 'test' && '@babel/transform-modules-commonjs',
   ].filter(Boolean),
 };

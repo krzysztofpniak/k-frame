@@ -22,7 +22,6 @@
     "@babel/plugin-proposal-class-properties": "^7.1.0",
     "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
     "@babel/plugin-transform-async-to-generator": "^7.2.0",
-    "@babel/plugin-proposal-pipeline-operator": "^7.2.0",
     "@babel/preset-env": "^7.3.4",
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-react": "^7.0.0",
@@ -36,8 +35,8 @@
     "prettier": "^1.16.4",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
-    "react-is": "^16.8.4",
     "react-hooks-testing-library": "^0.3.8",
+    "react-is": "^16.8.4",
     "react-testing-library": "^6.0.0"
   },
   "scripts": {
@@ -67,5 +66,8 @@
       "!<rootDir>/node_modules/"
     ]
   },
-  "workspaces": ["packages/*"]
+  "workspaces": [
+    "packages/*"
+  ],
+  "packageManager": "yarn@3.1.1"
 }
