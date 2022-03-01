@@ -109,8 +109,7 @@ AsyncState.prototype['fantasy-land/traverse'] = function(typeRep, f) {
 };
 
 const fromAsyncState = defaultValue => asyncState =>
-  asyncState
-  |> asyncState.cata({
+  asyncState.cata({
     Created: always(defaultValue),
     Running: always(defaultValue),
     Completed: identity,
