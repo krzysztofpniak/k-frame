@@ -1,6 +1,6 @@
 import {AsyncState} from '../asyncState';
 import sanctuary from 'sanctuary';
-import {identity} from 'ramda';
+import {identity, map} from 'ramda';
 const S = sanctuary.create({
   checkTypes: true,
   env: sanctuary.env,
@@ -19,6 +19,24 @@ describe('asyncState', () => {
       expect(AsyncState.Faulted({message: 'failed'}, {x: 1})).toFLEqual(
         AsyncState.Faulted({message: 'failed'}, {y: 2})
       );
+    });
+  });
+
+  describe('functor', () => {
+    it('should return true', () => {
+      expect(AsyncState.Created |> map(a => a + '!')).toFLEqual(
+        AsyncState.Created
+      );
+      expect(AsyncState.Running({}) |> map(a => a + '!')).toFLEqual(
+        AsyncState.Running({started: 10})
+      );
+      expect(
+        AsyncState.Completed('Hello', {started: 10, stopped: 20})
+          |> map(a => a + '!')
+      ).toFLEqual(AsyncState.Completed('Hello!', {}));
+      expect(
+        AsyncState.Faulted({message: 'failed'}, {x: 1}) |> map(a => a + '!')
+      ).toFLEqual(AsyncState.Faulted({message: 'failed'}, {y: 2}));
     });
   });
 
