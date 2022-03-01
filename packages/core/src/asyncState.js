@@ -16,8 +16,8 @@ AsyncState.prototype['@@show'] = function(other) {
   return this.cata({
     Created: () => 'Created',
     Running: () => 'Running',
-    Completed: (result, meta) => `Completed(${result |> JSON.stringify}`,
-    Faulted: (reason, meta) => `Faulted(${result |> JSON.stringify}`,
+    Completed: (result, meta) => `Completed(${result |> JSON.stringify})`,
+    Faulted: (reason, meta) => `Faulted(${reason |> JSON.stringify})`,
   });
 };
 
