@@ -27,7 +27,14 @@ import useInputTargetValue from './useInputTargetValue';
 import withStaticScope from './withStaticScope';
 import useDebounce from './useDebounce';
 import useEqualsEffect from './useEqualsEffect';
-import {AsyncState, fromAsyncState} from './asyncState';
+import {
+  AsyncState,
+  fromAsyncState,
+  isAsyncStateCreated,
+  isAsyncStateRunning,
+  isAsyncStateCompleted,
+  isAsyncStateFaulted,
+} from './asyncState';
 import useEqualsMemo from './useEqualsMemo';
 
 const asyncActionTypeName = curry(
@@ -107,4 +114,8 @@ export {
   AsyncState,
   fromAsyncState,
   useEqualsMemo,
+  isAsyncStateCreated,
+  isAsyncStateRunning,
+  isAsyncStateCompleted,
+  isAsyncStateFaulted,
 };

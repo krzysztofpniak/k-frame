@@ -1,5 +1,5 @@
 import daggy from 'daggy';
-import {always, equals, identity, tap, map} from 'ramda';
+import {always, equals, identity, tap, map, F, T} from 'ramda';
 import of from './of';
 
 const defaultDate = new Date(0);
@@ -116,4 +116,43 @@ const fromAsyncState = defaultValue => asyncState =>
     Faulted: always(defaultValue),
   });
 
-export {AsyncState, fromAsyncState};
+const isAsyncStateCreated = asyncState =>
+  asyncState.cata({
+    Created: T,
+    Running: F,
+    Completed: F,
+    Faulted: F,
+  });
+
+const isAsyncStateRunning = asyncState =>
+  asyncState.cata({
+    Created: F,
+    Running: T,
+    Completed: F,
+    Faulted: F,
+  });
+
+const isAsyncStateCompleted = asyncState =>
+  asyncState.cata({
+    Created: F,
+    Running: F,
+    Completed: T,
+    Faulted: F,
+  });
+
+const isAsyncStateFaulted = asyncState =>
+  asyncState.cata({
+    Created: F,
+    Running: F,
+    Completed: F,
+    Faulted: T,
+  });
+
+export {
+  AsyncState,
+  fromAsyncState,
+  isAsyncStateCreated,
+  isAsyncStateRunning,
+  isAsyncStateCompleted,
+  isAsyncStateFaulted,
+};
