@@ -1,12 +1,14 @@
-import {curry, equals, has, is, mergeWithKey} from 'ramda';
+import {curry, equals, has, is} from 'ramda';
 
 const isObject = x => {
   return Object.prototype.toString.call(x) === '[object Object]';
 };
 
-const isObject0 = is(Object);
-
 const mergeWithKey2 = curry(function mergeWithKey2(l, r) {
+  if (r.constructor && r.constructor['@@type']) {
+    return r;
+  }
+
   const result = {};
 
   for (let k in l) {

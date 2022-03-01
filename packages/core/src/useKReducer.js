@@ -1,8 +1,9 @@
 import {useContext, useLayoutEffect, useRef, useState, useMemo} from 'react';
 import {KContext} from './kLogicProvider';
-import {mergeDeepRight, pathOr, keys} from 'ramda';
+import {pathOr, keys} from 'ramda';
 import bindActionCreators from './bindActionCreators';
 import arePropsEqual from './arePropsEqual';
+import mergeDeepRight from './mergeDeepRight';
 
 const emptyObject = {};
 

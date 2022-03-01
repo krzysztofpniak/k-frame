@@ -1,4 +1,5 @@
-import {reduce, mergeDeepRight} from 'ramda';
+import {reduce} from 'ramda';
+import mergeDeepRight from './mergeDeepRight';
 
 const composeReducers = (...reducers) => (state, action) => {
   if (state) {
