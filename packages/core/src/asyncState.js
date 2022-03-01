@@ -1,6 +1,7 @@
 import daggy from 'daggy';
 import {always, equals, identity, tap, map, F, T} from 'ramda';
 import of from './of';
+import getPreciseType from './getPreciseType';
 
 const defaultDate = new Date(0);
 
@@ -107,6 +108,36 @@ AsyncState.prototype['fantasy-land/traverse'] = function(typeRep, f) {
     Faulted: (reason, meta) => of(typeRep)(this),
   });
 };
+
+const checkAsyncStateType = function(
+  isRequired,
+  props,
+  propName,
+  componentName
+) {
+  if (props[propName] == null && isRequired) {
+    if (props[propName] === null) {
+      return new Error(
+        `The \`${propName}\` is marked as required in \`${componentName}\`, but its value is \`null\`.`
+      );
+    }
+    return new Error(
+      `The \`${propName}\` is marked as required in \`${componentName}\`, but its value is \`undefined\`.`
+    );
+  } else if (props[propName] && !AsyncState.is(props[propName])) {
+    console.log('xx');
+    return new Error(
+      `Invalid prop \`${propName}\` of type \`${getPreciseType(
+        props[propName]
+      )}\` supplied to \`${componentName}\`, expected \`AsyncState\`.`
+    );
+  }
+};
+
+const AsyncStatePropType = checkAsyncStateType.bind(null, false);
+AsyncStatePropType.isRequired = checkAsyncStateType.bind(null, true);
+
+AsyncState.PropType = AsyncStatePropType;
 
 const fromAsyncState = defaultValue => asyncState =>
   asyncState.cata({
