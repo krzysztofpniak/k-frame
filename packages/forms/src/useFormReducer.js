@@ -203,6 +203,8 @@ const useFormReducer = ({
             fields: getFields(),
             args: argsRef.current,
             value: getFields()[f.id],
+            formRef: formRefCreator(),
+            props: pathOr({}, [f.id, 'props'], fieldStatesRef.current),
           },
         }))
       )
@@ -371,11 +373,14 @@ const useFormReducer = ({
     const {setFormattedField, setFieldError} = boundActionCreators;
     const fieldSchema = indexedSchema[fieldId];
     const fieldsValues = getFields();
+    const props = pathOr({}, [fieldId, 'props'], fieldStatesRef.current);
 
     const fieldContext = {
       fields: fieldsValues,
       args: argsRef.current,
+      props,
       value,
+      formRef: formRefCreator(),
     };
 
     value

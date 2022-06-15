@@ -83,6 +83,39 @@ AsyncState.prototype['fantasy-land/ap'] = function(other) {
   });
 };
 
+AsyncState.prototype['fantasy-land/alt'] = function(other) {
+  return this.cata({
+    Created: () =>
+      other.cata({
+        Created: () => this,
+        Running: () => other,
+        Completed: () => other,
+        Faulted: () => this,
+      }),
+    Running: meta =>
+      other.cata({
+        Created: () => this,
+        Running: () => this,
+        Completed: () => other,
+        Faulted: () => this,
+      }),
+    Completed: (result, meta) =>
+      other.cata({
+        Created: () => this,
+        Running: () => this,
+        Completed: () => this,
+        Faulted: () => this,
+      }),
+    Faulted: (reason, meta) =>
+      other.cata({
+        Created: () => other,
+        Running: () => other,
+        Completed: () => other,
+        Faulted: () => other,
+      }),
+  });
+};
+
 AsyncState.prototype['fantasy-land/chain'] = function(fn) {
   return this.cata({
     Created: () => this,

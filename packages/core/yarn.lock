@@ -2933,6 +2933,7 @@ __metadata:
     daggy: ^1.5.0
     enzyme: ^3.8.0
     eslint: ^4.12.1
+    fluture: ^14.0.0
     glob: ^7.1.3
     html-webpack-plugin: ^3.2.0
     jest: ^24.3.1
@@ -9509,6 +9510,16 @@ __metadata:
     inherits: ^2.0.3
     readable-stream: ^2.3.6
   checksum: 42e07747f83bcd4e799da802e621d6039787749ffd41f5517f8c4f786ee967e31ba32b09f8b28a9c6f67bd4f5346772e604202df350e8d99f4141771bae31279
+  languageName: node
+  linkType: hard
+
+"fluture@npm:^14.0.0":
+  version: 14.0.0
+  resolution: "fluture@npm:14.0.0"
+  dependencies:
+    sanctuary-show: ^2.0.0
+    sanctuary-type-identifiers: ^3.0.0
+  checksum: 588046dec013cc6967ff99b07143173ccdc8e8256ca40e039ebc7511328983629ea73030d43849bb2b36dee747db2dba093558ccbb515ff980b47194e4fbb184
   languageName: node
   linkType: hard
 
@@ -17363,7 +17374,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sanctuary-show@npm:2.0.0":
+"sanctuary-show@npm:2.0.0, sanctuary-show@npm:^2.0.0":
   version: 2.0.0
   resolution: "sanctuary-show@npm:2.0.0"
   checksum: 1513fc71060b4dfc4773d7cee9567b22c7b415bf1f36ae194f33f671fdf3ec55f52c5a053ab41238e24d24bae48db7386b64cf6d275dfb48feac6caa24fb7488
@@ -17386,7 +17397,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"sanctuary-type-identifiers@npm:3.0.0":
+"sanctuary-type-identifiers@npm:3.0.0, sanctuary-type-identifiers@npm:^3.0.0":
   version: 3.0.0
   resolution: "sanctuary-type-identifiers@npm:3.0.0"
   checksum: b31937f36d42ee3c6d41d52b4e39b12d4d7cc81fc1383909a338e7c5960dee1629473083a25831aab000d15b7eecfbc8e3e5a6b1ba0d20063027b4fc43e84be9

@@ -211,4 +211,74 @@ describe('asyncState', () => {
       expect(y).toFLEqual(AsyncState.Running({}));
     });
   });
+
+  describe('alt', () => {
+    it('should work with left Created', () => {
+      expect(S.alt(AsyncState.Created)(AsyncState.Created)).toFLEqual(
+        AsyncState.Created
+      );
+      expect(S.alt(AsyncState.Created)(AsyncState.Running({}))).toFLEqual(
+        AsyncState.Running({})
+      );
+      expect(
+        S.alt(AsyncState.Created)(AsyncState.Completed('some result', {}))
+      ).toFLEqual(AsyncState.Completed('some result', {}));
+      expect(
+        S.alt(AsyncState.Created)(AsyncState.Faulted('some reason', {}))
+      ).toFLEqual(AsyncState.Created);
+    });
+
+    it('should work with left Running', () => {
+      expect(S.alt(AsyncState.Running({}))(AsyncState.Created)).toFLEqual(
+        AsyncState.Running({})
+      );
+      expect(S.alt(AsyncState.Running({}))(AsyncState.Running({}))).toFLEqual(
+        AsyncState.Running({})
+      );
+      expect(
+        S.alt(AsyncState.Running({}))(AsyncState.Completed('some result', {}))
+      ).toFLEqual(AsyncState.Completed('some result', {}));
+      expect(
+        S.alt(AsyncState.Running({}))(AsyncState.Faulted('some reason', {}))
+      ).toFLEqual(AsyncState.Running({}));
+    });
+
+    it('should work with left Completed', () => {
+      expect(
+        S.alt(AsyncState.Completed('some result', {}))(AsyncState.Created)
+      ).toFLEqual(AsyncState.Completed('some result', {}));
+      expect(
+        S.alt(AsyncState.Completed('some result', {}))(AsyncState.Running({}))
+      ).toFLEqual(AsyncState.Completed('some result', {}));
+      expect(
+        S.alt(AsyncState.Completed('some result 1 ', {}))(
+          AsyncState.Completed('some result 2', {})
+        )
+      ).toFLEqual(AsyncState.Completed('some result 2', {}));
+      expect(
+        S.alt(AsyncState.Completed('some result', {}))(
+          AsyncState.Faulted('some reason', {})
+        )
+      ).toFLEqual(AsyncState.Completed('some result', {}));
+    });
+
+    it('should work with left Faulted', () => {
+      expect(
+        S.alt(AsyncState.Faulted('some reason', {}))(AsyncState.Created)
+      ).toFLEqual(AsyncState.Created);
+      expect(
+        S.alt(AsyncState.Faulted('some reason', {}))(AsyncState.Running({}))
+      ).toFLEqual(AsyncState.Running({}));
+      expect(
+        S.alt(AsyncState.Faulted('some reason', {}))(
+          AsyncState.Completed('some result', {})
+        )
+      ).toFLEqual(AsyncState.Completed('some result', {}));
+      expect(
+        S.alt(AsyncState.Faulted('some reason', {}))(
+          AsyncState.Faulted('some reason 2', {})
+        )
+      ).toFLEqual(AsyncState.Faulted('some reason', {}));
+    });
+  });
 });

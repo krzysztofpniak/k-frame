@@ -170,6 +170,7 @@ const FormInt = withScope(
         setFields,
         reset,
         clear,
+        setSubmitDirty,
         validateFuture,
         validatePickFuture,
         validateOmitFuture,

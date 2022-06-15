@@ -1,4 +1,4 @@
-import React, {useCallback, useContext, useEffect} from 'react';
+import React, {useCallback, useContext, useEffect, useRef} from 'react';
 import bindActionCreators from './bindActionCreators';
 import Scope from './scope';
 import withScope from './withScope';
@@ -21,7 +21,7 @@ import createAction from './createAction';
 import usePrevious from './usePrevious';
 import useScopeProps from './useScopeProps';
 import withMemoContext from './withMemoContext';
-import {curry, unless, is, objOf} from 'ramda';
+import {curry, unless, is, objOf, otherwise, then} from 'ramda';
 import useWithArgs from './useWithArgs';
 import useInputTargetValue from './useInputTargetValue';
 import withStaticScope from './withStaticScope';
@@ -36,6 +36,7 @@ import {
   isAsyncStateFaulted,
 } from './asyncState';
 import useEqualsMemo from './useEqualsMemo';
+import {Future, fork} from 'fluture';
 
 const asyncActionTypeName = curry(
   (stage, baseType) => `async/${baseType}/${stage}`
@@ -77,6 +78,36 @@ const useAsync = (fn, key) => {
   }, []);
 };
 
+const toCancellablePromise = cancelRef => futureCreator => (...args) =>
+  new Promise((resolve, reject) => {
+    cancelRef.current = futureCreator(...args) |> fork(reject)(resolve);
+  });
+
+const useFuture = (futureCreator, key) => {
+  const {dispatch, store, asyncMiddleware} = useContext(KContext);
+  const cancelRef = useRef();
+  const fn = toCancellablePromise(cancelRef)(futureCreator);
+
+  return (...args) =>
+    Future((reject, resolve) => {
+      dispatch(requestAction(key));
+      asyncMiddleware(store)(fn)(args)
+        |> then(result => {
+          dispatch(succeededAction(key, result));
+          resolve(result);
+        })
+        |> otherwise(e => {
+          dispatch(failedAction(key, e));
+          reject(e);
+        });
+
+      return () => {
+        dispatch(failedAction(key, {message: 'Cancelled'}));
+        cancelRef.current();
+      };
+    });
+};
+
 export {
   handleAsyncs,
   KProvider,
@@ -105,6 +136,7 @@ export {
   useWithArgs,
   usePrevious,
   useScopeProps,
+  useFuture,
   requestAction,
   succeededAction,
   chunkAction,
