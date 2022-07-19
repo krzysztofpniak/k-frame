@@ -7,7 +7,10 @@ const useEqualsMemo = (factory, deps) => {
 
   if (!equals(depsRef.current)(deps)) {
     depsRef.current = deps;
-    resultRef.current = factory();
+    const resultCandidate = factory();
+    if (!resultRef.current || !equals(resultCandidate, resultRef.current)) {
+      resultRef.current = resultCandidate;
+    }
   }
 
   return resultRef.current;
