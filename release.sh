@@ -8,7 +8,7 @@ echo "-----REDUCERS-----"
 cd packages/core
 yarn build
 # VERSION=$(npm version prerelease --preid=RC | cut -c2-)
-VERSION=$(npm version minor | cut -c2-)
+VERSION=$(npm version patch | cut -c2-)
 npm publish
 
 echo "-----SAGAS-----"
