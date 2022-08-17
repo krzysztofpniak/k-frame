@@ -37,6 +37,11 @@ import {
 } from './asyncState';
 import useEqualsMemo from './useEqualsMemo';
 import {Future, fork} from 'fluture';
+import useEqualsUpdateEffect from './useEqualsUpdateEffect';
+import useFirstMountState from './useFirstMountState';
+import useRefValue from './useRefValue';
+import useQueue from './useQueue';
+import useDebounceValue from './useDebounceValue';
 
 const asyncActionTypeName = curry(
   (stage, baseType) => `async/${baseType}/${stage}`
@@ -137,6 +142,11 @@ export {
   usePrevious,
   useScopeProps,
   useFuture,
+  useEqualsUpdateEffect,
+  useFirstMountState,
+  useRefValue,
+  useQueue,
+  useDebounceValue,
   requestAction,
   succeededAction,
   chunkAction,
