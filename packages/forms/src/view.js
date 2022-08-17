@@ -1,39 +1,37 @@
 import React, {
   createElement,
-  useCallback,
-  useMemo,
-  useEffect,
-  useRef,
-  useContext,
-  memo,
-  useLayoutEffect,
-  useState,
   forwardRef,
+  memo,
+  useCallback,
+  useContext,
+  useEffect,
   useImperativeHandle,
-  createRef,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
 } from 'react';
 import {
-  map,
-  fromPairs,
-  reduceBy,
-  pathOr,
-  keys,
+  always,
+  compose,
   flip,
+  fromPairs,
+  identity,
+  indexBy,
+  keys,
   lens,
   lensPath,
+  map,
+  mergeLeft,
   over,
   path,
-  mergeLeft,
-  always,
-  tap,
-  compose,
-  propOr,
-  indexBy,
+  pathOr,
   prop,
-  identity,
+  propOr,
+  reduceBy,
 } from 'ramda';
 import useFormReducer from './useFormReducer';
-import {KContext, withScope, shallowEqual} from '@k-frame/core';
+import {KContext, shallowEqual, useQueue, withScope} from '@k-frame/core';
 import FormContext from './FormContext';
 import {getPlainReduxKContextValue} from './formReducer';
 import mergeProps from './mergeProps';
@@ -41,7 +39,7 @@ import Field from './field';
 import FormTemplateProxy from './formTemplateProxy';
 import {fieldTouchedStrategy} from './errorsDisplayStrategies';
 import {distinctUntilChanged, oMap} from './micro-rx/index';
-import {fork} from 'fluture';
+import {chain, encase} from 'fluture';
 
 const GenericError = ({content}) => (
   <div className="alert alert-danger" role="alert">
@@ -78,11 +76,15 @@ const FormInt = withScope(
         autoFocus,
         errorsDisplayStrategy,
         disabled,
+        scheduler,
       },
       ref
     ) => {
       const argsKeys = useMemo(() => keys(args), []);
       const argsValues = map(k => args[k], argsKeys);
+
+      const defaultScheduler = useQueue();
+      const finalScheduler = scheduler || defaultScheduler;
 
       const {
         handleOnBlur,
@@ -152,7 +154,9 @@ const FormInt = withScope(
           }
 
           const callOnValidated = () =>
-            defaultSubmitFuture |> fork(identity)(onValidated || identity);
+            defaultSubmitFuture
+            |> chain(encase(onValidated || identity))
+            |> scheduler.enqueue;
 
           return onSubmit
             ? onSubmit(defaultSubmitFuture, getFields())
@@ -234,6 +238,7 @@ const FormInt = withScope(
                 type={f.type || 'text'}
                 component={fieldTypes[f.type || 'text']}
                 disabled={disabled}
+                scheduler={finalScheduler}
               />,
             ],
             schema

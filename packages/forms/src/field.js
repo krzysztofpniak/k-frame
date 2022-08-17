@@ -39,6 +39,7 @@ const Field = memo(
     parse,
     inputRef,
     disabled,
+    scheduler,
   }) => {
     const formContext = useContext(FormContext);
     const initialState = useMemo(() => formContext.getFieldState(id), []);
@@ -129,6 +130,7 @@ const Field = memo(
               errorPending,
               showErrors: errorVisible,
               scope: `sub.${id}`,
+              scheduler,
               ...props,
             }),
             ...props,
