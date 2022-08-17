@@ -34,6 +34,7 @@ import {
   createStateReducer,
 } from '@k-frame/core';
 import React from 'react';
+import useDebounceValue from '@k-frame/core/src/useDebounceValue';
 
 const mapWithKey = addIndex(map);
 
@@ -211,6 +212,17 @@ const Color = ({
   </div>
 );
 
+const AsyncField = ({value, onChange, scheduler}) => {
+  const [inputValue, handleOnChange] = useDebounceValue({
+    value,
+    onChange,
+    timeout: 2000,
+    scheduler,
+  });
+
+  return <input value={inputValue} onChange={handleOnChange} />;
+};
+
 const fieldTypes = {
   text: Input,
   password: Input,
@@ -222,6 +234,7 @@ const fieldTypes = {
   fullName: FullName,
   complexField: ComplexField,
   color: Color,
+  asyncField: AsyncField,
 };
 
 export default fieldTypes;
