@@ -156,7 +156,7 @@ const FormInt = withScope(
           const callOnValidated = () =>
             defaultSubmitFuture
             |> chain(encase(onValidated || identity))
-            |> scheduler.enqueue;
+            |> finalScheduler.enqueue;
 
           return onSubmit
             ? onSubmit(defaultSubmitFuture, getFields())
