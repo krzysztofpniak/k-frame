@@ -1342,9 +1342,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@k-frame/core@npm:^3.0.2-RC.1":
-  version: 3.0.2-RC.1
-  resolution: "@k-frame/core@npm:3.0.2-RC.1"
+"@k-frame/core@npm:^3.0.2-RC.2":
+  version: 3.0.2-RC.2
+  resolution: "@k-frame/core@npm:3.0.2-RC.2"
   peerDependencies:
     daggy: ^1.5.0
     fluture: ^14.0.0
@@ -1352,7 +1352,7 @@ __metadata:
     react: ^16.8.0 || ^17.0.0
     react-dom: ^16.8.0 || ^17.0.0
     react-is: ^16.8.4
-  checksum: f4eab07f820634f8b43ef29d8ec0009bc8b8e5767ffd40b0f02b67f6348e930c16aaee5f0acfdc903378e6ae557ace26da45e008c4c2ace2426dbdcd714b29c0
+  checksum: 09f30439df1261f56a856e0f2a27f4579df55847df0502eaad4f67e4e6cb4482225cdfcd59f9b15e6209f079f5ecac8763441aae8b621071ff3dda3faa3fbf96
   languageName: node
   linkType: hard
 
@@ -1371,7 +1371,7 @@ __metadata:
     "@babel/preset-flow": ^7.0.0
     "@babel/preset-react": ^7.0.0
     "@babel/register": ^7.0.0
-    "@k-frame/core": ^3.0.2-RC.1
+    "@k-frame/core": ^3.0.2-RC.2
     babel-core: ^7.0.0-bridge.0
     babel-eslint: ^10.0.1
     babel-jest: ^24.5.0
@@ -1404,7 +1404,7 @@ __metadata:
     webpack-cli: ^4.9.2
     webpack-dev-server: ^4.7.3
   peerDependencies:
-    "@k-frame/core": ^3.0.2-RC.1
+    "@k-frame/core": ^3.0.2-RC.2
     ramda: ^0.26.1
     react: ^16.8.0 || ^17.0.0
     react-dom: ^16.8.0 || ^17.0.0
