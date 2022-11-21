@@ -2912,9 +2912,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@k-frame/core@npm:^3.1.0":
-  version: 3.1.0
-  resolution: "@k-frame/core@npm:3.1.0"
+"@k-frame/core@npm:^3.1.1":
+  version: 3.1.1
+  resolution: "@k-frame/core@npm:3.1.1"
   peerDependencies:
     daggy: ^1.5.0
     fluture: ^14.0.0
@@ -2922,7 +2922,7 @@ __metadata:
     react: ^16.8.0 || ^17.0.0
     react-dom: ^16.8.0 || ^17.0.0
     react-is: ^16.8.4
-  checksum: 720d73d4120fd42a815fb57eccb707a57690979b95e43f8dd83bd03dc9cabd10ae7788472fe9286850b47c0cef35478a07a62900566f7d00d671efdbe1e1b13e
+  checksum: ea4886fe801973f2d816dccef55464b1fb03dbbdc6d74b2be23746068078084517581bc26cb73159f6d44e6b0546b8780a25adbde6a25cf0c06e955629e68f14
   languageName: node
   linkType: hard
 
@@ -2941,7 +2941,7 @@ __metadata:
     "@babel/preset-flow": ^7.0.0
     "@babel/preset-react": ^7.0.0
     "@babel/register": ^7.0.0
-    "@k-frame/core": ^3.1.0
+    "@k-frame/core": ^3.1.1
     "@material-ui/core": ^4.0.0-alpha.8
     "@material-ui/styles": ^4.0.0-alpha.8
     "@material-ui/system": ^4.0.0-alpha.8
@@ -2984,7 +2984,7 @@ __metadata:
     webpack-cli: ^4.9.2
     webpack-dev-server: ^4.7.3
   peerDependencies:
-    "@k-frame/core": ^3.1.0
+    "@k-frame/core": ^3.1.1
     fluture: ^14.0.0
     ramda: ^0.26.1 || ^0.27.0
     react: ^16.8.0 || ^17.0.0

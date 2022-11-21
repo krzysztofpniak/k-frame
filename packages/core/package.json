@@ -1,6 +1,6 @@
 {
   "name": "@k-frame/core",
-  "version": "3.1.0",
+  "version": "3.1.2",
   "description": "Complete React'n'Redux based framework",
   "license": "MIT",
   "homepage": "https://klabs.gitbook.io/k-logic/",
@@ -12,8 +12,8 @@
     "daggy": "^1.5.0",
     "fluture": "^14.0.0",
     "ramda": "^0.26.1 || ^0.27.0",
-    "react": "^16.8.0 || ^17.0.0",
-    "react-dom": "^16.8.0 || ^17.0.0",
+    "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0",
     "react-is": "^16.8.4"
   },
   "devDependencies": {

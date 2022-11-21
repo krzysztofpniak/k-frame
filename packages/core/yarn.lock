@@ -2966,9 +2966,10 @@ __metadata:
     webpack-dev-server: ^4.7.3
   peerDependencies:
     daggy: ^1.5.0
+    fluture: ^14.0.0
     ramda: ^0.26.1 || ^0.27.0
-    react: ^16.8.0 || ^17.0.0
-    react-dom: ^16.8.0 || ^17.0.0
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0
+    react-dom: ^16.8.0 || ^17.0.0 || ^18.0.0
     react-is: ^16.8.4
   languageName: unknown
   linkType: soft
