@@ -10,7 +10,7 @@ module.exports = {
         },
         exclude: ['transform-async-to-generator', 'transform-regenerator'],
         modules: false,
-        loose: true,
+        loose: false,
       },
     ],
     [
@@ -21,7 +21,7 @@ module.exports = {
         },
         exclude: ['transform-async-to-generator', 'transform-regenerator'],
         modules: false,
-        loose: true,
+        loose: false,
       },
     ],
     ['@babel/preset-flow'],

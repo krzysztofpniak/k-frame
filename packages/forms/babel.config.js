@@ -10,7 +10,7 @@ module.exports = {
         },
         exclude: ['transform-async-to-generator', 'transform-regenerator'],
         modules: false,
-        loose: true,
+        loose: false,
       },
     ],
     [
@@ -21,20 +21,18 @@ module.exports = {
         },
         exclude: ['transform-async-to-generator', 'transform-regenerator'],
         modules: false,
-        loose: true,
+        loose: false,
       },
     ],
+    ['@babel/preset-flow'],
   ],
   plugins: [
-    [
-      require('@babel/plugin-proposal-pipeline-operator'),
-      {proposal: 'minimal'},
-    ],
     // don't use `loose` mode here - need to copy symbols when spreading
-    '@babel/plugin-transform-template-literals',
     '@babel/proposal-object-rest-spread',
     '@babel/plugin-transform-spread',
     '@babel/plugin-proposal-class-properties',
+    '@babel/plugin-transform-async-to-generator',
+    ['@babel/plugin-proposal-pipeline-operator', {proposal: 'minimal'}],
     NODE_ENV === 'test' && '@babel/transform-modules-commonjs',
   ].filter(Boolean),
 };
