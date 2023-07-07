@@ -5,7 +5,7 @@ const isObject = x => {
 };
 
 const mergeWithKey2 = curry(function mergeWithKey2(l, r) {
-  if (r.constructor && r.constructor['@@type']) {
+  if (r['@@type'] || (r.constructor && r.constructor['@@type'])) {
     return r;
   }
 
