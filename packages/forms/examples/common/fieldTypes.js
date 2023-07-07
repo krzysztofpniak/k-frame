@@ -32,9 +32,9 @@ import {
   withScope,
   createReducer,
   createStateReducer,
+  useDebounceValue,
 } from '@k-frame/core';
 import React from 'react';
-import useDebounceValue from '@k-frame/core/src/useDebounceValue';
 
 const mapWithKey = addIndex(map);
 
