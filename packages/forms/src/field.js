@@ -152,4 +152,6 @@ const Field = memo(
   }
 );
 
+Field.displayName = 'Field';
+
 export default Field;
