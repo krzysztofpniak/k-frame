@@ -1,4 +1,4 @@
-import {is, mergeWithKey, reduce, curry, equals, has} from 'ramda';
+import {reduce} from 'ramda';
 import mergeDeepRight from './mergeDeepRight';
 
 const createReducer = (initialState, spec) => {
