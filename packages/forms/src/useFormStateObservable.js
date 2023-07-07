@@ -1,5 +1,6 @@
 import {useEffect, useMemo, useRef} from 'react';
 import {Observable} from './micro-rx/index';
+import {equals} from 'ramda';
 
 const useFormStateObservable = (subscribe, getFormState) => {
   const observer = useRef(null);
@@ -20,7 +21,7 @@ const useFormStateObservable = (subscribe, getFormState) => {
     }
     return subscribe(() => {
       const newState = getFormState();
-      if (newState !== prevState) {
+      if (!equals(newState, prevState)) {
         observer.current.next(newState);
         prevState = newState;
       }
