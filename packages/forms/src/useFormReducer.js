@@ -68,6 +68,7 @@ const useFormReducer = ({
   resetOnSubmit,
   resetOnCancel,
   formRefCreator,
+  scheduler,
 }) => {
   const context = useContext(KContext);
 
@@ -399,8 +400,9 @@ const useFormReducer = ({
       |> map(formattedValue =>
         assoc('formattedValue', formattedValue, fieldContext)
       )
-      |> chain(validateField(setFieldError)(fieldSchema))
-      |> fork(identity)(identity)
+      |> chain(validateField(setFieldError)(fieldSchema)) |>
+      // scheduler.enqueue
+      fork(identity)(identity)
       |> forkLatest(fieldId);
   }, []);
 

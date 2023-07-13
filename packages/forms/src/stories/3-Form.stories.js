@@ -29,7 +29,7 @@ export const ComplexComponent = withStaticScope('outerScope')(() => {
   const scheduler = useQueue();
 
   const addToQueue = useCallback(() => {
-    scheduler.enqueue(after(1000)('sd') |> chain(encase(console.log)));
+    //scheduler.enqueue(after(1000)('sd') |> chain(encase(console.log)));
   }, []);
 
   return (
@@ -41,7 +41,7 @@ export const ComplexComponent = withStaticScope('outerScope')(() => {
         schema={schema}
         fieldTypes={fieldTypes}
         resetOnSubmit={false}
-        onValidated={e => e |> JSON.stringify |> alert}
+        //onValidated={e => e |> JSON.stringify |> alert}
         scheduler={scheduler}
       />
     </div>

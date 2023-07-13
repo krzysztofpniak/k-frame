@@ -54,6 +54,7 @@ const createUpdater = (fieldTypes, schema, resetOnSubmit, resetOnCancel) => {
     fromPairs,
     map(f => [f.id, f.defaultValue !== undefined ? f.defaultValue : ''])
   )(schema);
+
   const initialModel = getInitialModel(fields);
 
   return createReducer(initialModel, [

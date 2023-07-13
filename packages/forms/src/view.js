@@ -110,6 +110,7 @@ const FormInt = withScope(
         args,
         resetOnSubmit,
         resetOnCancel,
+        //scheduler: finalScheduler,
         formRefCreator: () => ({
           submit: handleSubmit,
           getFields,
@@ -156,7 +157,8 @@ const FormInt = withScope(
           const callOnValidated = () =>
             defaultSubmitFuture
             |> chain(encase(onValidated || identity))
-            |> finalScheduler.enqueue;
+            |> (future => ({future, label: 'x'}))
+            |> finalScheduler.enqueueLabeled;
 
           return onSubmit
             ? onSubmit(defaultSubmitFuture, getFields())
@@ -232,7 +234,6 @@ const FormInt = withScope(
                 onChange={handleOnChange}
                 onUpdate={handleOnUpdate}
                 onBlur={handleOnBlur}
-                defaultValue={f.defaultValue}
                 parse={f.parse}
                 format={f.format}
                 type={f.type || 'text'}

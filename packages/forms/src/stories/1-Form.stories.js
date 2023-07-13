@@ -21,7 +21,7 @@ const schema = [
     title: 'Full Name',
     type: 'fullName',
     defaultValue: 'John Brown',
-    validate: (value, ctx) => 'błąd' |> rejectAfter(1000),
+    //validate: (value, ctx) => 'błąd' |> rejectAfter(1000),
     format: value => value,
   },
 ];
@@ -31,7 +31,7 @@ export const ComplexValidation = () => {
 
   const externalApiCall = useCallback(() => {
     const {validateFuture, getFields} = form.current;
-    const errors = validateFuture |> fork(console.error)(console.log);
+    //const errors = validateFuture |> fork(console.error)(console.log);
     //alert(JSON.stringify(errors.length ? errors : getFields()));
   }, []);
 

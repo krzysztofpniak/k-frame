@@ -1,5 +1,5 @@
-import {after, attempt, chain} from 'fluture';
-import {useCallback, useEffect, useMemo, useState} from 'react';
+import {after, attempt, chain, encase} from 'fluture';
+import {useCallback, useEffect, useMemo, useRef, useState} from 'react';
 import {
   compose,
   equals,
@@ -34,30 +34,44 @@ const useDebounceValue = ({
   serializeInput = identity,
   timeout = 500,
   scheduler,
+  key,
 }) => {
   const inputInitialValue = useMemo(() => parseValue(value), []);
   const [inputValue, setInputValue] = useState(inputInitialValue);
+  const cancelRef = useRef();
   const onChangeRef = useRefValue(onChange);
 
   const handleOnChange = useCallback(event => {
-    event |> extractEventValue |> setInputValue;
+    const eventValue = event |> extractEventValue;
+    eventValue |> setInputValue;
+    cancelRef.current = scheduler.enqueueLabeled({
+      key,
+      future:
+        eventValue
+        |> after(timeout)
+        |> map(serializeInput)
+        |> chain(encase(onChangeRef.current)),
+      label: `${key}:${eventValue}`,
+    });
   }, []);
 
-  useEqualsUpdateEffect(
-    () =>
-      attempt(() => value |> parseValue |> setInputValue) |> scheduler.enqueue,
-    [value]
-  );
+  useEqualsUpdateEffect(() => {
+    if (cancelRef.current) {
+      cancelRef.current();
+    }
+    setInputValue(parseValue(value));
+  }, [value]);
 
-  useEqualsUpdateEffect(
-    () =>
-      inputValue
-      |> after(timeout)
-      |> map(serializeInput)
-      |> chain(value => attempt(() => onChange(value || '')))
-      |> scheduler.enqueue,
-    [inputValue, onChange]
-  );
+  // useEqualsUpdateEffect(
+  //   () =>
+  //     inputValue
+  //     |> after(timeout)
+  //     |> map(serializeInput)
+  //     |> chain(value => attempt(() => onChange(value || '')))
+  //     |> (future => ({future, key, label: `${key}:${inputValue}`}))
+  //     |> scheduler.enqueueLabeled,
+  //   [inputValue, onChange]
+  // );
 
   const inputValueRef = useRefValue(inputValue);
   const valueRef = useRefValue(value);
