@@ -2,7 +2,7 @@ import fc from 'fast-check';
 import {act, renderHook, cleanup} from '@testing-library/react';
 import useDebounceValue from './useDebounceValue';
 import {after, promise, resolve} from 'fluture';
-import useQueue from './useQueue';
+import useScheduler from './useScheduler';
 import {propEq, filter, length} from 'ramda';
 
 const withTimers = s => {
@@ -54,7 +54,7 @@ const keyArbitrary = fc.constantFrom(...someKeys);
 
 //['a', 's'], ['a', 'st'], ['b', '6'], ['a', 'sta']
 
-describe('useQueue', () => {
+describe('useScheduler', () => {
   it('', async () => {
     jest.useFakeTimers();
 
@@ -73,7 +73,7 @@ describe('useQueue', () => {
           fc.scheduler({act}), //.map(withTimers),
           queueArbitrary,
           async (s, queue) => {
-            const {result} = renderHook(() => useQueue());
+            const {result} = renderHook(() => useScheduler());
 
             const zz = queue.map(({label, future, key}) => ({
               label,
@@ -84,8 +84,8 @@ describe('useQueue', () => {
                   filter(propEq('key', key))(currentQueue) |> length;
 
                 if (
-                  result.current.isRunningRef.current &&
-                  result.current.runningKeyRef.current !== key
+                  result.current.pending &&
+                  result.current.running.key !== key
                 ) {
                   try {
                     expect(tasksWithCurrentKeyCount).toEqual(1);
@@ -110,14 +110,14 @@ describe('useQueue', () => {
 
             while (
               result.current.queueRef.current.length > 0 ||
-              result.current.isRunningRef.current
+              result.current.pending
             ) {
               await act(async () => {
                 jest.advanceTimersToNextTimer();
               });
             }
 
-            expect(result.current.pendingRef.current).toEqual(false);
+            expect(result.current.pending).toEqual(false);
           }
         )
         .beforeEach(async () => {

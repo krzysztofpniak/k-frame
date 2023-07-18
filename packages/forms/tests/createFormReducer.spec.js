@@ -15,6 +15,15 @@ const initialState = {
     name: false,
     age: false,
   },
+  errors: {
+    age: '',
+    name: '',
+  },
+  formattedFields: {
+    age: null,
+    name: null,
+  },
+  validating: false,
   touched: {
     name: false,
     age: false,

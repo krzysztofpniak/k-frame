@@ -31,7 +31,7 @@ import {
   reduceBy,
 } from 'ramda';
 import useFormReducer from './useFormReducer';
-import {KContext, shallowEqual, useQueue, withScope} from '@k-frame/core';
+import {KContext, shallowEqual, useScheduler, withScope} from '@k-frame/core';
 import FormContext from './FormContext';
 import {getPlainReduxKContextValue} from './formReducer';
 import mergeProps from './mergeProps';
@@ -83,7 +83,7 @@ const FormInt = withScope(
       const argsKeys = useMemo(() => keys(args), []);
       const argsValues = map(k => args[k], argsKeys);
 
-      const defaultScheduler = useQueue();
+      const defaultScheduler = useScheduler();
       const finalScheduler = scheduler || defaultScheduler;
 
       const {
@@ -110,7 +110,7 @@ const FormInt = withScope(
         args,
         resetOnSubmit,
         resetOnCancel,
-        //scheduler: finalScheduler,
+        scheduler: finalScheduler,
         formRefCreator: () => ({
           submit: handleSubmit,
           getFields,
@@ -157,14 +157,14 @@ const FormInt = withScope(
           const callOnValidated = () =>
             defaultSubmitFuture
             |> chain(encase(onValidated || identity))
-            |> (future => ({future, label: 'x'}))
+            |> (future => ({future, label: 'x', key: 'submit'}))
             |> finalScheduler.enqueueLabeled;
 
           return onSubmit
             ? onSubmit(defaultSubmitFuture, getFields())
             : callOnValidated();
         },
-        [defaultSubmitFuture, onSubmit, onValidated]
+        [defaultSubmitFuture, onSubmit, onValidated, finalScheduler]
       );
 
       const clear = useCallback(() => init(getDefaultValues(schema)), [schema]);
@@ -205,7 +205,7 @@ const FormInt = withScope(
             submitText,
             dirty: false,
             disabled,
-            validating,
+            validating: validating || finalScheduler.pending,
           }),
         [
           buttonsTemplate,
@@ -215,6 +215,7 @@ const FormInt = withScope(
           submitText,
           disabled,
           validating,
+          finalScheduler.pending
         ]
       );
       const genericError = <div>genericError</div>;

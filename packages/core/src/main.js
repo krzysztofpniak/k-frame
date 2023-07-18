@@ -40,7 +40,7 @@ import {Future, fork} from 'fluture';
 import useEqualsUpdateEffect from './useEqualsUpdateEffect';
 import useFirstMountState from './useFirstMountState';
 import useRefValue from './useRefValue';
-import useQueue from './useQueue';
+import useScheduler from './useScheduler';
 import useDebounceValue from './useDebounceValue';
 
 const asyncActionTypeName = curry(
@@ -145,7 +145,7 @@ export {
   useEqualsUpdateEffect,
   useFirstMountState,
   useRefValue,
-  useQueue,
+  useScheduler,
   useDebounceValue,
   requestAction,
   succeededAction,

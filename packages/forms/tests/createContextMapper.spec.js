@@ -12,6 +12,14 @@ const formState1 = {
     _id: '123',
     name: '',
   },
+  formattedFields: {
+    _id: '123',
+    name: '',
+  },
+  errors: {
+    _id: '',
+    name: '',
+  },
   touched: {
     name: false,
   },
@@ -40,11 +48,11 @@ describe('createContextMapper', () => {
       ])
     ).toEqual({
       args: {color: 'blue'},
-      errors: {name: ''},
       fieldsStates: {
         name: {
           error: '',
           errorVisible: true,
+          formattedValue: '',
           id: 'name',
           value: 'John',
           visible: true,
@@ -55,6 +63,14 @@ describe('createContextMapper', () => {
         dirty: {
           name: false,
         },
+        errors: {
+          _id: '',
+          name: ''
+        },
+        formattedFields: {
+          _id: '123',
+          name: '',
+        },
         touched: {name: false},
         fields: {name: 'John', _id: '123'},
       },
@@ -64,6 +80,7 @@ describe('createContextMapper', () => {
       name: {
         error: '',
         errorVisible: true,
+        formattedValue: '',
         id: 'name',
         props: {},
         value: 'John',

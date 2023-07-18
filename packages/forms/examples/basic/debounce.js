@@ -3,7 +3,7 @@ import {Form} from '../../src/main';
 import baseFieldTypes from '../common/fieldTypes';
 import {FormTemplate, Row, useSubmitAlert} from '../common';
 import {
-  useQueue,
+  useScheduler,
   useEqualsUpdateEffect,
   useRefValue,
   useDebounceValue,
@@ -159,7 +159,7 @@ const fieldTypes = {
 const App = () => {
   const handleSubmit = useSubmitAlert();
 
-  const scheduler = useQueue();
+  const scheduler = useScheduler();
 
   return (
     <Form

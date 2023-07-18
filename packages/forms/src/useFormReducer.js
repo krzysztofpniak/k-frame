@@ -331,17 +331,6 @@ const useFormReducer = ({
     nextFieldsRef.current = fields;
   }, []);
 
-  const taskReferences = useRef({});
-
-  const forkLatest = useCallback(
-    id => cancelCallback => {
-      if (taskReferences.current[id]) {
-        taskReferences.current[id]();
-      }
-      taskReferences.current[id] = cancelCallback;
-    },
-    []
-  );
 
   const handleOnChange = useCallback((value, fieldId) => {
     const {setField, setFields} = boundActionCreators;
@@ -400,10 +389,10 @@ const useFormReducer = ({
       |> map(formattedValue =>
         assoc('formattedValue', formattedValue, fieldContext)
       )
-      |> chain(validateField(setFieldError)(fieldSchema)) |>
-      // scheduler.enqueue
-      fork(identity)(identity)
-      |> forkLatest(fieldId);
+      |> chain(validateField(setFieldError)(fieldSchema))
+          |> (future => ({future, label: 'ds', key: `handleOnUpdate.${fieldId}`})) |>
+      scheduler.enqueueLabeled
+      ;
   }, []);
 
   const mountField = useCallback(fieldId => {

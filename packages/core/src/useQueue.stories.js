@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from 'react';
-import useQueue from './useQueue';
+import useScheduler from './useScheduler';
 import {after, encase} from 'fluture';
 import {assoc, chain, evolve, pluck, propOr} from 'ramda';
 
@@ -26,8 +26,8 @@ const InputDebouncer = ({scheduler, id, value, onChange}) => {
   return <input value={internalValue} onChange={handleChange} />;
 };
 
-const UseQueueTester = () => {
-  const scheduler = useQueue();
+const UseSchedulerTester = () => {
+  const scheduler = useScheduler();
   const [result, setResult] = useState({name: '', age: ''});
 
   return (
@@ -63,8 +63,8 @@ const UseQueueTester = () => {
   );
 };
 export default {
-  title: 'useQueue',
-  component: UseQueueTester,
+  title: 'useScheduler',
+  component: UseSchedulerTester,
 };
 
 export const Basic = {};

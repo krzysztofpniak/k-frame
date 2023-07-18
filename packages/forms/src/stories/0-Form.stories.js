@@ -1,8 +1,8 @@
 import React, {useCallback, useRef, useState} from 'react';
 import {linkTo} from '@storybook/addon-links';
-import fieldTypes from '../examples/common/fieldTypes';
-import {Form} from '../src/view';
-import {required} from '../src/validators';
+import fieldTypes from '../../examples/common/fieldTypes';
+import {Form} from '../view';
+import {required} from '../validators';
 import kFrameDecorator from './helpers/kFrameDecorator';
 
 export default {

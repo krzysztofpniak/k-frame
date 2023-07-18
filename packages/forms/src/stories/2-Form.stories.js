@@ -1,7 +1,7 @@
 import React, {useCallback, useRef, useState} from 'react';
 import {linkTo} from '@storybook/addon-links';
-import fieldTypes from '../examples/common/fieldTypes';
-import {Form} from '../src/view';
+import fieldTypes from '../../examples/common/fieldTypes';
+import {Form} from '../view';
 import kFrameDecorator from './helpers/kFrameDecorator';
 import {withStaticScope, useKReducer, createReducer} from '@k-frame/core';
 

@@ -14,12 +14,6 @@ export default {
     name: '@storybook/react-webpack5',
     options: {},
   },
-  babel: async (options) => {
-    const babelConfig = require("./../.babelrc.json");
-    console.log(JSON.stringify({ ...options, ...babelConfig }, null, 2));
-
-    return { ...options, ...babelConfig };
-  },
   docs: {
     autodocs: false,
   },

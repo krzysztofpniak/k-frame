@@ -40,30 +40,34 @@ describe('Form', () => {
     expect(console.error).toHaveBeenCalledWith('Schema prop is required');
   });
 
-  it('renders simplest Form', () => {
+  it('renders simplest Form', async () => {
     const store = createStoreMock();
 
-    const {container, asFragment} = render(
+    const {container, asFragment, findByText} = render(
       <KProvider store={store}>
         <Form scope="someScope" schema={schema1} />
       </KProvider>
     );
 
+    await findByText('Save');
+
     expect(asFragment()).toMatchSnapshot();
     expect(getById(container, 'name').value).toBe('');
   });
 
-  it('uses defaultValue', () => {
+  it('uses defaultValue', async () => {
     const store = createStoreMock();
 
-    const {container, asFragment} = render(
+    const {container, asFragment, findByRole, findByText} = render(
       <KProvider store={store}>
         <Form scope="someScope" schema={schema2} />
       </KProvider>
     );
 
+    await findByText('Save');
+
     expect(asFragment()).toMatchSnapshot();
-    expect(getById(container, 'name').value).toBe('John');
+    expect(await findByRole('textbox')).toHaveValue('John');
   });
 
   it('sets focus to first field', () => {

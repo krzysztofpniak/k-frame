@@ -1,9 +1,9 @@
 import React, {useCallback} from 'react';
-import fieldTypes from '../examples/common/fieldTypes';
-import {Form} from '../src/view';
+import fieldTypes from '../../examples/common/fieldTypes';
+import {Form} from '../view';
 import kFrameDecorator from './helpers/kFrameDecorator';
 import {createReducer, useKReducer, withStaticScope} from '@k-frame/core';
-import {useQueue} from '@k-frame/core';
+import {useScheduler} from '@k-frame/core';
 import {after, chain, encase} from 'fluture';
 
 export default {
@@ -26,22 +26,22 @@ const reducer = createReducer({}, []);
 export const ComplexComponent = withStaticScope('outerScope')(() => {
   const {} = useKReducer(reducer);
 
-  const scheduler = useQueue();
+  const scheduler = useScheduler();
 
   const addToQueue = useCallback(() => {
-    //scheduler.enqueue(after(1000)('sd') |> chain(encase(console.log)));
+    scheduler.enqueueLabeled({future: chain(encase(console.log))(after(2000)('sd')), key: Math.random()});
   }, []);
 
   return (
     <div>
-      <button onClick={addToQueue}>add</button>
+      <button onClick={addToQueue}>add something to scheduler queue</button>
       <div>{scheduler.pending ? 'true' : 'false'}</div>
       <Form
         scope="complexComponent"
         schema={schema}
         fieldTypes={fieldTypes}
         resetOnSubmit={false}
-        //onValidated={e => e |> JSON.stringify |> alert}
+        onValidated={e => alert(JSON.stringify(e))}
         scheduler={scheduler}
       />
     </div>

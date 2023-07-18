@@ -106,6 +106,14 @@
   "files": [
     "dist"
   ],
+  "jest": {
+    "testRegex": "(/tests/.*\\.spec.js)$",
+    "verbose": true,
+    "setupFilesAfterEnv": [
+      "./testSetup.js"
+    ],
+    "testEnvironment": "jsdom"
+  },
   "sideEffects": false,
   "packageManager": "yarn@3.1.1",
   "resolutions": {

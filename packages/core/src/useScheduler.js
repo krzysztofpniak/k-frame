@@ -30,7 +30,7 @@ const useNextState = initialState => {
   return [ref.current, setState2, ref];
 };
 
-const useQueue = () => {
+const useScheduler = () => {
   const [running, setRunning, runningRef] = useNextState(null);
   const [queue, setQueue, queueRef] = useNextState([]);
 
@@ -94,4 +94,4 @@ const useQueue = () => {
   };
 };
 
-export default useQueue;
+export default useScheduler;

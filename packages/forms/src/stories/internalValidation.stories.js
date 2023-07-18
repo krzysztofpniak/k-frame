@@ -1,10 +1,10 @@
 //import kFrameDecorator from './helpers/kFrameDecorator';
 import React from 'react';
-import {Form} from '../src/view';
+import {Form} from '../view';
 import S_ from 'sanctuary';
 import {action} from '@storybook/addon-actions';
 import {evolve, pipe} from 'ramda';
-import {Input} from "./stories/input";
+import {Input} from "./helpers/input";
 import kFrameDecorator from "../stories/helpers/kFrameDecorator";
 
 const S = S_.create({

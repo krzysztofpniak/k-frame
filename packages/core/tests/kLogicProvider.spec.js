@@ -1,6 +1,6 @@
 import React, {useContext, useLayoutEffect} from 'react';
 import {KContext, KProvider} from '../src/main';
-import {render} from 'react-testing-library';
+import {render} from '@testing-library/react';
 import Scope from '../src/scope';
 
 const TestComponent = ({onRender}) => {

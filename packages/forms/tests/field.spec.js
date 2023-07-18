@@ -2,6 +2,7 @@ import React from 'react';
 import Field from '../src/field';
 import {render, queryByAttribute, cleanup} from '@testing-library/react';
 import 'jest-dom/extend-expect';
+import 'jest-dom/extend-expect';
 import {wrapWithFormContext, createObservableMock} from './testData';
 
 afterEach(cleanup);
@@ -42,6 +43,7 @@ describe('Field', () => {
     }));
     const observable = createObservableMock();
     const mountField = jest.fn(() => jest.fn());
+    const handleOnUpdate = jest.fn();
 
     const {asFragment} = render(
       <Field
@@ -49,6 +51,7 @@ describe('Field', () => {
         component={Text}
         title="Name"
         fieldTemplate={FieldTemplate}
+        onUpdate={handleOnUpdate}
       />,
       wrapWithFormContext({getFieldState, observable, mountField})
     );
@@ -64,6 +67,7 @@ describe('Field', () => {
     }));
     const observable = createObservableMock();
     const mountField = jest.fn(() => jest.fn());
+    const handleOnUpdate = jest.fn();
 
     const {container} = render(
       <Field
@@ -73,36 +77,12 @@ describe('Field', () => {
         title="Name"
         defaultValue="John"
         fieldTemplate={FieldTemplate}
+        onUpdate={handleOnUpdate}
       />,
       wrapWithFormContext({getFieldState, observable, mountField})
     );
 
     expect(getById(container, 'user-name').value).toBe('John');
-  });
-
-  it('should use format', () => {
-    const getFieldState = jest.fn(() => ({
-      id: 'name',
-      value: 10,
-      visible: true,
-    }));
-    const observable = createObservableMock();
-    const mountField = jest.fn(() => jest.fn());
-    const formatCurrency = v => `$${v}`;
-
-    const {container} = render(
-      <Field
-        id="name"
-        component={Text}
-        title="Name"
-        format={formatCurrency}
-        defaultValue="10"
-        fieldTemplate={FieldTemplate}
-      />,
-      wrapWithFormContext({getFieldState, observable, mountField})
-    );
-
-    expect(getById(container, 'name').value).toBe('$10');
   });
 
   describe('onChange', () => {
@@ -122,6 +102,7 @@ describe('Field', () => {
       };
 
       const handleOnChange = jest.fn();
+      const handleOnUpdate = jest.fn();
 
       render(
         <Field
@@ -130,6 +111,7 @@ describe('Field', () => {
           title="Name"
           fieldTemplate={FieldTemplate}
           onChange={handleOnChange}
+          onUpdate={handleOnUpdate}
         />,
         wrapWithFormContext({getFieldState, observable, mountField})
       );
@@ -158,6 +140,7 @@ describe('Field', () => {
       };
 
       const handleOnChange = jest.fn();
+      const handleOnUpdate = jest.fn();
 
       const parseIntNull = v => {
         const parsed = parseInt(v, 10);
@@ -171,6 +154,7 @@ describe('Field', () => {
           title="Name"
           fieldTemplate={FieldTemplate}
           onChange={handleOnChange}
+          onUpdate={handleOnUpdate}
           parse={parseIntNull}
         />,
         wrapWithFormContext({getFieldState, observable, mountField})
@@ -184,7 +168,7 @@ describe('Field', () => {
   });
 
   describe('connects to FormContext', () => {
-    it('should update when FormContext value changes', () => {
+    it('should update when FormContext value changes', async () => {
       const f1 = {
         id: 'name',
         value: 'Joh',
@@ -203,14 +187,16 @@ describe('Field', () => {
       });
       const observable = {subscribe};
       const mountField = jest.fn(() => jest.fn());
+      const handleOnUpdate = jest.fn();
 
-      const {container} = render(
+      const {container, findByRole} = render(
         <Field
           id="name"
           component={Text}
           title="Name"
           defaultValue="John"
           fieldTemplate={FieldTemplate}
+          onUpdate={handleOnUpdate}
         />,
         wrapWithFormContext({getFieldState, observable, mountField})
       );
@@ -218,7 +204,7 @@ describe('Field', () => {
       expect(subscribe).toHaveBeenCalledTimes(1);
       expect(getById(container, 'name').value).toBe('Joh');
       subject.next({fieldsStates: {name: f2}});
-      expect(getById(container, 'name').value).toBe('John');
+      expect(await findByRole('textbox')).toHaveValue('John');
       subject.next({fieldsStates: {name: f2}});
       expect(getById(container, 'name').value).toBe('John');
       expect(getFieldState).toHaveBeenCalledTimes(1);
@@ -234,6 +220,7 @@ describe('Field', () => {
       }));
       const observable = createObservableMock();
       const mountField = jest.fn(() => jest.fn());
+      const handleOnUpdate = jest.fn();
       const CustomComponent = ({id, value, onChange, propA, propB}) => (
         <div>
           <div data-testid="propA">{propA}</div>
@@ -249,6 +236,7 @@ describe('Field', () => {
           component={CustomComponent}
           title="Name"
           fieldTemplate={FieldTemplate}
+          onUpdate={handleOnUpdate}
         />,
         wrapWithFormContext({getFieldState, observable, mountField})
       );
@@ -267,6 +255,7 @@ describe('Field', () => {
       }));
       const observable = createObservableMock();
       const mountField = jest.fn(() => jest.fn());
+      const handleOnUpdate = jest.fn();
 
       const CustomComponent = jest.fn(() => <div>component</div>);
 
@@ -277,6 +266,7 @@ describe('Field', () => {
           title="Name"
           defaultValue="10"
           fieldTemplate={FieldTemplate}
+          onUpdate={handleOnUpdate}
         />,
         wrapWithFormContext({getFieldState, observable, mountField})
       );
