@@ -1,7 +1,7 @@
 import React from 'react';
 import useSagaRunner from '../src/useSagaRunner';
 import {KContext} from '@k-frame/core';
-import {renderHook, cleanup} from 'react-hooks-testing-library';
+import {renderHook, cleanup} from '@testing-library/react';
 
 beforeAll(() => {
   jest.spyOn(console, 'error').mockImplementation(() => {});

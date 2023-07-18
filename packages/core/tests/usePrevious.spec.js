@@ -1,6 +1,6 @@
 import React from 'react';
 import {usePrevious} from '../src/main';
-import {renderHook, act} from 'react-hooks-testing-library';
+import {renderHook, act} from '@testing-library/react';
 
 describe('usePrevious', () => {
   it('returns undefined on initial call', () => {

@@ -1,5 +1,5 @@
 import useFormReducer from '../src/useFormReducer';
-import {renderHook} from 'react-hooks-testing-library';
+import {renderHook} from '@testing-library/react';
 import {wrapWithKContext, createStoreMock} from './testData';
 
 const fieldTypes = {

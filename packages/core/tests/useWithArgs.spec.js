@@ -1,5 +1,5 @@
 import {useWithArgs} from '../src/main';
-import {renderHook, act} from 'react-hooks-testing-library';
+import {renderHook, act} from '@testing-library/react';
 
 describe('useWithArgs', () => {
   it('uses one arg', () => {

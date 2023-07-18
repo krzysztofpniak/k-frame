@@ -1,5 +1,5 @@
 import useFormStateObservable from '../src/useFormStateObservable';
-import {renderHook, cleanup} from 'react-hooks-testing-library';
+import {renderHook, cleanup} from '@testing-library/react';
 
 afterEach(() => {
   cleanup();

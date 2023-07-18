@@ -1,5 +1,5 @@
 import FormTemplateProxy from '../src/formTemplateProxy';
-import {cleanup, render, act} from 'react-testing-library';
+import {cleanup, render, act} from '@testing-library/react';
 import React from 'react';
 import {
   createObservableMock,

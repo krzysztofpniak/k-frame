@@ -1,7 +1,7 @@
 import React from 'react';
 import {Form} from '../src/main';
 import {KProvider} from '@k-frame/core';
-import {render, queryByAttribute, cleanup} from 'react-testing-library';
+import {render, queryByAttribute, cleanup} from '@testing-library/react';
 //import renderer from 'react-test-renderer';
 import 'jest-dom/extend-expect';
 import {createStoreMock} from './testData';

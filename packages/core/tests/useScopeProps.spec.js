@@ -1,7 +1,7 @@
 import React from 'react';
 import {createStoreMock} from './testData';
 import {KProvider, useScopeProps} from '../src/main';
-import {renderHook, act} from 'react-hooks-testing-library';
+import {renderHook, act} from '@testing-library/react';
 import Scope from '../src/scope';
 
 let store = null;

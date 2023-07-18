@@ -1,6 +1,6 @@
 import React from 'react';
 import {useAsync, KContext} from '../src/main';
-import {renderHook, act} from 'react-hooks-testing-library';
+import {renderHook, act} from '@testing-library/react';
 
 const asyncMiddleware = store => fn => args => fn(...args);
 

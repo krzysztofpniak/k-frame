@@ -1,6 +1,6 @@
 import React from 'react';
 import {Scope, KProvider} from '../src/main';
-import {render} from 'react-testing-library';
+import {render} from '@testing-library/react';
 import {createStoreMock} from './testData';
 
 beforeAll(() => {

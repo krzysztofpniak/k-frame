@@ -1,5 +1,5 @@
 import {useInputTargetValue} from '../src/main';
-import {renderHook, act} from 'react-hooks-testing-library';
+import {renderHook, act} from '@testing-library/react';
 
 describe('useInputTargetValue', () => {
   it('handles one arg', () => {

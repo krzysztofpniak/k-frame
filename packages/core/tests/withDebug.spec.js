@@ -1,6 +1,6 @@
 import React from 'react';
 import {withDebug} from '../src/main';
-import {render} from 'react-testing-library';
+import {render} from '@testing-library/react';
 
 beforeAll(() => {
   jest.spyOn(console, 'log').mockImplementation(() => {});

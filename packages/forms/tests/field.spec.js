@@ -1,6 +1,6 @@
 import React from 'react';
 import Field from '../src/field';
-import {render, queryByAttribute, cleanup} from 'react-testing-library';
+import {render, queryByAttribute, cleanup} from '@testing-library/react';
 import 'jest-dom/extend-expect';
 import {wrapWithFormContext, createObservableMock} from './testData';
 
