@@ -1,9 +1,8 @@
 import fc from 'fast-check';
-import {act, renderHook, cleanup} from '@testing-library/react';
-import useDebounceValue from './useDebounceValue';
-import {after, promise, resolve} from 'fluture';
+import {act, cleanup, renderHook} from '@testing-library/react';
+import {after} from 'fluture';
 import useScheduler from './useScheduler';
-import {propEq, filter, length} from 'ramda';
+import {filter, length, propEq} from 'ramda';
 
 const withTimers = s => {
   let alreadyScheduledTaskToUnqueueTimers = false;
@@ -79,7 +78,7 @@ describe('useScheduler', () => {
               label,
               builder: async () => {
                 result.current.enqueueLabeled({label, key, future});
-                const currentQueue = result.current.queueRef.current;
+                const currentQueue = result.current.queue;
                 const tasksWithCurrentKeyCount =
                   filter(propEq('key', key))(currentQueue) |> length;
 

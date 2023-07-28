@@ -2,11 +2,17 @@ import {and, attempt, chain, fork, Future, hook, resolve} from 'fluture';
 import {useCallback, useRef, useState} from 'react';
 import {append, filter, identity, pipe} from 'ramda';
 
-const spawnFuture = setRunning => ({key, future, label}) =>
+const spawnFuture = ({setRunning, options: {debug}}) => ({key, future, label}) =>
   Future((reject, resolve) => {
     const dispose = future |> fork(resolve)(resolve);
+    if (debug) {
+      console.log(`running: ${label}`);
+    }
 
     const cancel = () => {
+      if (debug) {
+        console.log(`cancelled: ${label}`);
+      }
       resolve(true);
       dispose();
     };
@@ -30,7 +36,7 @@ const useNextState = initialState => {
   return [ref.current, setState2, ref];
 };
 
-const useScheduler = () => {
+const useScheduler = (options = {debug: true}) => {
   const [running, setRunning, runningRef] = useNextState(null);
   const [queue, setQueue, queueRef] = useNextState([]);
 
@@ -67,7 +73,7 @@ const useScheduler = () => {
                     )(
                       head =>
                         head
-                        |> spawnFuture(setRunning)
+                        |> spawnFuture({setRunning, options})
                         |> and(attempt(() => next(true)))
                     ),
               s

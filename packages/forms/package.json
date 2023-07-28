@@ -1,6 +1,6 @@
 {
   "name": "@k-frame/forms",
-  "version": "3.3.0",
+  "version": "4.0.0-RC.1",
   "description": "Schema based forms for redux",
   "license": "MIT",
   "homepage": "https://klabs.gitbook.io/k-forms/",
@@ -15,7 +15,7 @@
     "sanctuary": "^3.1.0"
   },
   "peerDependencies": {
-    "@k-frame/core": "^3.3.0",
+    "@k-frame/core": "workspace:^",
     "fluture": "^14.0.0",
     "ramda": "^0.26.1 || ^0.27.0",
     "react": "^16.8.0 || ^17.0.0",
