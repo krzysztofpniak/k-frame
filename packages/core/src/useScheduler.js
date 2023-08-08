@@ -1,10 +1,10 @@
-import {and, attempt, chain, fork, Future, hook, resolve} from 'fluture';
+import {and, attempt, chain, chainRej, fork, Future, hook, resolve} from 'fluture';
 import {useCallback, useRef, useState} from 'react';
-import {append, filter, identity, pipe} from 'ramda';
+import {append, filter, identity, pipe, startsWith} from 'ramda';
 
 const spawnFuture = ({setRunning, options: {debug}}) => ({key, future, label}) =>
-  Future((reject, resolve) => {
-    const dispose = future |> fork(resolve)(resolve);
+  Future((rej, res) => {
+    const dispose = future |> chainRej(e => console.error(`task ${key} failed with:`, e) || resolve(''))|> fork(res)(res);
     if (debug) {
       console.log(`running: ${label}`);
     }
@@ -13,7 +13,7 @@ const spawnFuture = ({setRunning, options: {debug}}) => ({key, future, label}) =
       if (debug) {
         console.log(`cancelled: ${label}`);
       }
-      resolve(true);
+      res(true);
       dispose();
     };
 
@@ -36,19 +36,19 @@ const useNextState = initialState => {
   return [ref.current, setState2, ref];
 };
 
-const useScheduler = (options = {debug: true}) => {
+const useScheduler = (options = {debug: false}) => {
   const [running, setRunning, runningRef] = useNextState(null);
   const [queue, setQueue, queueRef] = useNextState([]);
 
-  const enqueueLabeled = useCallback(({key, future, label}) => {
+  const enqueueLabeled = useCallback(({key, label}) => future => {
     attempt(() => {
-      if (runningRef.current && runningRef.current.key === key) {
+      if (runningRef.current && startsWith(key, runningRef.current.key)) {
         runningRef.current.cancel();
       }
 
       setQueue(
         pipe(
-          filter(t => t.key !== key),
+          filter(t => !startsWith(key, t.key)),
           append({key, future, label})
         )
       );

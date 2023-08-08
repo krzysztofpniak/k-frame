@@ -390,8 +390,8 @@ const useFormReducer = ({
         assoc('formattedValue', formattedValue, fieldContext)
       )
       |> chain(validateField(setFieldError)(fieldSchema))
-          |> (future => ({future, label: 'ds', key: `handleOnUpdate.${fieldId}`})) |>
-      scheduler.enqueueLabeled
+           |>
+      scheduler.enqueueLabeled({key: `handleOnUpdate.${fieldId}`})
       ;
   }, []);
 

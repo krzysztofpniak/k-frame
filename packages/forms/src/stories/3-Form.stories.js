@@ -29,7 +29,7 @@ export const ComplexComponent = withStaticScope('outerScope')(() => {
   const scheduler = useScheduler();
 
   const addToQueue = useCallback(() => {
-    scheduler.enqueueLabeled({future: chain(encase(console.log))(after(2000)('sd')), key: Math.random()});
+    scheduler.enqueueLabeled({key: Math.random()})(chain(encase(console.log))(after(2000)('sd')));
   }, []);
 
   return (

@@ -18,9 +18,8 @@ const InputDebouncer = ({scheduler, id, value, onChange}) => {
     setInternalValue(e.target.value);
     cancelRef.current = scheduler.enqueueLabeled({
       key: id,
-      future: after(2000)(e.target.value) |> chain(encase(onChange)),
       label: `change ${id} to: ${e.target.value}`,
-    });
+    })(after(2000)(e.target.value) |> chain(encase(onChange)));
   };
 
   return <input value={internalValue} onChange={handleChange} />;

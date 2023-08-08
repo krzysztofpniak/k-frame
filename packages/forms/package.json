@@ -1,6 +1,6 @@
 {
   "name": "@k-frame/forms",
-  "version": "4.0.0-RC.1",
+  "version": "4.0.0-RC.2",
   "description": "Schema based forms for redux",
   "license": "MIT",
   "homepage": "https://klabs.gitbook.io/k-forms/",
@@ -120,5 +120,6 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-is": "18.2.0"
-  }
+  },
+  "stableVersion": "4.0.0-RC.1"
 }

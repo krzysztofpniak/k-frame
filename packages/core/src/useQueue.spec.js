@@ -77,7 +77,7 @@ describe('useScheduler', () => {
             const zz = queue.map(({label, future, key}) => ({
               label,
               builder: async () => {
-                result.current.enqueueLabeled({label, key, future});
+                result.current.enqueueLabeled({label, key})(future);
                 const currentQueue = result.current.queue;
                 const tasksWithCurrentKeyCount =
                   filter(propEq('key', key))(currentQueue) |> length;

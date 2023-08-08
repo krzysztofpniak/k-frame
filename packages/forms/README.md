@@ -17,3 +17,11 @@ or
 ```sh
 $ yarn add k-forms
 ```
+
+## quick build
+
+```
+yarn build && cp dist/k-frame-core.esm.js ~/js/analytics-frontend/src/node_modules/@k-frame/core/dist/k-frame-core.esm.js
+
+yarn build && cp dist/k-frame-forms.esm.js ~/js/analytics-frontend/src/node_modules/@k-frame/forms/dist/k-frame-forms.esm.js
+```

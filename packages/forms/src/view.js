@@ -157,8 +157,7 @@ const FormInt = withScope(
           const callOnValidated = () =>
             defaultSubmitFuture
             |> chain(encase(onValidated || identity))
-            |> (future => ({future, label: 'x', key: 'submit'}))
-            |> finalScheduler.enqueueLabeled;
+            |> finalScheduler.enqueueLabeled({label: '', key: 'submit'});
 
           return onSubmit
             ? onSubmit(defaultSubmitFuture, getFields())
@@ -215,7 +214,7 @@ const FormInt = withScope(
           submitText,
           disabled,
           validating,
-          finalScheduler.pending
+          finalScheduler.pending,
         ]
       );
       const genericError = <div>genericError</div>;
