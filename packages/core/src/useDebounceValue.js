@@ -1,6 +1,19 @@
-import {after, chain, encase, isFuture, resolve} from 'fluture';
+import {after, attempt, chain, encase, isFuture, resolve} from 'fluture';
 import {useCallback, useRef, useState} from 'react';
-import {add, always, compose, hasPath, identity, is, map, path, pipe, reduce, tap, unless, when} from 'ramda';
+import {
+  add,
+  always,
+  compose,
+  hasPath,
+  identity,
+  is,
+  map,
+  path,
+  pipe,
+  reduce,
+  unless,
+  when,
+} from 'ramda';
 import {useEqualsUpdateEffect, useRefValue} from '@k-frame/core';
 
 const extractEventValueFn = compose(
@@ -8,18 +21,12 @@ const extractEventValueFn = compose(
   when(hasPath(['target', 'value']), path(['target', 'value']))
 );
 
-const getValue = setter => {
-  let x;
-  setter(tap(v => (x = v)));
-  return x;
-};
-
 const useDebounceValue = ({
   value,
   onChange,
   parseValue = identity,
   serializeInput = identity,
-  timeout = 1500,
+  timeout = 500,
   scheduler,
   fold,
   defaultValue = '',
@@ -37,34 +44,36 @@ const useDebounceValue = ({
 
   const [changeCounter, setChangeCounter] = useState(0);
 
-  const enqueueChange = useCallback(eventValue => {
-    cancelRef.current = scheduler.enqueueLabeled({
-      key,
-      label: `${key}:${eventValue}`,
-    })
-    (eventValue
-        |> unless(is(Function))(always)
-        |> after(timeout)
-        |> map(fn =>
-          pipe(
-            fn,
-            serializeInput
-          )
-        )
-        |> map(fn => getValue(setInputValue) |> fn)
-        |> chain(unless(isFuture)(resolve))
-        |> chain(encase(onChangeRef.current))
-      |> chain(() => encase(setChangeCounter)(add(1))),
+  const inputValueRef = useRefValue(inputValue);
 
-    );
-  }, []);
+  const enqueueChange = useCallback(
+    eventValue => {
+      cancelRef.current = scheduler.enqueueLabeled({
+        key,
+        label: `${key}:${eventValue}`,
+      })(
+        eventValue
+          |> unless(is(Function))(always)
+          |> after(timeout)
+          |> map(fn => pipe(fn, serializeInput))
+          |> chain(fn => attempt(() => inputValueRef.current) |> map(fn))
+          |> chain(unless(isFuture)(resolve))
+          |> chain(encase(onChangeRef.current))
+          |> chain(() => encase(setChangeCounter)(add(1)))
+      );
+    },
+    [scheduler.enqueueLabeled]
+  );
 
-  const handleOnChange = useCallback(eventValue => {
-    const finalValue = eventValue |> when(always(extractEventValue))(extractEventValueFn);
-    setInputValue(finalValue);
-    enqueueChange(finalValue);
-  }, []);
-
+  const handleOnChange = useCallback(
+    eventValue => {
+      const finalValue =
+        eventValue |> when(always(extractEventValue))(extractEventValueFn);
+      setInputValue(finalValue);
+      enqueueChange(finalValue);
+    },
+    [enqueueChange]
+  );
 
   useEqualsUpdateEffect(() => {
     if (cancelRef.current) {
@@ -72,9 +81,9 @@ const useDebounceValue = ({
     }
     setInputValue(
       prev =>
-        parseValue(value, prev)  |> when(always(fold))(reduce((p, c) => c, prev))
+        parseValue(value, prev) |> when(always(fold))(reduce((p, c) => c, prev))
     );
-  }, [value, changeCounter]);
+  }, [value]);
 
   return [inputValue, handleOnChange];
 };

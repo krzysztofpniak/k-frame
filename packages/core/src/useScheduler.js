@@ -1,10 +1,28 @@
-import {and, attempt, chain, chainRej, fork, Future, hook, resolve} from 'fluture';
+import {
+  and,
+  attempt,
+  chain,
+  chainRej,
+  fork,
+  Future,
+  hook,
+  resolve,
+} from 'fluture';
 import {useCallback, useRef, useState} from 'react';
 import {append, filter, identity, pipe, startsWith} from 'ramda';
 
-const spawnFuture = ({setRunning, options: {debug}}) => ({key, future, label}) =>
+const spawnFuture = ({setRunning, options: {debug}}) => ({
+  key,
+  future,
+  label,
+}) =>
   Future((rej, res) => {
-    const dispose = future |> chainRej(e => console.error(`task ${key} failed with:`, e) || resolve(''))|> fork(res)(res);
+    const dispose =
+      future
+      |> chainRej(
+        e => console.error(`task ${key} failed with:`, e) || resolve('')
+      )
+      |> fork(res)(res);
     if (debug) {
       console.log(`running: ${label}`);
     }
@@ -40,56 +58,59 @@ const useScheduler = (options = {debug: false}) => {
   const [running, setRunning, runningRef] = useNextState(null);
   const [queue, setQueue, queueRef] = useNextState([]);
 
-  const enqueueLabeled = useCallback(({key, label}) => future => {
-    attempt(() => {
-      if (runningRef.current && startsWith(key, runningRef.current.key)) {
-        runningRef.current.cancel();
-      }
+  const enqueueLabeled = useCallback(
+    ({key, label}) => future => {
+      attempt(() => {
+        if (runningRef.current && startsWith(key, runningRef.current.key)) {
+          runningRef.current.cancel();
+        }
 
-      setQueue(
-        pipe(
-          filter(t => !startsWith(key, t.key)),
-          append({key, future, label})
+        setQueue(
+          pipe(
+            filter(t => !startsWith(key, t.key)),
+            append({key, future, label})
+          )
+        );
+      })
+        |> chain(s =>
+          !runningRef.current
+            ? Future['fantasy-land/chainRec'](
+                (next, done, v) =>
+                  queueRef.current.length === 0
+                    ? attempt(() => done(true))
+                    : hook(
+                        attempt(() => {
+                          const [head, ...tail] = queueRef.current;
+                          setQueue(tail);
+                          return head;
+                        })
+                      )(() =>
+                        attempt(() => {
+                          setRunning(null);
+                          setQueue([...queueRef.current]);
+                        })
+                      )(
+                        head =>
+                          head
+                          |> spawnFuture({setRunning, options})
+                          |> and(attempt(() => next(true)))
+                      ),
+                s
+              )
+            : resolve(s)
         )
-      );
-    })
-      |> chain(s =>
-        !runningRef.current
-          ? Future['fantasy-land/chainRec'](
-              (next, done, v) =>
-                queueRef.current.length === 0
-                  ? attempt(() => done(true))
-                  : hook(
-                      attempt(() => {
-                        const [head, ...tail] = queueRef.current;
-                        setQueue(tail);
-                        return head;
-                      })
-                    )(() =>
-                      attempt(() => {
-                        setRunning(null);
-                        setQueue([...queueRef.current]);
-                      })
-                    )(
-                      head =>
-                        head
-                        |> spawnFuture({setRunning, options})
-                        |> and(attempt(() => next(true)))
-                    ),
-              s
-            )
-          : resolve(s)
-      )
-      |> fork(console.error)(identity);
+        |> fork(console.error)(identity);
 
-    return () => {
-      setQueue(filter(q => q.future !== future));
+      return () => {
+        setQueue(filter(q => q.future !== future));
 
-      if (runningRef.current && runningRef.current.future === future) {
-        runningRef.current.cancel();
-      }
-    };
-  }, []);
+        if (runningRef.current && runningRef.current.future === future) {
+          runningRef.current.cancel();
+        }
+      };
+    },
+    []
+  );
 
   return {
     enqueueLabeled,

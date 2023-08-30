@@ -1,6 +1,6 @@
 {
   "name": "@k-frame/core",
-  "version": "4.0.0-RC.14",
+  "version": "4.0.7",
   "description": "Complete React'n'Redux based framework",
   "license": "MIT",
   "homepage": "https://klabs.gitbook.io/k-logic/",
@@ -99,6 +99,5 @@
   "sideEffects": false,
   "dependencies": {
     "@babel/plugin-transform-template-literals": "^7.22.5"
-  },
-  "stableVersion": "4.0.0-RC.9"
+  }
 }

@@ -13,20 +13,16 @@ import {
   assoc,
   filter,
   find,
-  flip,
   identity,
   ifElse,
   indexBy,
   innerJoin,
   keys,
   map,
-  omit,
   pathOr,
-  pick,
   pluck,
   prop,
   propEq,
-  tap,
   unless,
 } from 'ramda';
 import {
@@ -43,12 +39,11 @@ import {
   after,
   and,
   attempt,
-  bichain,
   bimap,
   chain,
+  chainRej,
   coalesce,
   encase,
-  fork,
   hook,
   isFuture,
   parallel,
@@ -331,7 +326,6 @@ const useFormReducer = ({
     nextFieldsRef.current = fields;
   }, []);
 
-
   const handleOnChange = useCallback((value, fieldId) => {
     const {setField, setFields} = boundActionCreators;
     const fieldSchema = indexedSchema[fieldId];
@@ -390,9 +384,8 @@ const useFormReducer = ({
         assoc('formattedValue', formattedValue, fieldContext)
       )
       |> chain(validateField(setFieldError)(fieldSchema))
-           |>
-      scheduler.enqueueLabeled({key: `handleOnUpdate.${fieldId}`})
-      ;
+      |> chainRej(() => resolve(''))
+      |> scheduler.enqueueLabeled({key: `handleOnUpdate.${fieldId}`});
   }, []);
 
   const mountField = useCallback(fieldId => {
