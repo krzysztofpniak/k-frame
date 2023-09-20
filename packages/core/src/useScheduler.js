@@ -8,8 +8,8 @@ import {
   hook,
   resolve,
 } from 'fluture';
-import {useCallback, useRef, useState} from 'react';
-import {append, filter, identity, pipe, startsWith} from 'ramda';
+import {useCallback, useEffect, useRef, useState} from 'react';
+import {append, filter, forEach, identity, pipe, startsWith} from 'ramda';
 
 const spawnFuture = ({setRunning, options: {debug}}) => ({
   key,
@@ -112,12 +112,29 @@ const useScheduler = (options = {debug: false}) => {
     []
   );
 
+  const handlers = useRef([]);
+  const watchPending = useCallback(handler => {
+    handlers.current.push(handler);
+
+    return () => {
+      const handlerIdx = handlers.current.indexOf(handler);
+      handlers.current.splice(handlerIdx, 1);
+    };
+  }, []);
+
+  const pending = !!running || queue.length > 0;
+
+  useEffect(() => {
+    forEach(handler => handler(pending), handlers.current);
+  }, [pending]);
+
   return {
     enqueueLabeled,
     queueRef,
     queue,
     running,
-    pending: !!running || queue.length > 0,
+    pending,
+    watchPending,
   };
 };
 
