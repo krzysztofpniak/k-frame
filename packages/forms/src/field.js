@@ -12,6 +12,7 @@ import {equals} from 'ramda';
 import {distinctUntilChanged, oMap} from './micro-rx/index';
 import FormContext from './FormContext';
 import {useEqualsEffect} from '@k-frame/core';
+import {ForwardRef} from 'react-is';
 
 const useLazyState = initialValue => {
   const [value, setValue] = useState(initialValue);
@@ -134,6 +135,7 @@ const Field = memo(
               ...props,
             }),
             ...props,
+            ref: fieldTemplate.$$typeof === ForwardRef ? props.ref : undefined,
             error,
             errorPending,
           })
