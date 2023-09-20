@@ -110,8 +110,6 @@ const Field = memo(
       [id, inputRef]
     );
 
-    const [errorPending, setErrorPending] = useState(false);
-
     const field = useMemo(() => {
       return isVisible
         ? createElement(fieldTemplate, {
@@ -128,7 +126,6 @@ const Field = memo(
               disabled,
               type,
               error,
-              errorPending,
               showErrors: errorVisible,
               scope: `sub.${id}`,
               scheduler,
@@ -137,18 +134,9 @@ const Field = memo(
             ...props,
             ref: fieldTemplate.$$typeof === ForwardRef ? props.ref : undefined,
             error,
-            errorPending,
           })
         : null;
-    }, [
-      value,
-      error,
-      isVisible,
-      props,
-      disabled,
-      formattedValue,
-      errorPending,
-    ]);
+    }, [value, error, isVisible, props, disabled, formattedValue]);
 
     return field;
   }
