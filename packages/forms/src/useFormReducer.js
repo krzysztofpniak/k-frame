@@ -11,6 +11,7 @@ import {bindActionCreators, KContext, shallowEqual} from '@k-frame/core';
 import createFormReducer from './createFormReducer';
 import {
   assoc,
+  evolve,
   filter,
   find,
   identity,
@@ -23,6 +24,7 @@ import {
   pluck,
   prop,
   propEq,
+  toPairs,
   unless,
 } from 'ramda';
 import {
@@ -94,6 +96,7 @@ const useFormReducer = ({
 
   const argsRef = useRef(args);
   const inputRefs = useRef({});
+  const componentRefs = useRef({});
   const fieldStatesRef = useRef({});
   const mountedFieldsRef = useRef({});
 
@@ -265,8 +268,12 @@ const useFormReducer = ({
     [validateFutureCreator]
   );
 
-  const handleRefSet = useCallback((ref, fieldId) => {
+  const handleInputRefSet = useCallback((ref, fieldId) => {
     inputRefs.current[fieldId] = ref;
+  }, []);
+
+  const handleRefSet = useCallback((ref, fieldId) => {
+    componentRefs.current[fieldId] = ref;
   }, []);
 
   const focusFirstField = useCallback(() => {
@@ -281,7 +288,25 @@ const useFormReducer = ({
   }, []);
 
   const boundActionCreators = useMemo(
-    () => bindActionCreators(formActions, context.dispatch),
+    () =>
+      bindActionCreators(formActions, context.dispatch)
+      |> evolve({
+        setFields: fn => (...args) => {
+          const [fields] = args;
+
+          fields
+            |> toPairs
+            |> map(([key, value]) => {
+              pathOr(
+                identity,
+                ['current', key, 'setValue'],
+                componentRefs
+              )(value);
+            });
+
+          return fn(...args);
+        },
+      }),
     []
   );
 
@@ -323,6 +348,9 @@ const useFormReducer = ({
   const nextFieldsRef = useRef(null);
 
   const setFieldsInt = useCallback(fields => {
+    console.warn(
+      'do not use setFields, use formRef.current.setFields instead.'
+    );
     nextFieldsRef.current = fields;
   }, []);
 
@@ -410,6 +438,7 @@ const useFormReducer = ({
       validateOmitFuture,
       indexedSchema,
       handleOnBlur,
+      handleInputRefSet,
       handleRefSet,
       focusFirstField,
       defaultSubmitFuture,

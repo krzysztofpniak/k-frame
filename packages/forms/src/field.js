@@ -26,6 +26,14 @@ const useLazyState = initialValue => {
   return [value, trySet];
 };
 
+const setReactRef = (ref, value) => {
+  if (typeof ref === 'function') {
+    ref(value);
+  } else if (ref) {
+    ref.current = value;
+  }
+};
+
 const Field = memo(
   ({
     id,
@@ -39,6 +47,7 @@ const Field = memo(
     component,
     parse,
     inputRef,
+    setRef,
     disabled,
     scheduler,
   }) => {
@@ -103,11 +112,21 @@ const Field = memo(
       onBlur(id);
     }, [id, onBlur]);
 
-    const handleRefSet = useCallback(
+    const handleInputRefSet = useCallback(
       ref => {
         inputRef(ref, id);
       },
       [id, inputRef]
+    );
+
+    const handleRefSet = useCallback(
+      ref => {
+        if (props.ref) {
+          setReactRef(props.ref, ref);
+        }
+        setRef(ref, id);
+      },
+      [id, setRef, props.ref]
     );
 
     const field = useMemo(() => {
@@ -118,7 +137,7 @@ const Field = memo(
             input: createElement(component, {
               id: (formName || '') + (formName ? '-' : '') + id,
               title,
-              inputRef: handleRefSet,
+              inputRef: handleInputRefSet,
               value,
               formattedValue,
               onChange: handleOnChange,
@@ -130,6 +149,7 @@ const Field = memo(
               scope: `sub.${id}`,
               scheduler,
               ...props,
+              ref: component.$$typeof === ForwardRef ? handleRefSet : undefined,
             }),
             ...props,
             ref: fieldTemplate.$$typeof === ForwardRef ? props.ref : undefined,

@@ -89,13 +89,7 @@ const SelectField = ({id, value, onChange, options, valueKey, labelKey}) => (
 
 const parseName = compose(
   take(2),
-  unless(
-    compose(
-      lt(1),
-      length
-    ),
-    flip(concat)(['', ''])
-  ),
+  unless(compose(lt(1), length), flip(concat)(['', ''])),
   split(' ')
 );
 
@@ -223,6 +217,25 @@ const AsyncField = ({value, onChange, scheduler}) => {
   return <input value={inputValue} onChange={handleOnChange} />;
 };
 
+const UncontrolledField = forwardRef(({value, onChange}, ref) => {
+  const inputRef = useRef();
+
+  useImperativeHandle(ref, () => ({
+    setValue: v => {
+      console.log('UncontrolledField.setValue', v);
+      inputRef.current.value = v;
+    },
+  }));
+
+  return (
+    <input
+      ref={inputRef}
+      defaultValue={value}
+      onChange={e => onChange(e.target.value)}
+    />
+  );
+});
+
 const fieldTypes = {
   text: Input,
   password: Input,
@@ -235,6 +248,7 @@ const fieldTypes = {
   complexField: ComplexField,
   color: Color,
   asyncField: AsyncField,
+  uncontrolledField: UncontrolledField,
 };
 
 export default fieldTypes;

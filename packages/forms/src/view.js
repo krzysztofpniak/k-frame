@@ -88,6 +88,7 @@ const FormInt = withScope(
 
       const {
         handleOnBlur,
+        handleInputRefSet,
         handleRefSet,
         getFields,
         reset,
@@ -227,7 +228,8 @@ const FormInt = withScope(
               <Field
                 key={(name || '') + (name ? '-' : '') + f.id}
                 id={f.id}
-                inputRef={handleRefSet}
+                inputRef={handleInputRefSet}
+                setRef={handleRefSet}
                 title={f.title}
                 fieldTemplate={fieldTemplate}
                 formName={name}
