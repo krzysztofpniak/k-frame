@@ -27,6 +27,7 @@ const useDebounceValue = ({
   onChange,
   parseValue = identity,
   serializeInput = identity,
+  normalizeInput = identity,
   timeout = 500,
   scheduler,
   fold,
@@ -64,12 +65,14 @@ const useDebounceValue = ({
           |> chain(unless(isFuture)(resolve))
           |> map(
             tap(x => {
-              const adjustedValue = parseValue(x, inputValueRef.current);
+              const adjustedValue =
+                parseValue(x, inputValueRef.current) |> normalizeInput;
 
               if (!equals(actualValue, adjustedValue)) {
                 setInputValue(
                   prev =>
                     parseValue(x, prev)
+                    |> normalizeInput
                     |> when(always(fold))(reduce((p, c) => c, prev))
                 );
               }
@@ -95,10 +98,31 @@ const useDebounceValue = ({
     if (cancelRef.current) {
       cancelRef.current();
     }
-    setInputValue(
-      prev =>
-        parseValue(value, prev) |> when(always(fold))(reduce((p, c) => c, prev))
-    );
+
+    setInputValue(prev => {
+      const newInputValue =
+        parseValue(value, prev)
+        |> when(always(fold))(reduce((p, c) => c, prev));
+
+      return newInputValue;
+    });
+
+    if (normalizeInput !== identity) {
+      setInputValue(prev => {
+        const newInputValue =
+          parseValue(value, prev)
+          |> normalizeInput
+          |> when(always(fold))(reduce((p, c) => c, prev));
+
+        const adjustedValue = newInputValue |> serializeInput;
+
+        if (!equals(value, adjustedValue)) {
+          onChangeRef.current(adjustedValue);
+        }
+
+        return newInputValue;
+      });
+    }
   }, []);
 
   return [inputValue, onInputChange, setValue];

@@ -217,24 +217,26 @@ const AsyncField = ({value, onChange, scheduler}) => {
   return <input value={inputValue} onChange={handleOnChange} />;
 };
 
-const UncontrolledField = forwardRef(({value, onChange}, ref) => {
-  const inputRef = useRef();
+const UncontrolledField = memo(
+  forwardRef(({value, onChange}, ref) => {
+    const inputRef = useRef();
 
-  useImperativeHandle(ref, () => ({
-    setValue: v => {
-      console.log('UncontrolledField.setValue', v);
-      inputRef.current.value = v;
-    },
-  }));
+    useImperativeHandle(ref, () => ({
+      setValue: v => {
+        console.log('UncontrolledField.setValue', v);
+        inputRef.current.value = v;
+      },
+    }));
 
-  return (
-    <input
-      ref={inputRef}
-      defaultValue={value}
-      onChange={e => onChange(e.target.value)}
-    />
-  );
-});
+    return (
+      <input
+        ref={inputRef}
+        defaultValue={value}
+        onChange={e => onChange(e.target.value)}
+      />
+    );
+  })
+);
 
 const fieldTypes = {
   text: Input,

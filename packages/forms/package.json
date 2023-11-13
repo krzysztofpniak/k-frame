@@ -1,6 +1,6 @@
 {
   "name": "@k-frame/forms",
-  "version": "4.1.0",
+  "version": "4.2.1",
   "description": "Schema based forms for redux",
   "license": "MIT",
   "homepage": "https://klabs.gitbook.io/k-forms/",
