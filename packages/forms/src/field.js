@@ -12,7 +12,7 @@ import {equals} from 'ramda';
 import {distinctUntilChanged, oMap} from './micro-rx/index';
 import FormContext from './FormContext';
 import {useEqualsEffect} from '@k-frame/core';
-import {ForwardRef, Memo} from 'react-is';
+import {ForwardRef, Memo, Lazy} from 'react-is';
 
 const useLazyState = initialValue => {
   const [value, setValue] = useState(initialValue);
@@ -35,6 +35,7 @@ const setReactRef = (ref, value) => {
 };
 
 const tryPassRef = component => ref =>
+  component.$$typeof === Lazy ||
   component.$$typeof === ForwardRef ||
   (component.$$typeof === Memo && component.type.$$typeof === ForwardRef)
     ? ref
