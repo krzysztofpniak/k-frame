@@ -43,6 +43,7 @@ import useRefValue from './useRefValue';
 import useScheduler from './useScheduler';
 import useDebounceValue from './useDebounceValue';
 import useFutureState from './useFutureState';
+import useMapAccumMemo from './useMapAccumMemo';
 
 const asyncActionTypeName = curry(
   (stage, baseType) => `async/${baseType}/${stage}`
@@ -146,6 +147,7 @@ export {
   useEqualsUpdateEffect,
   useFirstMountState,
   useFutureState,
+  useMapAccumMemo,
   useRefValue,
   useScheduler,
   useDebounceValue,
