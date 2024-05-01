@@ -19,9 +19,12 @@ const spawnFuture = ({setRunning, options: {debug}}) => ({
   Future((rej, res) => {
     const dispose =
       future
-      |> chainRej(
-        e => console.error(`task ${key} failed with:`, e) || resolve('')
-      )
+      |> chainRej(e => {
+        if (debug) {
+          console.error(`task ${key} failed with:`, e);
+        }
+        return resolve('');
+      })
       |> fork(res)(res);
     if (debug) {
       console.log(`running: ${label}`);

@@ -30,20 +30,10 @@ const setObject = curry((lens, source, target) =>
   )
 );
 
-const smartSet = ifElse(
-  compose(
-    equals('Object'),
-    type
-  ),
-  setObject,
-  set
-);
+const smartSet = ifElse(compose(equals('Object'), type), setObject, set);
 
 const getStageSetter = (modelDef, resource, stage, dataProp) => {
-  const defaultLens = compose(
-    lensProp(dataProp),
-    lensPath([resource, stage])
-  );
+  const defaultLens = compose(lensProp(dataProp), lensPath([resource, stage]));
 
   const stageLensProp = `${stage}Lens`;
 

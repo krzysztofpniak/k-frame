@@ -22,6 +22,9 @@ const extractEventValueFn = compose(
   when(hasPath(['target', 'value']), path(['target', 'value']))
 );
 
+const mergeLeftValue = prev => newValue =>
+  newValue.isLeft ? newValue?.value?.value ?? prev : newValue.value;
+
 const useDebounceValue = ({
   value,
   onChange,
@@ -38,7 +41,9 @@ const useDebounceValue = ({
   const [inputValue, setInputValue] = useState(
     () =>
       parseValue(value, defaultValue)
-      |> when(always(fold))(reduce((p, c) => c, defaultValue))
+      |> when(always(fold))(
+        reduce((p, c) => c, mergeLeftValue(defaultValue)(value))
+      )
   );
 
   const cancelRef = useRef();
@@ -73,7 +78,9 @@ const useDebounceValue = ({
                   prev =>
                     parseValue(x, prev)
                     |> normalizeInput
-                    |> when(always(fold))(reduce((p, c) => c, prev))
+                    |> when(always(fold))(
+                      reduce((p, c) => c, mergeLeftValue(prev)(x))
+                    )
                 );
               }
             })
@@ -102,7 +109,7 @@ const useDebounceValue = ({
     setInputValue(prev => {
       const newInputValue =
         parseValue(value, prev)
-        |> when(always(fold))(reduce((p, c) => c, prev));
+        |> when(always(fold))(reduce((p, c) => c, mergeLeftValue(prev)(value)));
 
       return newInputValue;
     });
@@ -112,7 +119,9 @@ const useDebounceValue = ({
         const newInputValue =
           parseValue(value, prev)
           |> normalizeInput
-          |> when(always(fold))(reduce((p, c) => c, prev));
+          |> when(always(fold))(
+            reduce((p, c) => c, mergeLeftValue(prev)(value))
+          );
 
         const adjustedValue = newInputValue |> serializeInput;
 
